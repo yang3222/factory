@@ -458,7 +458,6 @@ class Business extends Excel
         return $this->fetch();
     }
 
-
     public function listing(){
         return $this->fetch();
     }

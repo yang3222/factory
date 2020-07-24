@@ -1,0 +1,66 @@
+
+<style>
+    .pro_order {
+        background-color: #60c2f4;
+        display: flex;
+        border-radius: 10px;
+        line-height: 0.94rem;
+        font-size: 0.36rem;
+        padding: 0;
+        color: #000000;
+        margin: 2px;
+        text-align: center;
+    }
+    .add_from{
+        padding:1rem;
+    }
+
+</style>
+
+<header class="header-cls">
+    <a href="javaScript:history.go(-1);" style="color: #fff;"><span class="iconfont iconleft left-cls"></span></a>
+    <div class="header-title" id="header-title">{$menu[$currentMenu.menu]['nav'][$currentMenu.nav]['title']}</div>
+    <!--    <span class="iconfont icondelete right-cls"></span>-->
+    <!--    <span class="right-cls completeBtn disNone">完成</span>-->
+</header>
+
+<div class="content-cls">
+    <div class="input-box">
+
+        <ul class="add_from">
+
+            <li id='li_materiald_id' >
+                <label class="label">sku：<i>*</i></label>
+                <input name="sku" type="text" value="" id="sku" autofocus="autofocus" onkeydown="outInWarehouse.key(event,13,outInWarehouse.getEpmaterialDetail,['{:url('/admin/epwarehouse/getEpmaterialDetail')}','sku'])"    />
+            </li>
+            <li id='li_count' >
+                <label  class="label">数量：<i>*</i></label>
+                <input name="count"  type="text" value="1" id="count" />
+            </li>
+            <li>
+                <label  class="label">备注：<i></i></label>
+                <input name="memo"  type="text" value="" id="memo" />
+            </li>
+
+            <li>
+                <a id='out' class="pro_order"  href="javaScript:outInWarehouse.searchArrAjax(['{:url('/admin/epwarehouse/outWarehouse')}','sku','count','memo'],'epoutcallback')"><p style="margin: auto">出库</p></a>
+            </li>
+
+        </ul>
+        <!-- <span class="pro_status_name" id="pro_status_name">生产状态：{if condition="empty('')"}{else}{/if}</span>-->
+    </div>
+    <div id="msg" style="text-align: center">
+
+
+    </div>
+
+</div>
+<script type="text/javascript">
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            outInWarehouse.configEpWarehouse();
+            // pro_status.search();
+        }
+    }
+</script>

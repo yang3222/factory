@@ -1,0 +1,2 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\project\factory\public/../application/index\view\index\index.html";i:1584407223;}*/ ?>
+<footer>© 2016-2020 inkdiy.cn<a href="http://www.beian.miit.gov.cn/" target="_blank">闽ICP备20002287号</a></footer>

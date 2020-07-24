@@ -1,0 +1,474 @@
+
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<style>
+    .fbali th {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .fbali td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .openyes {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #5bb75b;
+        color: #fff;
+        font-size: 12px;
+    }
+    td.info{
+        vertical-align: top;
+    }
+    td.timer{text-align: center;}
+    td.timer span{
+        display:inline-block;
+        padding:5px 10px;
+        border-radius: 4px;
+        margin-top:5px;
+    }
+    td.alldate strong{
+        font-size:24px;
+        font-weight:bold;
+    }
+    .closeno {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #e80c0c;
+        color: #fff;
+        font-size: 12px;
+    }
+    .trBox {
+        padding: 10px;
+        height: 60px;
+        animation: fade 1000ms infinite;
+        -webkit-animation: fade 1000ms infinite;
+    }
+    @keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+
+    @-webkit-keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+    .yitijiao {
+        color: #1db100;
+    }
+    .yijieshou {
+        color: #9e19dc;
+    }
+    .yizhuangxiang {
+        color: #e73737;
+    }
+    .yifahuo {
+        color: #374ce7;
+    }
+    .yiwancheng {
+        color: #dc9a19;
+    }
+    .yiquxiao {
+        color: #bdbdbd;
+    }
+
+</style>
+<script>
+
+    $(function(){
+
+        //jeDate("#purchases_date",{
+            //format: "YYYY-MM-DD"
+        //});
+        //jeDate("#purchases_date",{
+            //multiPane:false,
+            //theme:{bgcolor:"#00A1CB",color:"#ffffff", pnColor:"#00CCFF"},
+            //format: "YYYY-MM-DD hh:mm:ss"
+        //});
+    })
+    $(function(){
+        $('.custom-date').dateRangePicker($("input[name='start_date']"),$("input[name='end_date']"));
+    })
+
+</script>
+
+<div class="canvas_title height_title do-clear">
+<input type="hidden" id="plan_status" value="{$plan_status}"/>
+<input type="hidden" id="url_style" value="{$url_style}"/>
+    <ul class="tab_nav ordertab fl">
+        {if condition="$url_style == 'lists'"}
+        <li {if condition="$plan_status == 100"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 100)">全部</a></li>
+        <!--<li {if condition="$plan_status == 0"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 0)">新增</a></li>-->
+        <li {if condition="$plan_status == 1"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 1)">新计划</a></li><!--已提交-->
+        <li {if condition="$plan_status == 2"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 2)">待装箱</a></li><!--已接收-->
+        <li {if condition="$plan_status == 3"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 3)">已封箱</a></li>
+        <li {if condition="$plan_status == 4"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 4)">可发货</a></li>
+        <li {if condition="$plan_status == 5"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 5)">已完成</a></li>
+        <li {if condition="$plan_status == -1"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', -1)">已取消</a></li>
+        <li {if condition="$plan_status == 99"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 99)">新留言</a></li>
+        {elseif condition="$url_style == 'picking'"}
+        <li {if condition="$plan_status == 100"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 100)">全部</a></li>
+        <!--<li {if condition="$plan_status == 0"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 0)">新增</a></li>-->
+        <li {if condition="$plan_status == 1"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 1)">新计划</a></li><!--已提交-->
+        <li {if condition="$plan_status == 2"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 2)">待装箱</a></li><!--已接收-->
+        <li {if condition="$plan_status == 3"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 3)">已封箱</a></li>
+        <li {if condition="$plan_status == 5"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 5)">已完成</a></li>
+        <li {if condition="$plan_status == -1"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', -1)">已取消</a></li>
+        <li {if condition="$plan_status == 99"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 99)">新留言</a></li>
+
+        {elseif condition="$url_style == 'deliver_gds'"}
+        <li {if condition="$plan_status == 100"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 100)">全部</a></li>
+        <!--<li {if condition="$plan_status == 0"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 0)">新增</a></li>-->
+        <li {if condition="$plan_status == 3"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 3)">已封箱</a></li>
+        <li {if condition="$plan_status == 4"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 4)">可发货</a></li>
+        <li {if condition="$plan_status == 5"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 5)">已完成</a></li>
+        <li {if condition="$plan_status == -1"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', -1)">已取消</a></li>
+        <li {if condition="$plan_status == 99"}class="current"{/if}><a href="javaScript:getPlanStatus('{:url('/admin/fba/lists')}', 99)">新留言</a></li>
+
+        {/if}
+    </ul>
+
+    <ul class="tab_btn tab_btn_fl fr">
+        {if condition="$plan_status >= 2 && $plan_status < 3"}
+        <li>
+        <select name="is_handle" id="is_handle">
+            <option value="" {if condition="$is_handle==''"}selected="selected"{/if}>请选择物品是否配齐</option>
+            <option value="1" {if condition="$is_handle=='1'"}selected="selected"{/if}>已配齐</option>
+            <option value="0" {if condition="$is_handle=='0'"}selected="selected"{/if}>未配齐</option>
+        </select>
+        </li>
+        {else}
+        <input id="is_handle" type="hidden" name="is_handle" value="">
+        {/if}
+        <li>
+            <select name="time_sort" id="time_sort">
+                <option value="0" {if condition="$time_sort=='0'"}selected="selected"{/if}>请选择时间排序</option>
+                <option value="1" {if condition="$time_sort=='1'"}selected="selected"{/if}>期望时间</option>
+                <option value="2" {if condition="$time_sort=='2'"}selected="selected"{/if}>下单时间</option>
+            </select>
+        </li>
+        <li>
+            <select name="payment_status" id="payment_status">
+                <option value="2" {if condition="$payment_status=='2'"}selected="selected"{/if}>请选择是否付款</option>
+                <option value="1" {if condition="$payment_status=='1'"}selected="selected"{/if}>已付款</option>
+                <option value="0" {if condition="$payment_status=='0'"}selected="selected"{/if}>未付款</option>
+            </select>
+        </li>
+       <!-- <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/fba/lists')}')">批量不通过</a></li>-->
+
+        <!--<li class="input"><span>时间范围：</span><input style="width: 255px;" type="text" class="dateinput dateicon" id="inptime" value="$start_time ~ $end_time" readonly ></li>
+-->
+        <li class="date" >
+            <select class='custom-date' name='custom_date' id="date">
+                <option value='7'  selected='selected'>7天</option>
+                <option value='30' >30 天</option>
+                <option value='90' >90 天</option>
+                <option value='180' >180 天</option>
+                <option value='365' >365 天</option>
+                <option value='custom' >自定义</option>
+            </select>
+            <input type="hidden" name="start_date" id="start_date" value="{$start_time}">
+            <input type="hidden" name="end_date" id="end_date" value="{$end_time}">
+        </li>
+        <li class="input"><input type="text" id="search" name="search" value=""
+
+                                 onkeydown="keys_press();"
+
+                                 placeholder="SKU/货号/订单号/箱标/FNSKU" /></li>
+
+        <li><a href="javaScript:search();">搜索</a></li>
+
+    </ul>
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli fbali">
+
+        <thead>
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+            <th style="width:180px;">订单信息</th>
+            <th style="width:120px;">物流方式</th>
+            <th style="width:100px;" class="center">订单状态</th>
+            <th class="center" style="width:100px;">创建时间<br/>期望发货时间</th>
+            <th style="width:80px;" class="center">时效</th>
+            <th class="center">备注</th>
+            <th class="center" width="120">拣货情况<br/>(库存/已拣/总量）</th>
+            <th class="center" width="200">操作</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {volist name='list' id='value' key='k'}
+
+        <tr class="fba_list {if condition="$value.remind_status == 1"}trBox{else}{/if}">
+
+            <td>{$k}</td>
+            <td class="center">
+                <input name="select" type="checkbox" value="{$value.id}" data-odrid="" />
+            </td>
+            <td class="info">
+                    <label>箱标：</label>B{$value.id}<br/>
+                    <label>FBA货件号：</label>{$value.fba_nums}<br/>
+                    <label>业务员：</label>{$value.contact}<br/>
+                    <label>店铺名：</label>{$value.shop_name}<br/>
+            </td>
+            <td class="info">
+                <label>快递公司：</label>{$value.express_way}<br/>
+                <label>运输方式：</label>{$value.type_of_shipping}<br/>
+                <label>运单号：</label>{$value.waybill_no}<br/>
+            </td>
+            <td class="center {$plan_status_color[$value.plan_status]}" style="font-weight: bold;font-size: 16px;">{$plan_status_name[$value.plan_status]}</td>
+            <td class="timer center">
+                {:date('Y-m-d',strtotime($value.create_time))}<br/>
+                {:outFbaTime($value.expect_delivery_time)}
+            </td>
+            <td class="center alldate">
+                {if condition="$value.plan_status<5"}{assign name="endtime" value=":date('Y-m-d h:i:s')"}{else}{assign name="endtime" value="$value.success_time"}{/if}
+                <strong>{assign name='alldata' value=":floor((strtotime($endtime)-strtotime($value.create_time))/(3600*24))"}{if condition="$alldata>0"}{$alldata}{else}0{/if}</strong>天
+            </td>
+            <td  style="max-width:200px; word-break:break-all; vertical-align: top; padding-top: 0;">{$value.note}</td>
+            <td style="font-size: 16px;">{$value.ware_enough_num}/{$value.sum_pick_number.0['SUM(picking_num)']}/{$value.sum_pick_number.0['SUM(number)']}
+                {if condition="$value.sum_pick_number.0['SUM(picking_num)'] == $value.sum_pick_number.0['SUM(number)'] && $value.sum_pick_number.0['SUM(number)'] != ''"}
+                <br/><span style="color: #01b468;">(物品已配齐)</span>
+                {else}
+                {if condition="$value.ware_enough == 1"}<br/>(仓库物品足够){/if}
+                {/if}
+            </td>
+        
+            <td class="center operation">
+                <ul class="do-clear operation">
+                    {if condition="$value.plan_status >= 1"}
+                    <li><a href="javaScript:checkFba({$value.id});">查看详情</a></li>
+                    {/if}
+                    {if condition="$value.plan_status >= 2"}
+
+                    {if condition="count($value.fba_box) >= 1"}
+                    <li><a href="javaScript:get_box_list({$value.id});">箱子列表</a></li>
+                    {if condition="$value.plan_status >= 2 && $value.plan_status < 3"}
+                    <li><a href="javaScript:confirm_closure({$value.id});">确认封箱</a></li>
+                    {/if}
+                    {/if}
+                    {/if}
+
+                    {if condition="$value.plan_status == 1"}
+                    <li><a href="javaScript:startPlan({$value.id});">开始计划</a></li>
+                    {/if}
+
+                    {if condition="$plan_status >= 2 && $plan_status < 3"}
+                    {if condition="$value.topping == 0"}
+                    <li><a href="javaScript:set_topping({$value.id}, 1);">置顶</a></li>
+                    {/if}
+                    {if condition="$value.topping == 1"}
+                    <li><a href="javaScript:set_topping({$value.id}, 0);">取消置顶</a></li>
+                    {/if}
+                    {/if}
+
+                    {if condition="$value.plan_status == 4"}
+                    <li><a href="javaScript:successPlan({$value.id});">完成发货</a></li>
+                    {/if}
+
+                    {if condition="$plan_status == 99 && $value.new_msg == 1"}
+                    <li><a href="javaScript:move_new_msg({$value.id});">留言已处理</a></li>
+                    {/if}
+                 </ul>
+            </td>
+        </tr>
+
+        {/volist}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+        <!--<li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>-->
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<script type="text/javascript">
+    /*laydate.render({
+        elem: '#inptime'
+        ,type: 'datetime'
+        ,range: '~'
+        ,format: 'yyyy-MM-dd HH:mm:ss'
+        ,theme: '#70afc4'
+    });*/
+    //$("html, body").scrollTop(0).animate({scrollTop: $("#scroll").offset().top});
+    //全选
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+        var eids = [];
+        $('input:checkbox[name=select]:checked').each(function(k){
+
+            if($(this).val()!='') eids.push($(this).val());
+        });
+    });
+
+    //clearInterval(start_for);
+    //开始计划
+    function startPlan(id) {
+        $.post("{:url('/admin/Fba/startPlan')}", {id:id, status:2}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+    //查看订单详情
+    function checkFba (id) {
+        //$.StandardPost("{:url('/admin/Fba/fba_details')}", {id:id});
+        window.location.href = "{:url('/admin/Fba/fba_details')}" + '?id=' + id;
+    }
+
+    //确认封箱
+    function confirm_closure(id) {
+        $.post("{:url('/admin/Fba/confirm_closure')}", {id:id}, function(res) {
+            if (res['code'] == 1000) {
+                window.location.reload();
+            } else {
+                alert(code['msg']);
+                return;
+            }
+        });
+    }
+
+    //置顶
+    function set_topping(id,topping) {
+        $.post("{:url('/admin/Fba/set_topping')}", {id:id,topping:topping}, function(res) {
+            if (res['code'] == 1000) {
+                window.location.reload();
+            } else {
+                alert(code['msg']);
+                return;
+            }
+        });
+    }
+
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            search();
+        }
+    }
+
+    function getPlanStatus(url, status) {
+        var value=$('#search').val();
+        var url_style=$('#url_style').val();
+        var start_time = $("#start_date").val();
+        var end_time = $("#end_date").val();
+        var sdate = $("#date").val();
+        var payment_status = $("#payment_status").val();
+        var time_sort = $("#time_sort").val();
+        var is_handle = $("#is_handle").val();
+        //.get(url, {is_handle:is_handle,time_sort:time_sort,search:value,start_time:start_time,end_time:end_time,sdate:sdate,plan_status:status,payment_status:payment_status});
+
+        window.location.href = url + "?search=" + value + "&url_style=" + url_style + "&is_handle=" + is_handle + "&time_sort=" + time_sort + "&start_time=" + start_time + "&end_time=" + end_time + "&sdate=" + sdate + "&plan_status=" + status + "&payment_status=" + payment_status;
+    }
+
+    function search() {
+        var value=$('#search').val();
+        var url_style=$('#url_style').val();
+        var sku_id_time = value.split('_');
+        if (sku_id_time.length >= 3 && sku_id_time[0][0] == 'g') {
+            value = sku_id_time[0];
+        }
+        var start_time = $("#start_date").val();
+        var end_time = $("#end_date").val();
+        var sdate = $("#date").val();
+        var plan_status = $("#plan_status").val();
+        var payment_status = $("#payment_status").val();
+        var time_sort = $("#time_sort").val();
+        var is_handle = $("#is_handle").val();
+        //$.get("{:url('/admin/fba/lists')}", {is_handle:is_handle,time_sort:time_sort,search:value,start_time:start_time,end_time:end_time,sdate:sdate,plan_status:plan_status,payment_status:payment_status});
+        window.location.href = "{:url('/admin/fba/lists')}" + "?search=" + value + "&url_style=" + url_style + "&is_handle=" + is_handle + "&time_sort=" + time_sort + "&start_time=" + start_time + "&end_time=" + end_time + "&sdate=" + sdate + "&plan_status=" + plan_status + "&payment_status=" + payment_status;
+    }
+
+    //箱子列表
+    function get_box_list(id) {
+        window.location.href = "{:url('/admin/Fba/box_lists')}" + '?fba_id=' + id;
+    }
+
+    function getdata() {
+        var inptime = $("#inptime").val();
+        var search = $("#search").val();
+        $.post("{:url('/admin/fba/lists')}", {select_time:inptime,search:search}, function(data) {
+            return;
+        });
+        //alert(test);
+    }
+
+    //完成计划
+    function successPlan(id) {
+        $.post("{:url('/admin/Fba/successPlan')}", {id:id}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+
+    //留言已处理
+    function move_new_msg(id) {
+        $.post("{:url('/admin/Fba/move_new_msg')}", {id:id}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+
+
+</script>

@@ -1,0 +1,177 @@
+<script>
+
+    $(function(){
+
+    })
+
+</script>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li><a href="javaScript:uploadExcel.openFile('{:url('/admin/orderexcel/uploadexcel')}')">导入海关编码excel</a>
+            </li>
+        <li><a href="javaScript:uploadExcel.openFile('{:url('/admin/orderexcel/uploadtaxexcel')}')">导入税则excel</a></li>
+        <li><a href="javaScript:uploadExcel.openFile('{:url('/admin/orderexcel/uploadareaexcel')}')">导入印花面积excel</a></li>
+
+        <li class="input"><input type="text" id="search" name="search" value=""
+
+                                 onkeydown="keys_press()"
+
+                                 placeholder="搜索：商品编号/商品货号SKU" /></li>
+
+        <li><a href="javaScript:excel9610.search()">搜索</a></li>
+        <li><a href="{:url('/admin/orderexcel/adddata')}">添加</a></li>
+        <li>
+            <a href="javaScript:excel9610.deleteAll()">批量删除</a>
+        </li>
+    </ul>
+
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli">
+
+        <thead>
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+            <th width="30" class="center">id</th>
+            <th width="30" class="center">商品货号SKU</th>
+            <th width="30" class="center">商品编号</th>
+            <th width="30" class="center">商品名称</th>
+            <th width="30" class="center">法定计量单位</th>
+            <th width="30" class="center">法定第二计量单位</th>
+            <th width="30" class="center">规格型号</th>
+            <th width="30" class="center">法定计量单位面积</th>
+            <th width="30" class="center">法定第二计量单位面积</th>
+            <th width="30" class="center">数量计量单位</th>
+            <th width="30" class="center">操作</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        {volist name='list' id='value' key='k'}
+        <tr>
+            <td class="center">{$k}</td>
+            <td class="center"><input name="select" type="checkbox" value="{$value.id}" /></td>
+            <td class="center">{$value.id}</td>
+            <td class="center">{$value.sku}</td>
+            <td class="center">{$value.commodity_code}</td>
+            <td class="center">{$value.name}</td>
+            <td class="center">{$value.unit}</td>
+            <td class="center">{$value.second_unit}</td>
+            <td class="center">{$value.specification_model}</td>
+            <td class="center">{$value.unit_area}</td>
+            <td class="center">{$value.sec_unit_area}</td>
+            <td class="center">{$value.num_unit}</td>
+            <td class="center operation">
+                <a href="{:url('/admin/orderexcel/editdata','id='.$value.id)}">编辑</a>
+                <a href="javaScript:excel9610.delete(['{$value.id}'])">删除</a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li>
+            <a href="javaScript:uploadExcel.openFile('{:url('/admin/orderexcel/uploadall')}')">导入后台整理excel</a>
+        </li>
+        <li>
+            <a href="javaScript:excel9610.exports('{:url('/admin/orderexcel/exports')}')">批量导出数据</a>
+        </li>
+        <li>
+            <a href="javaScript:excel9610.exports('{:url('/admin/orderexcel/exports')}', 'all')">导出全部数据</a>
+        </li>
+        <!--<li><a href="javaScript:excel9610.deleteAll()">批量删除</a></li>-->
+
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<script>
+    //全选
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+
+    });
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            excel9610.search();
+        }
+    }
+
+    //js代码
+    var excel9610 = {
+
+        search:function(){
+            var value=$('#search').val();
+            if (value == '') {
+                alert('搜索词为空');
+                return;
+            }
+            var url = "{:url('/admin/orderexcel/index')}";
+            $.StandardPost(url, {search:value});
+        },
+        exports:function(url, data = '') {
+            if (data == '') {
+                var eids = [];
+                $('input:checkbox[name=select]:checked').each(function(k){
+
+                    if($(this).val()!='') eids.push($(this).val());
+                });
+                if (eids.length <= 0) {
+                    alert('请选择需要导出的数据');
+                    return false;
+                }
+                window.location.href = url + "?ids=" + eids.join(',');
+                //$.post(url, {ids:eids.join(',')});
+            } else if (data == 'all') {
+                window.location.href = url + "?ids=all";
+                //$.post(url, {ids:'all'});
+            }
+        },
+        deleteAll:function () {
+            var ids = [];
+            $('input:checkbox[name=select]:checked').each(function(k){
+
+                if($(this).val()!='')ids.push($(this).val());
+            });
+            excel9610.delete(ids);
+        },
+        delete:function(id) {
+            if (id.length <= 0) {
+              alert('请选择要删除的数据');
+              return;
+            }
+            if (!confirm('确认删除？')) {
+              return;
+            }
+            $.post("{:url('/admin/orderexcel/delete')}",{id:id}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/orderexcel/index')}";
+                } else {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/orderexcel/index')}";
+                }
+            });
+        },
+    }
+</script>

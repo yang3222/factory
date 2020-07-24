@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<OrderData>
+    <Page total="{$listdata->lastPage()}" currentPage="{$listdata->currentPage()}" count="{$listdata->total()}" />
+    <Orders>
+        {volist name='listdata' id='value'}
+        <Order>
+            <id>{$value.id}</id>
+            <Trn>{$value.trn}</Trn>
+            <country>{$value.country}</country>
+            <Weight>{$value.weigth}</Weight>
+            <emsWeight>{$value.ems_weight}</emsWeight>
+            <Time>{$value.StartTimer}</Time>
+        </Order>
+        {/volist}
+    </Orders>
+</OrderData>

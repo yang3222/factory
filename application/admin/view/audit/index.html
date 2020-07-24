@@ -1,0 +1,177 @@
+<script>
+
+    $(function(){
+
+        select.select();
+
+    })
+
+</script>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>
+
+        <li class="input"><input type="text" id="search" name="search" value=""
+
+                                 onkeydown="keyFun.key(event,13,search.search,[$('#search'),'{:url('/admin/audit/index')}'])"
+
+                                 placeholder="搜索：供应商/联系人" /></li>
+
+        <li><a href="javaScript:search.search([$('#search'),'{:url('/admin/audit/index')}'])">搜索</a></li>
+
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli">
+
+        <thead>
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+            <th width="" >供应商属性</th>
+            <th width="" >供应商</th>
+            <th width="" >供应商简称</th>
+
+            <th width="" >联系方式</th>
+            <th >地址</th>
+            <th class="center">类型</th>
+            <th class="center">账期/付款方式</th>
+            <th class="center">对公汇款账号</th>
+            <th class="center">对私汇款账号</th>
+            <th class="center">主要购入材料</th>
+            <th class="center">备注</th>
+
+            <th width="" class="center">创建时间</th>
+
+            <th class="center">状态</th>
+
+            <th class="center" width="200">操作</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {volist name='list' id='value' key='k'}
+
+        <tr>
+            {if condition="$value.delete_time==null"}
+
+            <td>{$k}</td>
+
+            <td><input name="select" type="checkbox" value="{$value.id}" /></td>
+
+            <td>{$value.attribute}<span style="color:#990000">({$value.supplier.attribute})</span></td>
+            <td>{$value.company}<span style="color:#990000">({$value.supplier.company})</span></td>
+            <td>{$value.company_for_short}<span style="color:#990000">({$value.supplier.company_for_short})</span></td>
+
+            <td class="">
+                <label>联系人：</label>{$value.contacts}<span style="color:#990000">({$value.supplier.contacts})</span><br/>
+                <label>职位：</label>{$value.contacts_position}<span style="color:#990000">({$value.supplier.contacts_position})</span><br/>
+                <label>电话：</label>{$value.tel}<span style="color:#990000">({$value.supplier.tel})</span><br/>
+                <label>邮箱：</label>{$value.email}<span style="color:#990000">({$value.supplier.email})</span><br/>
+            </td>
+
+            <td>{$value.adress}<span style="color:#990000">({$value.supplier.adress})</span></td>
+
+            <td class="center">{if condition="$value.type=='1'"}布料供应{elseif condition="$value.type=='2'"}辅料供应{elseif condition="$value.type=='3'"}材料加工{else}印花供应{/if}<span style="color:#990000">({if condition="$value.supplier.type=='1'"}布料供应{elseif condition="$value.supplier.type=='2'"}辅料供应{elseif condition="$value.supplier.type=='3'"}材料加工{else}印花供应{/if})</span></td>
+            <td class="center">{$value.payment_days}<span style="color:#990000">({$value.supplier.payment_days})</span></td><!-- 账期/付款方式 -->
+            <td class="">
+                <label>对公账号用户名：</label>{$value.remittance_num_company_name}<span style="color:#990000">({$value.supplier.remittance_num_company_name})</span><br/>
+                <label>对公账号开户行：</label>{$value.remittance_num_company_bank}<span style="color:#990000">({$value.supplier.remittance_num_company_bank})</span><br/>
+                <label>对公账号：</label>{$value.remittance_num_company}<span style="color:#990000">({$value.supplier.remittance_num_company})</span><br/>
+            </td>
+            <td class="">
+                <label>对私账号用户名：</label>{$value.remittance_num_private_name}<span style="color:#990000">({$value.supplier.remittance_num_private_name})</span><br/>
+                <label>对私账号开户行：</label>{$value.remittance_num_private_bank}<span style="color:#990000">({$value.supplier.remittance_num_private_bank})</span><br/>
+                <label>对私账号：</label>{$value.remittance_num_private}<span style="color:#990000">({$value.supplier.remittance_num_private})</span><br/>
+            </td>
+            <td class="center">{$value.main_purchased_materials}<span style="color:#990000">({$value.supplier.main_purchased_materials})</span></td><!-- 主要购入材料 -->
+            <td class="center">{$value.note}<span style="color:#990000">({$value.supplier.note})</span></td><!-- 备注 -->
+            <td class="center">{$value.create_timer}<!--<span style="color:#990000">($value.supplier.create_timer)</span>--></td>
+
+            <td class="center radio">{if condition="$value.display=='1'"}<span>开</span>{else}<span class="close">关</span>{/if}({if condition="$value.supplier.display=='1'"}<span>开</span>{else}<span class="close">关</span>{/if})</td>
+
+            <td class="center operation">
+
+                <a href="javaScript:audit.approved('{:url('/admin/audit/approved')}',['{$value.id}'])">审核通过</a>
+                <a class="close" href="javaScript:audit.delete('{:url('/admin/audit/delete')}',['{$value.id}'])">审核不通过</a>
+
+            </td>
+
+
+            {else}
+
+
+            <td>{$k}</td>
+
+            <td><!--<input name="select" type="checkbox" value="$value.id" />--></td>
+
+            <td>{$value.attribute}</td>
+            <td>{$value.company}</td>
+            <td>{$value.company_for_short}</td>
+
+            <td class="">
+                <label>联系人：</label>{$value.contacts}<br/>
+                <label>职位：</label>{$value.contacts_position}<br/>
+                <label>电话：</label>{$value.tel}<br/>
+                <label>邮箱：</label>{$value.email}<br/>
+            </td>
+
+            <td>{$value.adress}</td>
+
+            <td class="center">{if condition="$value.type=='1'"}布料供应{elseif condition="$value.type=='2'"}辅料供应{elseif condition="$value.type=='3'"}材料加工{else}印花供应{/if}</td>
+            <td class="center">{$value.payment_days}</td><!-- 账期/付款方式 -->
+            <td class="">
+                <label>对公账号用户名：</label>{$value.remittance_num_company_name}<span style="color:#990000">({$value.supplier.remittance_num_company_name})</span><br/>
+                <label>对公账号开户行：</label>{$value.remittance_num_company_bank}<span style="color:#990000">({$value.supplier.remittance_num_company_bank})</span><br/>
+                <label>对公账号：</label>{$value.remittance_num_company}<span style="color:#990000">({$value.supplier.remittance_num_company})</span><br/>
+            </td>
+            <td class="">
+                <label>对私账号用户名：</label>{$value.remittance_num_private_name}<span style="color:#990000">({$value.supplier.remittance_num_private_name})</span><br/>
+                <label>对私账号开户行：</label>{$value.remittance_num_private_bank}<span style="color:#990000">({$value.supplier.remittance_num_private_bank})</span><br/>
+                <label>对私账号：</label>{$value.remittance_num_private}<span style="color:#990000">({$value.supplier.remittance_num_private})</span><br/>
+            </td>
+            <td class="center">{$value.main_purchased_materials}</td><!-- 主要购入材料 -->
+            <td class="center">{$value.note}</td><!-- 备注 -->
+            <td class="center">{$value.create_timer}</td>
+
+            <td class="center radio">{if condition="$value.display=='1'"}<span>开</span>{else}<span class="close">关</span>{/if}</td>
+
+            <td class="center operation">
+                {if condition="$value.audit_status=='1'"}审核已通过{elseif condition="$value.audit_status=='2'"}审核未通过{else}原数据已删除{/if}
+            </td>
+            {/if}
+
+        </tr>
+
+        {/volist}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>
+    </ul>
+
+    {$pageDiv}
+
+</div>

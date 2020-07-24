@@ -1,0 +1,215 @@
+<div class="canvas_title do-clear">
+</div>
+<input style="" type="hidden" value="{$data.id}" id="id" name="id"/>
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li>
+            <label class="label">产品id<i>*</i>：</label>
+
+            <input name="product_id" type="text" value="{$data.product_id}" id="product_id" readonly/>
+
+        </li>
+        <li>
+            <label class="label">产品名称<i>*</i>：</label>
+
+            <input name="product_name" type="text" value="{$data.product_name}" id="product_name"/>
+
+        </li>
+
+        <li>
+            <label class="label">产品sku<i>*</i>：</label>
+
+            <input name="product_sku" type="text" value="{$data.product_sku}" id="product_sku" readonly />
+
+        </li>
+        <li>
+            <label class="label">产品型号<i>*</i>：</label>
+
+            <input name="product_size" type="text" value="{$data.product_size}" id="product_size" />
+
+        </li>
+        <li>
+            <label class="label">裁片物料编码<i>*</i>：</label>
+
+            <input name="cutting_material_code" type="text" value="{$data.cutting_material_code}" id="cutting_material_code" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">裁片名称<i>*</i>：</label>
+
+            <input name="slice_name" type="text" value="{$data.slice_name}" id="slice_name" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">原料物料编码<i>*</i>：</label>
+
+            <input name="material_code" type="text" value="{$data.material_code}" id="material_code" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">原料名称<i>*</i>：</label>
+
+            <input name="name_of_raw_material" type="text" value="{$data.name_of_raw_material}" id="name_of_raw_material"  />
+
+        </li>
+        <li>
+            <label class="label">片数<i>*</i>：</label>
+
+            <input name="number_of_slices" type="text" value="{$data.number_of_slices}" id="number_of_slices" />
+
+        </li>
+
+        <li>
+            <label class="label">用量/码<i>*</i>：</label>
+
+            <input name="dosage" type="text" value="{$data.dosage}" id="dosage" />
+
+        </li>
+        <li>
+            <label class="label">片/套<i>*</i>：</label>
+
+            <input name="slice" type="text" value="{$data.slice}" id="slice" />
+
+        </li>
+        <li>
+            <label class="label">裁片单位<i>*</i>：</label>
+
+            <input name="cutting_unit" type="text" value="{$data.cutting_unit}" id="cutting_unit" />
+
+        </li>
+        <!--<li>
+            <label class="label">总用量（片/套*用量）<i>*</i>：</label>
+
+            <input name="total_dosage" type="text" value="$data.total_dosage" id="total_dosage" />
+
+        </li>-->
+
+
+        <li>
+
+            <a href="javaScript:editsub.save()">保存</a>
+            <a href="javaScript:editsub.back()">退出修改</a>
+
+        </li>
+
+    </ul>
+
+</div>
+<script>
+    var editsub = {
+        id:'',
+        product_id:'',
+        product_name:'',
+        product_sku:'',
+        product_size:'',
+        cutting_material_code:'',
+        slice_name:'',
+        material_code:'',
+        name_of_raw_material:'',
+        number_of_slices:'',
+        dosage:'',
+        slice:'',
+        cutting_unit:'',
+        total_dosage:'',
+
+        back:function() {
+            window.location.href = "{:url('/admin/subcontractingdoc/index')}";
+        },
+        getdata:function() {
+            editsub.id = $('#id').val().replace(/^\s*|\s*$/g,"");//去除空格
+            editsub.product_id = $('#product_id').val().replace(/^\s*|\s*$/g,"");//去除空格
+            editsub.product_name = $('#product_name').val().replace(/^\s*|\s*$/g,"");
+            editsub.product_sku = $('#product_sku').val().replace(/^\s*|\s*$/g,"");
+            editsub.product_size = $('#product_size').val().replace(/^\s*|\s*$/g,"");
+            editsub.cutting_material_code = $('#cutting_material_code').val().replace(/^\s*|\s*$/g,"");
+            editsub.slice_name = $('#slice_name').val().replace(/^\s*|\s*$/g,"");
+            editsub.material_code = $('#material_code').val().replace(/^\s*|\s*$/g,"");
+            editsub.name_of_raw_material = $('#name_of_raw_material').val().replace(/^\s*|\s*$/g,"");
+            editsub.number_of_slices = $('#number_of_slices').val().replace(/^\s*|\s*$/g,"");
+            editsub.dosage = $('#dosage').val().replace(/^\s*|\s*$/g,"");
+            editsub.slice = $('#slice').val().replace(/^\s*|\s*$/g,"");
+            editsub.cutting_unit = $('#cutting_unit').val().replace(/^\s*|\s*$/g,"");
+            //editsub.total_dosage = $('#total_dosage').val().replace(/^\s*|\s*$/g,"");
+        },
+        //文字长度
+        DataLength:function(fData) {
+            var intLength=0;
+            for (var i=0;i<fData.length;i++)
+            {
+                if ((fData.charCodeAt(i) < 0) || (fData.charCodeAt(i) > 255))
+                    intLength=intLength+2;
+                else
+                    intLength=intLength+1;
+            }
+            return intLength;
+        },
+        save:function() {
+            editsub.getdata();
+            if (editsub.product_id == '') {
+                alert('请输入产品id');
+                return;
+            }
+            if (editsub.product_name == '') {
+                alert('请输入产品名称');
+                return;
+            }
+            if (editsub.product_sku == '') {
+                alert('请输入产品SKU');
+                return;
+            }
+            if (editsub.product_size == '') {
+                alert('请输入产品型号');
+                return;
+            }
+            if (editsub.cutting_material_code == '') {
+                alert('请输入裁片物料编码');
+                return;
+            }
+            if (editsub.slice_name == '') {
+                alert('请输入裁片名称');
+                return;
+            }
+            if (editsub.material_code == '') {
+                alert('请输入原料物料编码');
+                return;
+            }
+            if (editsub.name_of_raw_material == '') {
+                alert('请输入原料名称');
+                return;
+            }
+            if (editsub.number_of_slices == '') {
+                alert('请输入片数');
+                return;
+            }
+            if (editsub.dosage == '') {
+                alert('请输入用量/码');
+                return;
+            }
+            if (editsub.slice == '') {
+                alert('请输入片/套');
+                return;
+            }
+            if (editsub.cutting_unit == '') {
+                alert('请输入裁片单位');
+                return;
+            }
+            /*if (editsub.total_dosage == '') {
+                alert('请输入总用量（片/套*用量）');
+                return;
+            }*/
+
+            $.post("{:url('/admin/subcontractingdoc/editsub')}", {id:editsub.id,product_id:editsub.product_id,product_name:editsub.product_name,product_sku:editsub.product_sku,product_size:editsub.product_size,cutting_material_code:editsub.cutting_material_code,slice_name:editsub.slice_name,material_code:editsub.material_code,name_of_raw_material:editsub.name_of_raw_material,number_of_slices:editsub.number_of_slices,dosage:editsub.dosage,slice:editsub.slice,cutting_unit:editsub.cutting_unit}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/subcontractingdoc/index')}";
+                } else {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/subcontractingdoc/index')}";
+                }
+            });
+
+        },
+    }
+</script>

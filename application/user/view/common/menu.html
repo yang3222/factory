@@ -1,0 +1,15 @@
+<ul class="menubox">
+    {volist name='menu' id='value' key='mkey'}
+    <li {if condition="$currentMenu.menu==$key"}class="open"{/if}>
+        {assign name="menuKey" value="$key" /}
+        <a href="{if condition="isset($value.url)"}{$value.url}{else}javaScript:;{/if}"><i class="{$value.class}"></i>{$value.title}</a>
+        {if condition="!empty($value.nav)"}
+        <ul>
+        {volist name="$value.nav" id='li' key='navKey'}
+            <li {if condition="$currentMenu.nav==$key&&$currentMenu.menu==$menuKey"}class="current"{/if}><a href="{$li.url}" {if condition="isset($li.target)"}target="{$li.target}"{/if} >{$li.title}</a></li>
+        {/volist}
+        </ul>
+        {/if}
+    </li>
+    {/volist}
+</ul>

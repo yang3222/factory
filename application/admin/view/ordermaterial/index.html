@@ -1,0 +1,224 @@
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<script>
+
+    $(function(){
+        $('.custom-date').dateRangePicker($("input[name='start_date']"),$("input[name='end_date']"));
+        ordermaterial.productsearch = "{$searchproduct}".split(",");
+        //order.factorysearch="$searcfactory".split(",");
+        select.select();
+    })
+
+</script>
+
+<div class="canvas_title do-clear"><!--height_title增加高度-->
+    <ul class="tab_nav ordertab fl">
+        <!--<li ><a href="{:url('/admin/ordermaterial/index')}">全部</a></li>
+        <li ><a href="{:url('/admin/ordermaterial/index','type=2')}">生产中</a></li>
+        <li ><a href="{:url('/admin/ordermaterial/index','type=4')}">暂停</a></li>
+        <li ><a href="{:url('/admin/ordermaterial/index','type=8')}">有库存</a></li>-->
+
+        <label><input type="checkbox" name="order_status" id="sc" value="2" {if condition="in_array(2, $sign)"}checked{/if} />生产中&nbsp;&nbsp;</label>
+        <label><input type="checkbox" name="order_status" id="zt" value="4" {if condition="in_array(4, $sign)"}checked{/if} />暂停&nbsp;&nbsp;</label>
+        <label><input type="checkbox" name="order_status" id="kc" value="8" {if condition="in_array(8, $sign)"}checked{/if} />有库存&nbsp;&nbsp;</label>
+        <label><input type="checkbox" name="order_status" id="qs" value="5" {if condition="in_array(5, $sign)"}checked{/if} />已签收&nbsp;&nbsp;</label>
+    </ul>
+    <ul class="tab_btn tab_btn_fl fr">
+
+        <li><a href="javaScript:ordermaterial.mateial_repost();">批量查看材料使用</a></li>
+        <li><a href="javaScript:ordermaterial.openWindow('{:url('/admin/ordermaterial/openwindows')}')">选择产品</a></li>
+        <li class="date" >
+            <select class='custom-date' name='custom_date' id="date">
+                <option value='7'  selected='selected'>7天</option>
+                <option value='30' >30 天</option>
+                <option value='90' >90 天</option>
+                <option value='180' >180 天</option>
+                <option value='365' >365 天</option>
+                <option value='custom' >自定义</option>
+            </select>
+            <input type="hidden" name="start_date" id="start_date" value="{$date.start_time}">
+            <input type="hidden" name="end_date" id="end_date" value="{$date.end_time}">
+        </li>
+        <li class="input"></li>
+        <li><a href="javaScript:ordermaterial.search([$('#search'),'{:url('/admin/ordermaterial/index')}'])">按订单</a></li>
+        <li><a href="javaScript:ordermaterial.product_material([$('#search'),'{:url('/admin/ordermaterial/productmaterial')}'])">按产品</a></li>
+    </ul>
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli orderli">
+        <thead>
+        <tr>
+            <th width="10" class="center">#</th>
+            <th width="20" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+            <th width="130" class="">订单信息</th>
+            <th width="130" class="">缩略图</th>
+            <th width="150" class="">材料使用</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='value' key='k'}
+        <tr>
+            <td class="center">{$k}</td>
+            <td class="center">
+                <input name="select" type="checkbox" value="{$value.id}" data-odrid="{$value.OdrId}" />
+
+            </td>
+            <td class="info">
+
+                <label>id：</label>{$value.id}<br/>
+                <label>订单号：</label>{$value.OrdNum}<br/>
+                <label>SKU：</label>{$value.GdsSku}<br/>
+                <label>数量：</label>{$value.GdsNum}<br/>
+                <label>商品型号：</label>{$value.SpecName}<br/>
+                <label>分销商：</label>{$value.AgntName}<br/>
+                 <label>商品名称：</label>{$value.product_name}<br/>
+                <label>产品ID：</label>{$value.product_id}<br/>
+
+            </td>
+            <td  class=""><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.ImgURL)[0]}@0e_0o_1l_500h_500w.src' /></td>
+
+            <td>
+                {volist name="$value.manumaterial" id="mvalue" key="mkey"}
+
+                <label>[{$mvalue.material.finance_num}]{$mvalue.material.name}:&nbsp;&nbsp;</label><span style="color: #990000;">{$mvalue.dosage}</span>{$mvalue.material.company}<!--（材料型号：$mvalue.material.size）--><br/>
+
+                {/volist}
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+    {$pageDiv}
+</div>
+
+<div class="message" id="tip_windows">
+
+    <div class="box">
+
+        <h3>修改备注<a href="javaScript:" class="close"><img src="" /></a></h3>
+
+        <textarea name="" cols="" rows="" id="message"></textarea>
+
+        <div class="btn"><a href="javaScript:">确认</a><a href="javaScript:">取消</a></div>
+
+    </div>
+
+</div>
+
+<script>
+    var ordermaterial = {
+        productsearch:[],
+        order_search:[],
+
+        search: function (obj) {
+            //var value = obj[0].val();
+            $('input:checkbox[name=order_status]:checked').each(function(k){
+                if($(this).val()!='') ordermaterial.order_search.push($(this).val());
+            });
+            if (ordermaterial.order_search.length <= 0) {
+                alert('请选择订单状态');
+                return;
+            }
+            $.StandardPost(obj[1], {
+                sdate: $("#date").val(),
+                start_time: $("#start_date").val(),
+                end_time: $("#end_date").val(),
+                product_id: ordermaterial.productsearch,
+                signtype: ordermaterial.order_search,
+            });
+        },
+        product_material: function (obj) {
+            //var value = obj[0].val();
+            $('input:checkbox[name=order_status]:checked').each(function(k){
+                if($(this).val()!='') ordermaterial.order_search.push($(this).val());
+            });
+            if (ordermaterial.order_search.length <= 0) {
+                alert('请选择订单状态');
+                return;
+            }
+            $.StandardPost(obj[1], {
+                sdate: $("#date").val(),
+                start_time: $("#start_date").val(),
+                end_time: $("#end_date").val(),
+                product_id: ordermaterial.productsearch,
+                signtype: ordermaterial.order_search,
+            });
+        },
+        //计算材料
+        mateial_repost: function() {
+            var order_ids = [];
+
+            $('input:checkbox[name=select]:checked').each(function(k){
+                if($(this).val()!='') order_ids.push($(this).val());
+            });
+            if(order_ids.length==0){
+                alert("请选择要计算的物品");
+                return;
+            }
+            var ids = order_ids.join(',');
+            $.StandardPost("{:url('/admin/ordermaterial/materialReport')}", {
+                //sdate: $("#date").val(),
+                //start_time: $("#start_date").val(),
+                //end_time: $("#end_date").val(),
+                ids:ids,
+            });
+        },
+
+        windowurl:"",
+
+        openWindow:function(url){
+            $("#swfbox").show();
+            if(ordermaterial.windowurl!=url){
+                ordermaterial.windowurl=url;
+                $("#swfbox").html("");
+                ordermaterial.loadURL({});
+            }
+        },
+
+        loadURL:function(obj){
+            $.post(ordermaterial.windowurl,obj,function(data){
+                $("#swfbox").html(data);
+            })
+        },
+
+        selectproduct:function(){
+            ordermaterial.productsearch=[];
+            $("#model_li input[type='checkbox']:checked").each(function(){
+                ordermaterial.productsearch.push($(this).val());
+            });
+            $('input:checkbox[name=order_status]:checked').each(function(k){
+                if($(this).val()!='') ordermaterial.order_search.push($(this).val());
+            });
+            $("#swfbox").hide();
+            //ordermaterial.search();
+        },
+
+        pro_search:function(){
+            var value = $("#window_search").val();
+            ordermaterial.loadURL({search:value});
+        }
+    };
+
+    function pro_search(){
+        var value = $("#window_search").val();
+        ordermaterial.loadURL({search:value});
+    }
+
+    function selectproduct() {
+        ordermaterial.productsearch=[];
+        $("#model_li input[type='checkbox']:checked").each(function(){
+            ordermaterial.productsearch.push($(this).val());
+        });
+        $('input:checkbox[name=order_status]:checked').each(function(k){
+            if($(this).val()!='') ordermaterial.order_search.push($(this).val());
+        });
+        $("#swfbox").hide();
+        //ordermaterial.search();
+    }
+</script>

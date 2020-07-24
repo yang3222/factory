@@ -1,0 +1,43 @@
+<div class="canvas_title do-clear">
+   <h2>{$canvasTitle}</h2>
+</div>
+<div class="canvas_intro">
+   <ul class="add_from">
+      <li>
+         <label class="label">分类名称<i>*</i></label>
+         <input type="hidden" id="id" name="id" value="{$data.id}" />
+         <input name="name" type="text" id="name" value="{$data.name}" />
+      </li>
+      <li>
+         <label class="label">产品<i>*</i></label>
+         {assign name='productarr' value=":explode(',',$data.product)"}
+         <ul class="productul do-clear">
+             {volist name='products' id='product' key='k'}
+             {if condition='!empty($product.product)'}
+             <li>
+                 <input name="product" id="product{$product.product.id}" {if condition='in_array($product.product.id,$productarr)'}checked='checked'{/if} type="checkbox"  value="{$product.product.id}">
+                 <label for="product{$product.product.id}">
+                     {if condition="strstr($product.product.smallimg,'http')"}<img src='{$product.product.smallimg}@0e_0o_1l_500h_500w.src' />{else}<img src='{:PRODUCT_IMG}{$product.product.smallimg}' />{/if}
+                     <h4>{$product.product.name}</h4>
+                 </label>
+             </li>
+             {/if}
+             {/volist}
+         </ul>
+      </li>
+      <li>
+           <label class="label">排序:<i>*</i></label>
+           <input name="sort" type="text" value="{$data.sort}" id="sort" />
+       </li>
+       <li>
+           <label class="label">状态:</label>
+           <input type="radio" name="display" id="display" {if condition="$data.display=='1'"}checked="checked"{/if} value="1" />
+               <label for="display">上架</label>
+           <input type="radio" name="display" id="display1" {if condition="$data.display=='0'"}checked="checked"{/if} value="0" />
+               <label for="display1">下架</label>
+       </li>
+      <li>
+         <a href="javaScript:menu.post('{:url('/user/menu/post')}')">保存</a>
+      </li>
+   </ul>
+</div>

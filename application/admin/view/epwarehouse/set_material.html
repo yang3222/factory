@@ -1,0 +1,48 @@
+
+<div class="canvas_title do-clear">
+   <h2>{$canvasTitle}</h2>
+</div>
+<div class="canvas_intro">
+   <ul class="add_from">
+       
+       
+       
+        <li><a href="javaScript:openModel.openWindow('{:url('/admin/warehouse/showMaterial')}')">选择材料</a></li>
+      <li>
+         <label class="label">品名<i>*</i></label>  
+         <input name="m_name" type="text" id="m_name" value="" readonly="readonly" />
+         <input name="m_id" type="hidden" id="m_id" value="" />
+      </li>
+      
+      <li>
+         <label class="label">库位<i>*</i></label>
+         <input name="wt_id" type="hidden" id="wt_id" value="{$house.id}" />
+         <input name="wt_name" type="text" readonly="readonly" id="wt_name" value="{$house.name}" />
+      </li>
+      
+       <li>
+         <label class="label">时间<i>*</i></label>
+         <input name="create_time" type="text" id="create_time" value="{:date("Y-m-d H:i");}" readonly="readonly" />
+      </li>
+      
+      <li>
+         <a href="javaScript:warehousetable.saveIn('{$house.id}')">保存</a>
+      </li>
+   </ul>
+</div>
+<script>
+    
+    
+        
+   
+$(function(){
+    $("#material_number").change(function(){
+
+        warehousetable.changeInType($(this));
+
+    })
+})
+</script>
+    
+    
+</script>

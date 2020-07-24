@@ -1,0 +1,99 @@
+<style>
+    .name {
+        line-height: 28px;
+        font-size: 14px;
+        min-height: 28px;
+        position: relative;
+        padding-left: 105px;
+        float: left;
+        margin-bottom: 5px;
+    }
+</style>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<div class="modelbox">
+
+    <div class="canvas_title do-clear">
+        {$data.name}
+        <ul class="tab_btn fr">
+            <li><a href="javaScript:edit_factory.save_data();">保存修改</a></li>
+            <li><a href="javaScript:openModel.close()">关闭</a></li>
+        </ul>
+
+    </div>
+
+    <ul class="infobox">
+
+        <li><label for="capacity">产能:</label><input placeholder="为0或不填则不限制产能" type="text" name="capacity"  id="capacity" value="{$data.capacity}" oninput = "value=value.replace(/[^\d]/g,'')"></li>
+        <li><label for="sort">排序:</label><input placeholder="越小越优先派单" type="text" name="sort"  id="sort" value="{$data.sort}" oninput = "value=value.replace(/[^\d]/g,'')"></li>
+    </ul>
+    <input type="hidden" id="id" value="{$data.id}" />
+</div>
+
+<script>
+            var edit_factory = {
+                windowurl:"",
+
+                openWindow:function(url){
+
+                    $("#swfbox").show();
+
+                    if(edit_factory.windowurl!=url){
+
+                        edit_factory.windowurl=url;
+
+                        $("#swfbox").html("");
+
+                        edit_factory.loadURL({});
+
+                    }
+
+                },
+
+                close: function () {
+
+                    $("#swfbox").hide();
+
+                },
+
+                loadURL:function(obj){
+
+                    $.post(edit_factory.windowurl,obj,function(data){
+
+                        $("#swfbox").html(data);
+
+                    })
+
+                },
+
+                save_data:function() {
+                    var capacity = $("#capacity").val();
+                    var sort = $("#sort").val();
+                    var id = $("#id").val();
+                    if (capacity.length > 1) {
+                        var first_c = capacity.substring(0,1);
+                        if (first_c == 0) {
+                            alert('产能请不要以0开头！');
+                            return;
+                        }
+                    }
+                    if (sort.length > 1) {
+                        var first_s = sort.substring(0,1);
+                        if (first_s == 0) {
+                            alert('排序请不要以0开头！');
+                            return;
+                        }
+                    }
+                    $.post("{:url('/admin/product/saveFactory')}",{capacity:capacity, sort:sort, id:id},function(data){
+                        if (data.code == 1000) {
+                            alert(data.msg);
+                            window.location.reload();
+                        } else {
+                            alert(data.msg);
+                            window.location.reload();
+                        }
+                    })
+                }
+
+
+            }
+</script>

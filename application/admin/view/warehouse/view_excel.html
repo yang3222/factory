@@ -1,0 +1,165 @@
+<style>
+
+    .modelboxv {
+        width: 1105px;
+        background: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        margin: 0 auto;
+        margin-top: 50px;
+
+        height:calc(100% - 100px);
+    }
+    .excel_red {
+        background: #FF4500;
+    }
+
+</style>
+<script>
+
+    $(function(){
+
+        material.select();
+
+    })
+
+</script>
+<div class="modelboxv">
+<div class="canvas_title do-clear">
+    <ul class="tab_btn fr">
+        <li><a href="javaScript:material.save_data('{:url('admin/Warehouse/save_excel')}', '{$cache_key}');">保存</a></li>
+        <li><a href="javaScript:material.close('{:url('admin/Warehouse/del_excel_cache')}', '{$cache_key}');">关闭</a></li>
+    </ul>
+</div>
+<div class="canvas_intro" style="overflow-y:scroll; height:calc(100% - 70px);">
+    <table class="productli">
+        <thead>
+        <tr>
+
+            <th width="10" class="center">#</th>
+
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="excel_select" /></th>
+
+            <th width="120" >材料类型</th>
+
+            <th width="120" >财务编码</th>
+
+            <th width="140" >物料名称</th>
+
+            <th width="80" class="center">型号规格</th>
+
+            <th width="80" class="center">物料属性</th>
+
+            <th width="50" class="center">单位</th>
+
+            <th width="50" class="center">价格</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+        {if condition="count($data.add) > 0"}
+        <tr>
+            <td></td>
+            <td></td>
+            <td>新增数据</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {volist name='$data.add' id='add_v' key='add_k'}
+
+        <tr>
+
+            <td>{$add_k}</td>
+
+            <td><input name="add_select" type="checkbox" value="{$add_v.finance_num}" /></td>
+
+            <td>{$add_v.type}</td>
+
+            <td>{$add_v.finance_num}</td>
+
+            <td>{$add_v.name}</td>
+
+            <td class="center">{$add_v.size}</td>
+
+            <td class="center">{$add_v.att}</td>
+
+            <td class="center">{$add_v.company}</td>
+
+            <td class="center">￥{$add_v.money|sprintf='%.2f',###}</td>
+
+        </tr>
+
+        {/volist}
+        {/if}
+        {if condition="count($data.update) > 0"}
+        <tr>
+            <td></td>
+            <td></td>
+            <td>可更新数据</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {volist name='$data.update' id='value' key='k'}
+
+        <tr>
+
+            <td  rowspan="2">{$k+count($data.add)}</td>
+
+            <td rowspan="2"><input name="update_select" type="checkbox" value="{$value.old.id}" /></td>
+
+            <td>{$value.old.type}</td>
+
+            <td>{$value.old.finance_num}</td>
+
+            <td>{$value.old.name}</td>
+
+            <td class="center">{$value.old.size}</td>
+
+            <td class="center">{$value.old.att}</td>
+
+            <td class="center">{$value.old.company}</td>
+
+            <td class="center">￥{$value.old.money|sprintf='%.2f',###}</td>
+
+        </tr>
+        <tr class="excel_red">
+            <td><span class="">{$value.excel.type}</span></td>
+
+            <td><span class="">{$value.excel.finance_num}</span></td>
+
+            <td><span class="">{$value.excel.name}</span></td>
+
+            <td class="center"><span class="">{$value.excel.size}</span></td>
+
+            <td class="center"><span class="">{$value.excel.att}</span></td>
+
+            <td class="center"><span class="">{$value.excel.company}</span></td>
+
+            <td class="center"><span class="">￥{$value.excel.money|sprintf='%.2f',###}</span></td>
+
+        </tr>
+
+        {/volist}
+        {/if}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+</div>
+</div>

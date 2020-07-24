@@ -1,0 +1,50 @@
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_nav fl">
+        <li class="current"><a href="javaScript:void(0)">入库</a></li>
+    </ul>
+
+</div>
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li id='li_materiald_id'>
+            <label class="label">sku：<i></i></label>
+            <input name="sku" type="text" id="sku" autofocus="autofocus" onkeydown="savewhare()"/>
+        </li>
+
+        <li id='li_count'>
+            <label  class="label">数量：<i>*</i></label>
+            <input name="count" type="text" value="1" id="count" oninput = "value=value.replace(/[^\d]/g,'')"/><!--readonly="readonly"-->
+        </li>
+        <li>
+            <label class="label">仓位：<i></i></label>
+            <input name="wt_name" type="text" value="{$wt_name}" id="wt_name" readonly autofocus="autofocus" onkeydown="keyspress()" />
+            <input name="wt_id" type="hidden" value="{$wt_id}" id="wt_id" />
+        </li>
+        <li>
+            <a id='btnsave' href="javaScript:outInWarehouse.searchArrAjax(['{:url('/admin/epwarehouse/inWarehouse')}','sku','wt_id','count','wt_name'],'epincallback')">保存</a>
+        </li>
+    </ul>
+    <div id="msg" style="margin-left: 180px"></div>
+</div>
+
+<script type="text/javascript">
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            outInWarehouse.configEpWarehouse();
+            //pro_status.search();
+        }
+    }
+
+    function savewhare(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            outInWarehouse.searchArrAjax(['{:url('/admin/epwarehouse/inWarehouse')}','sku','wt_id','count','wt_name'],'epincallback')
+        }
+    }
+</script>
+

@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>飞飞鱼下单界面</title>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/flash.js"></script>
+<link href="{:INDEX_STYLE_URL}css/style.css" rel="stylesheet" type="text/css" />
+<script>
+
+
+var selecttype="请选择下单类型";
+var order="{$data.order}";
+var type="{$data.type}";
+var stockURL="http://webapi.38420.com/api/Stock/QueryStock";
+
+var loadBoo=false;
+
+//socket准备完毕
+function OrderComplete(){
+	loadBoo=true;
+	$(".disableCss").removeClass("disableCss");
+}
+//value搜索的值，key工厂的key
+//value 格式  订单号:sku,sku,sku|订单号:sku,sku,sku
+function postOrder(value){
+	if(!loadBoo)return;
+	postSelect();
+	$(".colorbox").show();
+	//把下单类型提交上去
+	var printArr=[];
+	var macArr=[];
+	$('input[name="PrintFactory[]"]:checked').each(function(){
+		printArr.push($(this).val());
+	});
+	$('input[name="MacFactory[]"]:checked').each(function(){
+		macArr.push($(this).val());
+	});
+	var txt=type+"|||"+order+"=="+printArr.join(",")+"=="+macArr.join(",");
+	thisMovie("ExternalInterfaceExample").OrderPostFun(txt);
+}
+//订单分割
+function postSelect(){
+	var skuArr=[];
+	//console.log(order+"///");
+	var orderArr=order.split("|");
+	for(var i=0;i<orderArr.length;i++){
+		var lineOrder=orderArr[i];
+		var orderdata=lineOrder.split(":");
+		var skuNum=getOrder(orderdata[1],orderdata[0]);
+		if(skuNum!=""){
+			skuArr.push(orderdata[0]+":"+skuNum);
+		}
+	}
+	order=skuArr.join("|");
+}
+function getOrder(skuOrder,OdrNo){
+	var skuArr=[];
+	var arr=skuOrder.split(",");
+	for(var i=0;i<arr.length;i++){
+		var skuNum=getStock(arr[i],OdrNo);
+		if(skuNum!="")skuArr.push(skuNum);
+	}
+	return skuArr.join(",");
+}
+function getStock(skuNum,OdrNo){
+	var arr=skuNum.split("#");
+	var sku=arr[0];
+	var num=arr[1];
+	var skuType="";
+	$.ajax({  
+        type : "post",  
+        url : stockURL,  
+        data :{Sku:sku,Number:num,OrderNo:OdrNo},  
+        async : false,  
+        success : function(data){
+			var index=Number(data);
+			if(index>=0&&num-index>0){
+				skuType=sku+"#"+(num-index);
+			}else{
+					
+			}
+        }  
+    });
+	return skuType;
+}
+function alertFun(value,noOpenId){
+	if(value==""){
+		alert("下单成功，但服务器没有开启");
+		$(".colorbox").hide();
+		return;
+	}
+	var noOpenFactory=[];
+	var noOpenIdTip="";
+	if(noOpenId){
+		var noIDArr=noOpenId.split(",");
+	    for(var i=0;i<noIDArr.length;i++){
+		   noOpenFactory.push($("#factory"+noIDArr[i]).val()+"没有打开软件");
+	    }
+	}
+	if(noOpenFactory.length>0){
+		noOpenIdTip="\n"+noOpenFactory.join("\n");
+	}
+	
+	var tip=value+noOpenIdTip;
+	alert(tip);
+	$(".colorbox").hide();
+}
+
+
+//获取flash
+function thisMovie(movieName) {
+	if(navigator.appName.indexOf("Microsoft")!=-1){
+		return window[movieName];	
+    } else {
+		return document[movieName];
+	}
+}
+</script>
+</head>
+
+<body>
+  <div class="colorbox"></div>
+  <div id="flash"> 
+    <!--pid=产品ID config=配置信息-->
+    <script>playswf_tramouse("{:INDEX_STYLE_URL}swf/Main.swf?url={:INDEX_STYLE_URL}swf/OrderSocket&config={:url('/index/order/config','','',true)}&userName={$data.username}&userKey={$data.key}","100%","100%")</script>
+  </div>
+   <div class="orderbox">
+       <h1>提交订单</h1>
+       <div class="type">
+           <div class="print">
+               <span>印花厂：</span>
+               {volist name='factorydata' id='value'}
+               <input name="PrintFactory[]" type="checkbox" id="PrintFactory{$value.id}" value="{$value.id}" /><label for="PrintFactory{$value.id}">{$value.userinfo.Name}</label>
+               <input id="factory{$value.id}" type="hidden" value="{$value.userinfo.Name}" />
+               {/volist}
+           </div>
+           <div class="print">
+               <span>加工厂：</span>
+               {volist name='factorydata' id='value'}
+               <input name="MacFactory[]" type="checkbox" id="MacFactory{$value.id}" value="{$value.id}" /><label for="MacFactory{$value.id}">{$value.userinfo.Name}</label>
+               {/volist}
+           </div>
+       </div>
+   </div>
+   <div class="post"><a href="javaScript:postOrder()" class="disableCss">提交订单</a></div>
+</body>
+</html>

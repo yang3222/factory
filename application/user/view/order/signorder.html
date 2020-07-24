@@ -1,0 +1,25 @@
+{if condition="$endboo"}
+<script>
+    sign.pageURL="{:url('/admin/order')}";
+    sign.end();
+</script>
+{else}
+<div id="noOdrId" style="word-wrap:break-word;">
+{if condition="isset($noOdrId)"}
+{volist name="noOdrId" id='odrid' key="k"}
+{if condition="$k!=1"},{/if}{$odrid}
+{/volist}
+{/if}
+</div>
+<div id="setOrderid" style="word-wrap:break-word;">
+{volist name="data" id="order" key="k"}
+{if condition="$k!=1"},{/if}{$order.OdrId}
+{/volist}
+</div>
+<script>
+sign.posturl="{:url('/admin/order/postsignorder')}";
+sign.nextpage="{:url('/admin/order/signorder','_count='.$count)}";
+sign.pageURL="{:url('/admin/order')}";
+sign.start($("#setOrderid").html(),$("#noOdrId").html());
+</script>
+{/if}

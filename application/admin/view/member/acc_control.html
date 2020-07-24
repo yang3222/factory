@@ -1,0 +1,67 @@
+
+<style>
+
+
+</style>
+
+<div class="modelbox" style="width: 298px;">
+    <div class="canvas_title do-clear">
+        <ul class="tab_btn fr">
+            <li><a href="javaScript:openeditgroup.close()">关闭</a></li>
+        </ul>
+    </div>
+    <div class="canvas_intro" style="overflow-y:scroll; height:calc(100% - 70px);">
+        <div id="tree" class="tree_c"></div>
+
+    </div>
+    <input type="hidden" id="gro_id" name="gro_id" value="{$gro_id}">
+    <input type="hidden" id="gro_rules" name="gro_rules" value="{$rules}">
+    <div class="canvas_title do-clear">
+        <ul class="tab_btn fr">
+
+            <li><a href="javaScript:">保存</a></li>
+
+
+        </ul>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<!--<script type="text/javascript" src="/static/admin/js/jquery.min.js"></script>-->
+<script type="text/javascript" src="/static/jstree/jstree.js"></script>
+<script>
+    triggerTree();
+    groTrees();
+    function groTrees() {
+        var rules = String($('#gro_rules').val()).split(',');
+        $('#tree').jstree("uncheck_all");  //清除所有选中
+        $('#tree').jstree('select_node', [rules], true); //选中指定节点
+        console.log([rules]);
+        $('#tree').jstree().close_all(); //关闭所有节点
+    }
+
+    function triggerTree() {
+        var gro_id = $('#gro_id').val();
+        $('#tree').jstree({
+            'core': {
+                'data': {
+                    'method': "GET",
+                    'url': "{:url('/admin/member/accControl')}" + '?gro_id=' + gro_id,
+                },
+            },
+            'checkbox': {
+                "visible": true,
+                "keep_selected_style": false,
+                'three_state': false
+
+            },
+            'plugins': ['checkbox']
+        });
+        var rules = String($('#gro_rules').val()).split(',');
+        //$('#tree').jstree("uncheck_all");  //清除所有选中
+        $('#tree').jstree('select_node', [rules], true); //选中指定节点
+        console.log([rules]);
+        $('#tree').jstree().close_all(); //关闭所有节点
+
+    }
+</script>

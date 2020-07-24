@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>删除重复下单内容</title>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/flash.js"></script>
+        <link href="{:INDEX_STYLE_URL}css/style.css" rel="stylesheet" type="text/css" />
+        <script>
+            var item=[];
+            {volist name='data' id='value'}
+            item.push({id:"{$value.id}",OrdNum:"{$value.OrdNum}",GdsSku:"{$value.GdsSku}",GdsNum:"{$value.GdsNum}"});
+            {/volist}
+            var index=0;
+            $(function(){
+                start(index);
+            })
+            function start(index){
+                var obj=item[index];
+                removeObj(obj);
+            }
+            function removeObj(obj){
+                console.log(index+"/"+item.length);
+                $.post("{:url('/index/order/getcount')}",obj,function(data){
+                    if(data!="")console.log(data);
+                    if(index<item.length-1){
+                        index++;
+                        start(index);
+                    }else{
+                        alert("结束");
+                    }
+                })
+            }
+        </script>
+    </head>
+
+    <body>
+        
+    </body>
+</html>

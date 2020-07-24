@@ -1,0 +1,566 @@
+<style>
+    .name {
+        line-height: 28px;
+        font-size: 14px;
+        min-height: 28px;
+        position: relative;
+        padding-left: 105px;
+        float: left;
+        margin-bottom: 5px;
+    }
+    .canvas_intro table.product {
+        margin-top: 30px;
+        margin-bottom: 80px;
+        margin-right: 50px;
+        margin-left: 10px;
+    }
+    .canvas_intro table.product {
+        width: 80%;
+        border: solid #000000;
+        border-width: 1px 0px 0px 1px;
+        padding: 2px;
+        margin: 8px 0;
+        margin-bottom: 12px;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        display: table;
+    }
+    .canvas_intro table.product td {
+        padding: 20px 8px;
+        height: 42px;
+        vertical-align: middle;
+        text-align: center;
+        border: solid #000000;
+        border-width: 0px 1px 1px 0px;
+        display: table-cell;
+    }
+    .canvas_intro table.product table.productchild {
+        width: 100%;
+        height: 100%;
+        border: solid #000000;
+        border-width: 1px 0px 0px 1px;
+        margin: 8px 0;
+        margin-bottom: 1px;
+    }
+    .canvas_intro {
+        overflow-y:auto;
+        overflow-x:auto;
+        height:635px;
+    }
+    .modelboxv {
+        width: 1105px;
+        background: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        margin: 0 auto;
+        margin-top: 100px;
+    }
+    input[type='checkbox'] {
+        display: none;
+    }
+
+    input[type='checkbox'] + label {
+        border-radius: 4px;
+        display: inline-block;
+        cursor: pointer;
+        /*height: 155px;*/
+        width: 204px;
+        margin-bottom: 2px;
+        margin-right: 2px;
+        line-height: 36px;
+        background: #fff;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    input[type='checkbox']:checked +label {
+        border: 1px solid #5eb1e5;
+        background: #5eb1e5;
+        color: #fff;
+    }
+    .qrcodeimg {
+        margin: 1px;
+        width: 200px;
+        /*height: 151.8px;*/
+        /*transform:scale(0.8)*/
+    }
+    .printdiv {
+
+    }
+    div.printcent {
+
+        left: -10000px;
+    }
+
+</style>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jQuery.jsprint.js"></script>
+<!--<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.jqprint-0.3.js"></script>-->
+<!--<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jQuery.print.js"></script>-->
+<!--<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/Print.js"></script>-->
+<!--<script src="{:ADMIN_STYLE_URL}js/jquery-1.10.2.js" type="text/JavaScript" language="javascript"></script>
+<script src="{:ADMIN_STYLE_URL}js/jquery-ui-1.10.4.custom.js"></script>
+<script src="{:ADMIN_STYLE_URL}js/jquery.PrintArea.js" type="text/JavaScript" language="javascript"></script>-->
+<div class="modelboxv">
+
+    <div class="canvas_title do-clear">
+
+        <ul class="tab_btn fr">
+            <li><a id="printsome" onclick="print_some()" href="javaScript:">打印选中</a></li>
+            <li><a href="javaScript:view_qr.close_select();">清空选中</a></li>
+            <li><a id="printall" onclick="print()" href="javaScript:">打印全部</a></li><!--href="javaScript:view_qr.select();"-->
+            <li><a href="javaScript:openModel.close()">关闭</a></li>
+        </ul>
+
+    </div>
+
+    <div class="canvas_intro" id="canvas_intro">
+        <div class="printcent" >
+            {assign name="index" value="0"}
+            {for start="$list.x" end="0" comparison="gt" step='-1'  name="i"}
+                {volist name='$list.warehousetables'  id='vt' key='kt'}
+
+                {if condition="$i==$vt.p_x"}
+                {assign name="childs" value=":GetWarehouseChild($vt.id)"}
+                {if condition="!empty($childs)"}
+
+                    {volist name='$childs'  id='vc' key='kc'}
+
+                        {assign name="materials" value=':GetTargets("select * from ink_wtable_material where wt_id=".$vc.id)'}
+                        {if condition='!empty($materials)'}
+
+                        {volist name='$materials'  id='vm' key='km'}
+
+                        <input class="printinput no-print" type="checkbox" name="printqrcode"  id="labelqrcode{$index}" value="{$vc.name}"><label for="labelqrcode{$index}"><span style="display: none">{$index+=1}</span>
+                            {$vc.name}</label>
+                        {if condition="$index % 8 == 0"} {/if}
+                        {/volist}
+                        {else}
+
+                        <input class="printinput no-print" type="checkbox" name="printqrcode"  id="labelqrcode{$index}" value="{$vc.name}"><label for="labelqrcode{$index}"> <span style="display: none">{$index+=1}</span>
+                            {$vc.name}</label>
+                        {if condition="$index % 8 == 0"} {/if}
+                        {/if}
+
+                    {/volist}
+
+                {else}
+
+                    {assign name="materials" value=':GetTargets("select * from ink_wtable_material where wt_id=".$vt.id)'}
+                    {if condition='!empty($materials)'}
+
+                    {volist name='$materials'  id='vm' key='km'}
+
+                        <input class="printinput no-print" type="checkbox" name="printqrcode"  id="labelqrcode{$index}" value="{$vt.name}"><label for="labelqrcode{$index}"><span style="display: none">{$index+=1}</span>
+                            {$vt.name}</label>
+                        {if condition="$index % 8 == 0"} {/if}
+                        {/volist}
+                        {else}
+
+                        <input class="printinput no-print" type="checkbox" name="printqrcode"  id="labelqrcode{$index}" value="{$vt.name}"><label for="labelqrcode{$index}"><span style="display: none">{$index+=1}</span>
+                            {$vt.name}</label>
+                        {if condition="$index % 8 == 0"} {/if}
+                        {/if}
+
+                        {/if}
+                        {/if}
+
+                    {/volist}
+
+            {/for}
+            <br/> <br/>
+        </div>
+    </div>
+</div>
+<br/> <br/><br/> <br/><br/> <br/><br/> <br/><br/> <br/><br/> <br/><br/> <br/><br/> <br/>
+<!--<div class="printcent" id="printcent">-->
+<!--    {assign name="index" value="0"}-->
+<!--    {for start="$list.x" end="0" comparison="gt" step='-1'  name="i"}-->
+
+
+<!--    {volist name='$list.warehousetables'  id='vt' key='kt'}-->
+
+<!--    {if condition="$i==$vt.p_x"}-->
+<!--    {assign name="childs" value=":GetWarehouseChild($vt.id)"}-->
+<!--    {if condition="!empty($childs)"}-->
+
+<!--    {volist name='$childs'  id='vc' key='kc'}-->
+
+<!--    {assign name="materials" value=':GetTargets("select * from ink_wtable_material where wt_id=".$vc.id)'}-->
+<!--    {if condition='!empty($materials)'}-->
+
+<!--    {volist name='$materials'  id='vm' key='km'}-->
+
+<!--    <div id="print{$vc.id}{$vm.id}" class="printdiv no-print"><input class="printinput no-print" type="checkbox" name="printqrcode"  id="printqrcode{$index}" value="print{$index}"><label for="printqrcode{$index}"><span style="display: none">{$index+=1}</span>-->
+<!--        <img class="qrcodeimg" style="height: 250px" src="{:url('/admin/warehouse/getshelvesQrCode').'?text='.$vc.id.'&name='.$vm.m_name.'&shelf_code='.$vc.name}"/></label></div><div id="heiprint{$vc.id}{$vm.id}" class="hei no-print"></div>-->
+<!--    {if condition="$index % 8 == 0"} {/if}-->
+<!--    {/volist}-->
+<!--    {else}-->
+
+<!--    <div id="print{$vc.id}" class="printdiv no-print"><input class="printinput no-print" type="checkbox" name="printqrcode"  id="printqrcode{$index}" value="print{$index}"><label for="printqrcode{$index}"> <span style="display: none">{$index+=1}</span>-->
+<!--        <img class="qrcodeimg" style="height: 250px" src="{:url('/admin/warehouse/getshelvesQrCode').'?text='.$vc.id.'&name=&shelf_code='.$vc.name}"/></label></div><div id="heiprint{$vc.id}" class="hei no-print"></div>-->
+<!--    {if condition="$index % 8 == 0"} {/if}-->
+<!--    {/if}-->
+
+<!--    {/volist}-->
+
+<!--    {else}-->
+
+<!--    {assign name="materials" value=':GetTargets("select * from ink_wtable_material where wt_id=".$vt.id)'}-->
+<!--    {if condition='!empty($materials)'}-->
+
+<!--    {volist name='$materials'  id='vm' key='km'}-->
+
+<!--    <div id="print{$vt.id}{$vm.id}" class="printdiv no-print"><input class="printinput no-print" type="checkbox" name="printqrcode"  id="printqrcode{$index}" value="print{$index}"><label for="printqrcode{$index}"><span style="display: none">{$index+=1}</span>-->
+<!--        <img class="qrcodeimg" style="height: 250px" src="{:url('/admin/warehouse/getshelvesQrCode').'?text='.$vt.id.'&name='.$vm.m_name.'&shelf_code='.$vt.name}"/></label></div><div id="heiprint{$vt.id}{$vm.id}" class="hei no-print"></div>-->
+<!--    {if condition="$index % 8 == 0"} {/if}-->
+<!--    {/volist}-->
+<!--    {else}-->
+
+<!--    <div id="print{$vt.id}" class="printdiv no-print"><input class="printinput no-print" type="checkbox" name="printqrcode"  id="printqrcode{$index}" value="print{$index}"><label for="printqrcode{$index}"><span style="display: none">{$index+=1}</span>-->
+<!--        <img class="qrcodeimg" style="height: 250px" src="{:url('/admin/warehouse/getshelvesQrCode').'?text='.$vt.id.'&name=&shelf_code='.$vt.name}"/></label></div><div id="heiprint{$vt.id}" class="hei no-print"></div>-->
+<!--    {if condition="$index % 8 == 0"} {/if}-->
+<!--    {/if}-->
+
+<!--    {/if}-->
+<!--    {/if}-->
+
+<!--    {/volist}-->
+
+<!--    {/for}-->
+
+<!--</div>-->
+
+
+<script>
+    var view_qr = {
+        windowurl:"",
+
+        openWindow:function(url){
+
+            $("#swfbox").show();
+
+            if(view_qr.windowurl!=url){
+
+                view_qr.windowurl=url;
+
+                $("#swfbox").html("");
+
+                view_qr.loadURL({});
+
+            }
+
+        },
+
+        select:function(){
+            //$("#select").change(function(){
+            var mode = 'iFrame';//$("input[name='mode']:checked").val();
+            var close = false;//mode == "popup" && $("input#closePop").is(":checked");
+            var extraCss = 30;//$("input[name='extraCss']").val();
+            $("input[name=printqrcode]").prop('checked',1);//,$("#select").prop("checked")
+            var print = "";
+            $("input.printinput").each(function(){
+                print += (print.length > 0 ? "," : "") + "div.printdiv#" + $(this).val();
+            });
+            console.log(print);
+            var keepAttr = [];
+            //$(".chkAttr").each(function(){
+                //if ($(this).is(":checked") == false )
+                    //return;
+
+                //keepAttr.push( $(this).val() );
+            //});
+
+            var headElements = '<meta charset="utf-8" />,<meta http-equiv="X-UA-Compatible" content="IE=edge"/>';//$("input#addElements").is(":checked") ? '<meta charset="utf-8" />,<meta http-equiv="X-UA-Compatible" content="IE=edge"/>' : '';
+
+            var options = { mode : mode, popClose : close, extraCss : extraCss, retainAttr : keepAttr, extraHead : headElements };
+
+            $( print ).printArea( options );
+            //})
+
+        },
+        close_select:function(){
+            //$("#select").change(function(){
+
+            $("input[name=printqrcode]").prop('checked',0);//,$("#select").prop("checked")
+            $("div.printdiv").addClass('no-print');//,$("#select").prop("checked")
+            $("div.hei").addClass('no-print');
+            //})
+
+        },
+
+        close: function () {
+
+            $("#swfbox").hide();
+
+        },
+
+        loadURL:function(obj){
+
+            $.post(edit_factory.windowurl,obj,function(data){
+
+                $("#swfbox").html(data);
+
+            })
+
+        },
+
+        save_data:function() {
+            var capacity = $("#capacity").val();
+            var sort = $("#sort").val();
+            var id = $("#id").val();
+            if (capacity.length > 1) {
+                var first_c = capacity.substring(0,1);
+                if (first_c == 0) {
+                    alert('产能请不要以0开头！');
+                    return;
+                }
+            }
+            if (sort.length > 1) {
+                var first_s = sort.substring(0,1);
+                if (first_s == 0) {
+                    alert('排序请不要以0开头！');
+                    return;
+                }
+            }
+            $.post("{:url('/admin/product/saveFactory')}",{capacity:capacity, sort:sort, id:id},function(data){
+                if (data.code == 1000) {
+                    alert(data.msg);
+                    window.location.reload();
+                } else {
+                    alert(data.msg);
+                    window.location.reload();
+                }
+            })
+        }
+    };
+    $(document).ready(function() {
+        $("a.printall").click(function () {
+
+            var mode = 'iFrame';//$("input[name='mode']:checked").val();
+            var close = false;//mode == "popup" && $("input#closePop").is(":checked");
+            var extraCss = 30;//$("input[name='extraCss']").val();
+            $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+            var print = "";
+            $("input.printinput").each(function () {
+                print += (print.length > 0 ? "," : "") + "div.printdiv#" + $(this).val();
+            });
+            console.log(print);
+            var keepAttr = [];
+            //$(".chkAttr").each(function(){
+            //if ($(this).is(":checked") == false )
+            //return;
+
+            //keepAttr.push( $(this).val() );
+            //});
+
+            var headElements = '<meta charset="utf-8" />,<meta http-equiv="X-UA-Compatible" content="IE=edge"/>';//$("input#addElements").is(":checked") ? '<meta charset="utf-8" />,<meta http-equiv="X-UA-Compatible" content="IE=edge"/>' : '';
+
+            var options = {
+                mode: mode,
+                popClose: close,
+                extraCss: extraCss,
+                retainAttr: keepAttr,
+                extraHead: headElements
+            };
+
+            $(print).printArea(options);
+        });
+    });
+    function print() {
+        $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        $("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+        $("div.hei").removeClass('no-print');
+        var idarr=[];
+        $('input:checkbox[name=printqrcode]:checked').each(function(k){
+
+            if($(this).val()!='')idarr.push($(this).val())
+
+        });
+
+        idarr = idarr.join(",")
+        updatePost(idarr,'/admin/warehouse/getShelvesPdf');
+        return;
+    }
+    function print_some() {
+        $("div.printdiv").addClass('no-print');
+        $("div.hei").addClass('no-print');
+        var idarr=[];
+        $('input:checkbox[name=printqrcode]:checked').each(function(k){
+
+            if($(this).val()!='')idarr.push($(this).val())
+
+        });
+
+
+        if (idarr.length <= 0) {
+            alert('请选择要打印的图片');
+            return;
+        }console.log(idarr);
+        for (var i = 0; i < idarr.length; i++) {
+
+            $("#"+idarr[i]).removeClass('no-print');
+            $("#hei"+idarr[i]).removeClass('no-print');
+        }
+        //$("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+
+        idarr = idarr.join(",")
+        updatePost(idarr,'/admin/warehouse/getShelvesPdf');
+        return;
+    }
+
+
+    function updatePost(ids,url){
+        $.post(url,{shelf_code:ids},function(data){
+
+            if(data){
+                window.open(data);
+
+            }else{
+
+                alert(data);
+
+            }
+
+        })
+    }
+
+
+    // function print() {
+    //     $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+    //     $("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+    //     $("div.hei").removeClass('no-print');
+    //     $("#printcent").print({
+    //         globalStyles: true,
+    //         mediaPrint: true,
+    //         stylesheet: null,
+    //         noPrintSelector: ".no-print",
+    //         iframe: true,
+    //         append: null,
+    //         prepend: null,
+    //         manuallyCopyFormValues: true,
+    //         deferred: $.Deferred(),
+    //         timeout: 10000000,
+    //         title: null,
+    //         doctype: '<!doctype html>'
+    //     });
+    // }
+    // function print_some() {
+    //     $("div.printdiv").addClass('no-print');
+    //     $("div.hei").addClass('no-print');
+    //     var idarr=[];
+    //     $('input:checkbox[name=printqrcode]:checked').each(function(k){
+    //
+    //         if($(this).val()!='')idarr.push($(this).val())
+    //
+    //     });
+    //     if (idarr.length <= 0) {
+    //         alert('请选择要打印的图片');
+    //         return;
+    //     }console.log(idarr);
+    //     for (var i = 0; i < idarr.length; i++) {
+    //
+    //         $("#"+idarr[i]).removeClass('no-print');
+    //         $("#hei"+idarr[i]).removeClass('no-print');
+    //     }
+    //     //$("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+    //     //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+    //     $("#printcent").print({
+    //         globalStyles: true,
+    //         mediaPrint: false,
+    //         stylesheet: null,
+    //         noPrintSelector: ".no-print",
+    //         iframe: true,
+    //         append: null,
+    //         prepend: null,
+    //         manuallyCopyFormValues: true,
+    //         deferred: $.Deferred(),
+    //         timeout: 90000000,
+    //         title: null,
+    //         doctype: '<!doctype html>'
+    //     });
+    // }
+    /*document.getElementById('printall').onclick = function () {
+        $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        $("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+
+        Print('#printcent', {
+            onStart: function () {
+                console.log('onStart', new Date())
+            },
+            onEnd: function () {
+                console.log('onEnd', new Date())
+            }
+        })
+
+    };
+    document.getElementById('printsome').onclick = function () {
+        $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        $("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+
+        Print('#printcent', {
+            onStart: function () {
+                console.log('onStart', new Date())
+            },
+            onEnd: function () {
+                console.log('onEnd', new Date())
+            }
+        })
+
+    };*/
+    /*function print() {
+        $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+        $("#printcent").jqprint({
+            debug: true,
+            importCSS: true,
+            printContainer: true,
+            operaSupport: false
+        });
+    }
+
+    function print_some() {
+        //$("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+        $("#printcent").jqprint({
+            debug: true,
+            importCSS: true,
+            printContainer: true,
+            operaSupport: false
+        });
+    }*/
+
+    /*jQuery(function($) { 'use strict';
+        $("#ele2").find('.print-link').on('click', function() {
+            //Print ele2 with default options
+            $.print("#ele2");
+        });
+        document.getElementById('11').onclick = function() {
+            $("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+            $("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+            //Print ele4 with custom options
+            $("#printcent").print({
+                //Use Global styles
+                globalStyles : true,
+                //Add link with attrbute media=print
+                mediaPrint : true,
+                //Print in a hidden iframe
+                iframe : true,
+                //Don't print this
+                noPrintSelector : ".printinput",
+                //Add this at top
+                prepend : "Hello World!!!<br/>",
+                //Add this on bottom
+                append : "<br/>Buh Bye!",
+                //Log to console when printing is done via a deffered callback
+                deferred: $.Deferred().done(function() { console.log('Printing done', arguments); })
+            });
+        };
+    });*/
+
+</script>

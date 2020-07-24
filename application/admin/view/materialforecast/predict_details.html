@@ -1,0 +1,158 @@
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/datemater.js"></script>
+<!--<script src="{:USER_STYLE_URL}js/echarts.js"></script>-->
+<script>
+    $(function(){
+        $('.custom-date').dateRangePicker($("input[name='start_date']"),$("input[name='end_date']"));
+        //
+        //order.factorysearch="$searcfactory".split(",");
+        //select.select();
+    })
+</script>
+<style>
+    .fenge {
+        width: auto;
+        height: 2px;
+        background-color: #989898;
+    }
+</style>
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fr">
+        <li class="date" >
+        <select class='custom-date' name='custom_date' id="date">
+            <option value='7'  selected='selected'>7天</option>
+            <option value='30' >30 天</option><!--
+            <option value='90' >90 天</option>
+            <option value='180' >180 天</option>
+            <option value='365' >365 天</option>-->
+            <option value='custom' >自定义</option>
+        </select>
+        <input type="hidden" name="start_date" id="start_date" value="{$date.start_date}">
+        <input type="hidden" name="end_date" id="end_date" value="{$date.end_date}">
+        </li>
+
+        <li><a href="javaScript:predict.get_predict()">查询</a></li>
+    </ul>
+
+
+
+</div>
+
+<div class="canvas_intro">
+<input type="hidden" value="{$data.product_id}" id="product_id" name="product_id"/>
+    <table class="productli">
+        <thead>
+        <tr>
+            <th width="30" class="center">id</th>
+            <th width="50" class="center">产品ID</th>
+            <th width="100" class="center">产品编号</th>
+            <th width="150">产品名称</th>
+            <th width="150">缩略图</th>
+            <th width="150">型号</th>
+            <th width="150" id="day_difference">今日预估</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="center">{$data.id}</td>
+            <td class="center">{$data.product_id}</td>
+            <td class="center">{$data.product_num}</td>
+            <td>{$data.name}</td>
+            <td>{if condition="strstr($data.smallimg,'http')"}<img src='{$data.smallimg}@0e_0o_1l_500h_500w.src' />{else}<img src='{:PRODUCT_IMG}{$data.smallimg}' />{/if}</td>
+            <td>
+                {volist name='data.productsize' id='size'}
+                {$size.Size}<br/>
+                {/volist}
+            </td>
+            <td id="day_difference_num">
+                {$data.predict}
+            </td>
+        </tr>
+        </tbody>
+    </table>
+<br>
+<div id="fenge" class="fenge"></div>
+    <!--<div id="chartmain" style="height:400px"></div>-->
+    <div class="">
+        <table class="productli">
+            <thead>
+            <tr>
+                <th class="center">日期</th>
+                <th class="center">实际数量</th>
+                <th class="center">预测数量</th>
+                <th class="center">各年度数据</th>
+            </tr>
+            </thead>
+            <tbody id="predict_details">
+                {volist name="data.date_num" id = "date_num"}
+                <tr>
+                    <td class="center">
+                        {$key}
+                    </td>
+                    <td class="center">
+                        {$date_num.real_data}
+                    </td>
+
+                    <td class="center">
+                        {$date_num.predict}
+                    </td>
+                    <td class="center">
+                        {volist name="date_num.befores" id = "val"}
+                        {$val.year}:{$val.real_data}</br>
+                        {/volist}
+                    </td>
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <!--<li><a href="{:url('/admin/product/add')}">添加</a></li>
+        <li><a href="javaScript:product.deleteall('{:url('/admin/product/delete')}')">删除</a></li>-->
+    </ul>
+</div>
+
+<script type="text/javascript">
+    var predict = {
+        prty:[],
+
+        get_predict:function() {
+            var product_id = $('#product_id').val();
+            var start_date = $('#start_date').val();
+            var end_date = $('#end_date').val();
+            $.post("{:url('/admin/materialforecast/get_predict')}", {product_id: product_id, start_time: start_date, end_time: end_date}, function(res) {
+                if (res.code == 1001) {
+                    alert(res.msg);
+                    return;
+                }
+                var predictHtml = document.getElementById('predict_details');
+                var htmls = '';
+                for(var i in res.data) {
+                    var mid = '';
+                    for(var x in res.data[i].befores) {
+                        mid = mid + res.data[i].befores[x].year + ':' + res.data[i].befores[x].real_data + '</br>';
+                    }
+                    htmls = htmls + '<tr>' +
+                        '<td class="center">' + i +
+                        '</td>' +
+                        '<td class="center">' + res.data[i].real_data + '</td>' +
+                        '<td class="center">' + res.data[i].predict + '</td>' +
+                        '<td class="center">' + mid + '</td>' +
+                        '</tr>';
+                }
+
+
+                predictHtml.innerHTML = htmls;
+                //document.getElementById("day_difference").innerHTML = "" + res.data.time + "之间均值";
+                //document.getElementById("day_difference_num").innerHTML = "" + res.data.predict;
+                return;
+            })
+        }
+    }
+
+
+</script>

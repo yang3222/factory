@@ -1,0 +1,184 @@
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li>
+
+           <label class="label">供应商属性<i>*</i></label>
+
+           <input name="attribute" type="text" value="{$data.attribute}" id="attribute" />
+            <input type="hidden" value="{$data.attribute}" id="old_attribute" />
+       </li>
+
+       <!-- <li>
+
+           <label class="label">品类<i>*</i></label>
+
+           <select name="type" id="type">
+           <option value="1">布料供应</option>
+           <option value="2">辅料供应</option>
+           <option value="3">材料加工</option>
+           <option value="4">印花供应</option>
+         </select>
+
+       </li> -->
+        <input type="hidden" id="type" name="type" value="{$data.type}" />
+        <input type="hidden" value="{$data.type}" id="old_type" />
+        <li>
+
+           <label class="label">供应商名称<i>*</i></label>
+
+           <input type="hidden" id="id" name="id" value="{$data.id}" />
+
+
+           <input name="company" type="text" value="{$data.company}" id="company" />
+            <input type="hidden" value="{$data.company}" id="old_company" />
+        </li>
+
+        <li>
+
+           <label class="label">供应商简称<i>*</i></label>
+
+           <input name="company_for_short" type="text" value="{$data.company_for_short}" id="company_for_short" />
+            <input type="hidden" value="{$data.company_for_short}" id="old_company_for_short" />
+        </li>
+
+        <li>
+
+           <label class="label">账期/付款方式<i>*</i></label>
+
+           <input name="payment_days" type="text" value="{$data.payment_days}" id="payment_days" />
+            <input type="hidden" value="{$data.payment_days}" id="old_payment_days" />
+        </li>
+
+        <li>
+
+           <label class="label">联系人<i>*</i></label>
+
+           <input name="contacts" type="text" value="{$data.contacts}" id="contacts" />
+            <input type="hidden" value="{$data.contacts}" id="old_contacts" />
+       </li>
+
+       <li>
+
+           <label class="label">联系人职位<i>*</i></label>
+
+           <input name="contacts_position" type="text" value="{$data.contacts_position}" id="contacts_position" />
+           <input type="hidden" value="{$data.contacts_position}" id="old_contacts_position" />
+
+       </li>
+
+        <li>
+
+           <label class="label">联系电话<i>*</i></label>
+
+           <input name="tel" type="text" value="{$data.tel}" id="tel" />
+            <input type="hidden" value="{$data.tel}" id="old_tel" />
+
+        </li>
+
+        <li>
+
+           <label class="label">邮箱<i>*</i></label>
+
+           <input name="email" type="text" value="{$data.email}" id="email" />
+            <input type="hidden" value="{$data.email}" id="old_email" />
+        </li>
+
+        <li>
+
+            <label class="label">汇款账号用户名(对公)<i>*</i></label>
+
+            <input name="remittance_num_company_name" type="text" value="{$data.remittance_num_company_name}" id="remittance_num_company_name" />
+            <input type="hidden" value="{$data.remittance_num_company_name}" id="old_remittance_num_company_name" />
+        </li>
+        <li>
+
+            <label class="label">汇款账号开户行(对公)<i>*</i></label>
+
+            <input name="remittance_num_company_bank" type="text" value="{$data.remittance_num_company_bank}" id="remittance_num_company_bank" />
+            <input type="hidden" value="{$data.remittance_num_company_bank}" id="old_remittance_num_company_bank" />
+        </li>
+
+        <li>
+
+           <label class="label">汇款账号(对公)<i>*</i></label>
+
+           <input name="remittance_num_company" type="text" value="{$data.remittance_num_company}" id="remittance_num_company" />
+            <input type="hidden" value="{$data.remittance_num_company}" id="old_remittance_num_company" />
+        </li>
+
+        <li>
+
+            <label class="label">汇款账号用户名(对私)<i>*</i></label>
+
+            <input name="remittance_num_private_name" type="text" value="{$data.remittance_num_private_name}" id="remittance_num_private_name" />
+            <input type="hidden" value="{$data.remittance_num_private_name}" id="old_remittance_num_private_name" />
+        </li>
+        <li>
+
+            <label class="label">汇款账号开户行(对私)<i>*</i></label>
+
+            <input name="remittance_num_private_bank" type="text" value="{$data.remittance_num_private_bank}" id="remittance_num_private_bank" />
+            <input type="hidden" value="{$data.remittance_num_private_bank}" id="old_remittance_num_private_bank" />
+        </li>
+
+        <li>
+
+           <label class="label">汇款账号(对私)<i>*</i></label>
+
+           <input name="remittance_num_private" type="text" value="{$data.remittance_num_private}" id="remittance_num_private" />
+            <input type="hidden" value="{$data.remittance_num_private}" id="old_remittance_num_private" />
+        </li>
+
+
+        <li>
+
+           <label class="label">供应商地址<i>*</i></label>
+
+           <input name="adress" type="text" value="{$data.adress}" id="adress" />
+            <input type="hidden" value="{$data.adress}" id="old_adress" />
+       </li>
+
+        
+
+       <li>
+
+           <label class="label">主要购入材料<i>*</i></label>
+
+           <textarea placeholder="材料名称" name="main_purchased_materials" id="main_purchased_materials">{$data.main_purchased_materials}</textarea>
+           <input type="hidden" value="{$data.main_purchased_materials}" id="old_main_purchased_materials" />
+       </li>
+
+       <li>
+
+           <label class="label">备注</label>
+
+           <textarea placeholder="备注" name="note" id="note">{$data.note}</textarea>
+           <input type="hidden" value="{$data.note}" id="old_note" />
+
+       </li>
+
+       <li>
+
+           <label class="label">状态:</label>
+
+           <input type="radio" name="display" id="display" {if condition="$data.display=='1'"}checked="checked"{/if} value="1" />
+
+               <label for="display">开</label>
+
+           <input type="radio" name="display" id="display1" {if condition="$data.display=='0'"}checked="checked"{/if} value="0" />
+
+               <label for="display1">关</label>
+           <input type="hidden" id="old_display"  value="{$data.display}" />
+       </li>
+
+       <li>
+            {if condition="$is_edit == 0"}}<a href="javaScript:upplier.save('{:url('/admin/upplier/save')}',{$is_edit})">保存</a>{else}<a href="javaScript:upplier.save('{:url('/admin/upplier/save_audit')}',{$is_edit})">保存</a>{/if}
+
+           <a href="javaScript:history.go(-1);" style="color: #fff;">返回</a>
+       </li>
+
+    </ul>
+
+</div>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--版本信息以及配置-->
+<config>
+   <!--版本号-->
+   <version>v1.0.1 (飞飞鱼订单下单系统)</version>
+   <!--网址，用于让swf判断是不是属于该网址，不属于就不执行代码-->
+   <WebURL></WebURL>
+   <!--下单的软件准备，并且连上socket-->
+   <OrderComplete>OrderComplete</OrderComplete>
+   <!--订单发送给AS的函数-->
+   <OrderPostJS>OrderPostFun</OrderPostJS>
+   <!--socket地址-->
+   <Adress>139.196.29.213</Adress>
+   <!--数据地址-->
+   <Port>843</Port>
+   <!--弹出内容-->
+   <AlertFun>alertFun</AlertFun>
+   <!--获取订单数据的PHP-->
+   <GetOrderDataURL>http://admin.entsku.com/__/_jc/agent/order.ashx?ActFlag=Order.Gds&</GetOrderDataURL>
+   <!--提交订单到服务器-->
+   <PostOrder>{:url('/index/order/postorder','','',true)}</PostOrder>
+</config>

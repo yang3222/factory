@@ -1,0 +1,70 @@
+<div class="canvas_title do-clear">
+</div>
+
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li>
+            <label class="label">快递名称<i>*</i>：</label>
+
+            <input name="lgstcode_name" type="text" value="" id="lgstcode_name" />
+
+        </li>
+        <li>
+            <label class="label">快递code<i>*</i>：</label>
+
+            <input name="lgstcode" type="text" value="" id="lgstcode" />
+
+        </li>
+        <li>
+            <label class="label">开启自动设置工厂：</label>
+            <input type="radio" name="status"  id="statusyes" value="1"><label for="statusyes">是</label>
+            <input type="radio" name="status"  id="statusno" value="0" checked><label for="statusno">否</label>
+        </li>
+
+        <li>
+
+            <a href="javaScript:addlgstcode.save()">保存</a>
+
+        </li>
+
+    </ul>
+
+</div>
+<script>
+    var addlgstcode = {
+        lgstcode_name:'',
+        lgstcode:'',
+        status:0,
+
+        getdata:function() {
+            addlgstcode.lgstcode = $('#lgstcode').val().replace(/^\s*|\s*$/g,"");//去除空格
+            addlgstcode.lgstcode_name = $('#lgstcode_name').val().replace(/^\s*|\s*$/g,"");
+            addlgstcode.status = $("input[type='radio']:checked").val();
+        },
+
+
+        save:function() {
+            addlgstcode.getdata();
+            if (addlgstcode.lgstcode == '') {
+                alert('请输入快递名称');
+                return;
+            }
+            if (addlgstcode.lgstcode_name == '') {
+                alert('请输入快递code');
+                return;
+            }
+            $.post("{:url('/admin/expsetting/add_exp')}", {lgstcode:addlgstcode.lgstcode, lgstcode_name:addlgstcode.lgstcode_name, status:addlgstcode.status}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/expsetting/index')}";
+                } else {
+                    alert(res['msg']);
+                    return;
+                }
+            });
+
+        },
+    }
+</script>

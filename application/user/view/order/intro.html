@@ -1,0 +1,61 @@
+<div class="modelbox">
+    <div class="canvas_title do-clear">
+        <h3>订单信息</h3>
+    </div>
+    <ul class="infobox do-clear">
+        <li class="img">
+            {assign name="browseimg" value=":explode(',',$data.ImgURL)"}
+            {volist name='browseimg' id='value'}
+            <img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{$value}@0e_0o_1l_500h_500w.src' height="100"/>
+            {/volist}
+        </li>
+        <li><label>订单号：</label>{$data.OrdNum}</li>
+        <li><label>运单号：</label>{$data.TrnNo}</li>
+        <li><label>SKU：</label>{$data.GdsSku}</li>
+
+        <li><label>产品名称：</label>{$data.orderproduct.name}</li>
+        <li><label>型号：</label>{$data.SpecName}</li>
+        <li><label>数量：</label>{$data.GdsNum}</li>
+
+        <li><label>来源：</label>{$data.Type}</li>
+        <li><label>分销商:</label>{$data.AgntName}</li>
+        <li><label>加急：</label><span {if condition="$data.Urgent==1"}class="red"{/if}>{if condition="$data.Urgent==0"}否{else}是{/if}</span></li>
+
+        <li><label>客户备注：</label>{$data.OdrMemo}</li>
+        <li><label>飞飞鱼备注：</label>{$data.FFYMemo}</li>
+        <li><label>签收备注：</label>{$data.SignMemo}</li>
+
+        <li><label>亚马逊时间：</label>{$data.AmzTimer}</li>
+        <li><label>下单时间：</label>{$data.GetTimer}</li>
+        <li><label>签收时间：</label>{$data.SignTimer}</li>
+
+        <li><label>条形码：</label>{$data.Code}</li>
+        <li><label>返工次数：</label>{$data.BlackNum}</li>
+        {if condition="$data.status<2"}{assign name="endtime" value=":date('Y-m-d h:i:s')"}{else}{assign name="endtime" value="$data.SignTimer"}{/if}
+        <li><label>生产周期：</label>{:floor((strtotime($endtime)-strtotime($data.GetTimer))/(3600*24))}天</li>
+
+        <li><label>生产工厂：</label>
+            <ul class="factory">
+                {volist name="data.orderfactroy" id='factory'}
+                <li>
+                    {if condition="$factory.sign==0"}{assign name="sign_type" value="新订单"/}{assign name="signtime" value='$data.GetTimer'}
+                    {elseif condition="$factory.sign==1"}{assign name="sign_type" value="生产中"/}{assign name="signtime" value='$factory.pro_time'}
+                    {elseif condition="$factory.sign==2"}{assign name="sign_type" value="已出库"/}{assign name="signtime" value='$factory.library_time'}{/if}
+                    <h4><b>{if condition="$factory.working_type=='1'"}印花：{else}加工：{/if}</b>{$factory.userinfo.Name}</h4>
+                    {if condition="$data.status==1"}<span class="stop">暂停</span><i>{:date('Y-m-d',strtotime($data.SignTimer))}</i>
+                    {elseif condition="$data.status==2"}<span class="sign">签收</span><i>{:date('Y-m-d',strtotime($data.SignTimer))}</i>
+                    {elseif condition="$data.status==3"}<span class="cancel">({$sign_type}) 取消</span><i>{:date('Y-m-d',strtotime($data.SignTimer))}</i>
+                    {else}
+                    <span>{$sign_type}</span><i>{:date('Y-m-d',strtotime($signtime))}</i>
+                    {/if}
+                </li>
+                {/volist}
+            </ul>
+        </li>
+    </ul>
+    <div class="canvas_title do-clear">
+        <ul class="tab_btn fr">
+            <li><a href="javaScript:order.selectproduct()">确定</a></li>
+        </ul>
+    </div>
+</div>

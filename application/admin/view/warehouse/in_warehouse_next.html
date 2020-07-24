@@ -1,0 +1,51 @@
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_nav fl">
+        <li class="current"><a href="javaScript:void(0)">入库</a></li>
+    </ul>
+
+</div>
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li id='li_materiald_id'>
+            <label class="label">材料id：<i></i></label>
+            <input oninput = "value=value.replace(/[^\d]/g,'')" name="materiald_id" type="text" id="materiald_id" onkeydown="outInWarehouse.key(event,13,outInWarehouse.getmaterialDetail,['{:url('/admin/warehouse/getmaterialDetail')}','materiald_id'])"    />
+        </li>
+
+        <li id='li_material_name'>
+            <label class="label">材料：<i></i></label>
+            <input name="materiald_name" type="text" value="" id="materiald_name" />
+        </li>
+        <li id='li_count'>
+            <label  class="label">数量：<i>*</i></label>
+            <input name="count" type="text" value="" id="count" oninput = "value=value.replace(/[^\d]/g,'')"/><!--readonly="readonly"-->
+        </li>
+        <li>
+            <label class="label">仓位：<i></i></label>
+            <input name="wt_name" type="text" value="{$wt_name}" id="wt_name"  onkeydown="keyspress()" />
+            <input name="wt_id" type="hidden" value="{$wt_id}" id="wt_id" />
+        </li>
+        <li>
+<!--            <a id='btnconfig' href="javaScript:outInWarehouse.configWarehouse()">确认仓位</a>-->
+            <a id='btnsave' href="javaScript:outInWarehouse.searchArrAjax(['{:url('/admin/warehouse/inWarehouse')}','materiald_id','wt_id','count'],'incallback')">保存</a>
+        </li>
+
+
+    </ul>
+</div><div id="msg" style="margin-left: 180px"></div>
+</div>
+
+<script type="text/javascript">
+    document.getElementById('wt_name').focus();
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            outInWarehouse.configWarehouse();
+            //pro_status.search();
+        }
+    }
+</script>
+

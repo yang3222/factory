@@ -1,0 +1,174 @@
+<script>
+
+    $(function(){
+
+    })
+
+</script>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li><a href="javaScript:uploadExcel.openFile('{:url('/admin/subcontractingdoc/importsub')}')">导入委外工单excel</a>
+        </li>
+
+        <li class="input"><input type="text" id="search" name="search" value=""
+                                 onkeydown="keys_press()"
+                                 placeholder="搜索：产品id/sku/名称" /></li>
+
+        <li><a href="javaScript:subdoc.search()">搜索</a></li>
+        <li><a href="{:url('/admin/subcontractingdoc/addSub')}">添加</a></li>
+
+    </ul>
+
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli">
+
+        <thead>
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+            <th width="30" class="center">id</th>
+            <th width="30" class="center">产品id</th>
+            <th width="30" class="center">产品名称</th>
+            <th width="30" class="center">产品sku</th>
+            <th width="30" class="center">产品型号</th>
+            <th width="30" class="center">裁片物料编码</th>
+            <th width="30" class="center">裁片名称</th>
+            <th width="30" class="center">原料物料编码</th>
+            <th width="30" class="center">原料名称</th>
+            <th width="30" class="center">片数</th>
+            <th width="30" class="center">用量/码</th>
+            <th width="30" class="center">片/套</th>
+            <th width="30" class="center">裁片单位</th>
+            <th width="30" class="center">总用量（片/套*用量）</th>
+            <th width="30" class="center">操作</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        {volist name='list' id='value' key='k'}
+{php}$total_dosage = bcmul($value['dosage'], $value['slice'], 2);{/php}
+        <tr>
+            <td class="center">{$k}</td>
+            <td class="center"><input name="select" type="checkbox" value="{$value.id}" /></td>
+            <td class="center">{$value.id}</td>
+            <td class="center">{$value.product_id}</td>
+            <td class="center">{$value.product_name}</td>
+            <td class="center">{$value.product_sku}</td>
+            <td class="center">{$value.product_size}</td>
+            <td class="center">{$value.cutting_material_code}</td>
+            <td class="center">{$value.slice_name}</td>
+            <td class="center">{$value.material_code}</td>
+            <td class="center">{$value.name_of_raw_material}</td>
+            <td class="center">{$value.number_of_slices}</td>
+            <td class="center">{$value.dosage}</td>
+            <td class="center">{$value.slice}</td>
+            <td class="center">{$value.cutting_unit}</td>
+            <td class="center">{$total_dosage}</td>
+            <td class="center operation">
+                <a href="{:url('/admin/subcontractingdoc/editsub','id='.$value.id)}">编辑</a>
+                <a href="javaScript:subdoc.delete(['{$value.id}'])">删除</a>
+            </td>
+        </tr>
+        {/volist}
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li>
+            <a href="javaScript:subdoc.exports('{:url('/admin/subcontractingdoc/exportsubdoc')}')">批量导出数据</a>
+        </li>
+        <li>
+            <a href="javaScript:subdoc.exports('{:url('/admin/subcontractingdoc/exportsubdoc')}', 'all')">导出全部数据</a>
+        </li>
+
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<script>
+    //全选
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+
+    });
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            subdoc.search();
+        }
+    }
+
+    //js代码
+    var subdoc = {
+
+        search:function(){
+            var value=$('#search').val();
+            if (value == '') {
+                alert('搜索词为空');
+                return;
+            }
+            var url = "{:url('/admin/subcontractingdoc/index')}";
+            $.StandardPost(url, {search:value});
+        },
+        exports:function(url, data = '') {
+            if (data == '') {
+                var eids = [];
+                $('input:checkbox[name=select]:checked').each(function(k){
+
+                    if($(this).val()!='') eids.push($(this).val());
+                });
+                if (eids.length <= 0) {
+                    alert('请选择需要导出的数据');
+                    return false;
+                }
+                window.location.href = url + "?ids=" + eids.join(',');
+            } else if (data == 'all') {
+                window.location.href = url + "?ids=all";
+            }
+        },
+        deleteAll:function () {
+            var ids = [];
+            $('input:checkbox[name=select]:checked').each(function(k){
+
+                if($(this).val()!='')ids.push($(this).val());
+            });
+            excel9610.delete(ids);
+        },
+        delete:function(id) {
+            if (id.length <= 0) {
+                alert('请选择要删除的数据');
+                return;
+            }
+            if (!confirm('确认删除？')) {
+                return;
+            }
+            $.post("{:url('/admin/subcontractingdoc/deletesub')}",{id:id}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/subcontractingdoc/index')}";
+                } else {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/subcontractingdoc/index')}";
+                }
+            });
+        },
+    }
+</script>

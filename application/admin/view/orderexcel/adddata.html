@@ -1,0 +1,144 @@
+<div class="canvas_title do-clear">
+</div>
+<div class="canvas_intro">
+
+    <ul class="add_from">
+        <li>
+            <label class="label">商品货号SKU<i>*</i>：</label>
+
+            <input name="sku" type="text" value="" id="sku" />
+
+        </li>
+        <li>
+            <label class="label">商品编码<i>*</i>：</label>
+
+            <input name="commodity_code" type="text" value="" id="commodity_code" />
+
+        </li>
+
+        <li>
+            <label class="label">商品名称：</label>
+
+            <input name="name" type="text" value="" id="name" />
+
+        </li>
+        <li>
+            <label class="label">商品要素：</label>
+
+            <!--<input name="element" type="text" value="" id="element" placeholder="" />-->
+            <textarea name="element" type="textarea"  id="element" placeholder="" ></textarea>
+
+        </li>
+        <li>
+            <label class="label">法定计量单位<i>*</i>：</label>
+
+            <input name="unit" type="text" value="" id="unit" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">法定第二计量单位：</label>
+
+            <input name="second_unit" type="text" value="" id="second_unit" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">规格型号：</label>
+
+            <input name="specification_model" type="text" value="" id="specification_model" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">法定计量单位面积：</label>
+
+            <input name="unit_area" type="text" value="" id="unit_area" placeholder="如果法定计量单位是面积则填写，否则不需要写" />
+
+        </li>
+        <li>
+            <label class="label">法定第二计量单位面积：</label>
+
+            <input name="sec_unit_area" type="text" value="" id="sec_unit_area" placeholder="如果法定第二计量单位是面积则填写，否则不需要写" />
+
+        </li>
+
+        <li>
+            <label class="label">数量计量单位<i>*</i>：</label>
+
+            <input name="num_unit" type="text" value="" id="num_unit" placeholder="数量的计量单位" />
+
+        </li>
+
+
+        <li>
+
+            <a href="javaScript:adddata.save()">保存</a>
+            <a href="javaScript:editdata.back()">退出添加</a>
+        </li>
+
+    </ul>
+
+</div>
+<script>
+    var adddata = {
+        sku:'',
+        commodity_code:'',
+        name:'',
+        element:'',
+        unit:'',
+        second_unit:'',
+        specification_model:'',
+        unit_area:'',
+        sec_unit_area:'',
+        num_unit:'',
+
+        back:function() {
+            window.location.href = "{:url('/admin/Orderexcel/index')}";
+        },
+        getdata:function() {
+            adddata.name = $('#name').val().replace(/^\s*|\s*$/g,"");//去除空格
+            adddata.sku = $('#sku').val().replace(/^\s*|\s*$/g,"");//去除空格
+            adddata.commodity_code = $('#commodity_code').val().replace(/^\s*|\s*$/g,"");//去除空格
+            adddata.element = $('#element').val().replace(/^\s*|\s*$/g,"");
+            adddata.second_unit = $('#second_unit').val().replace(/^\s*|\s*$/g,"");
+            adddata.specification_model = $('#specification_model').val().replace(/^\s*|\s*$/g,"");
+            adddata.unit = $('#unit').val().replace(/^\s*|\s*$/g,"");
+            adddata.unit_area = $('#unit_area').val().replace(/^\s*|\s*$/g,"");
+            adddata.sec_unit_area = $('#sec_unit_area').val().replace(/^\s*|\s*$/g,"");
+            adddata.num_unit = $('#num_unit').val().replace(/^\s*|\s*$/g,"");
+        },
+
+        save:function() {
+            adddata.getdata();
+            if (adddata.name == '') {
+                alert('请输入商品名称');
+                return;
+            }
+            if (adddata.sku == '') {
+                alert('请输入商品货号SKU');
+                return;
+            }
+            if (adddata.commodity_code == '') {
+                alert('请输入商品编码');
+                return;
+            }
+            if (adddata.num_unit == '') {
+                alert('请输入数量计量单位');
+                return;
+            }
+            if (adddata.unit == '') {
+                alert('请输入法定计量单位');
+                return;
+            }
+
+            $.post("{:url('/admin/orderexcel/adddata')}", {sku:adddata.sku, commodity_code:adddata.commodity_code, name:adddata.name, element:adddata.element, unit:adddata.unit, second_unit:adddata.second_unit, specification_model:adddata.specification_model, unit_area:adddata.unit_area, sec_unit_area:adddata.sec_unit_area, num_unit:adddata.num_unit}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/orderexcel/index')}";
+                } else {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/orderexcel/index')}";
+                }
+            });
+
+        },
+    }
+</script>

@@ -1,0 +1,79 @@
+
+<script>
+
+    function importent(){
+        if($("#file_stu").val()==""){
+            alert("请选择要导入的文件");
+            return false;
+        }
+        //if (!isValueNumber($("#rate").val()) || $("#rate").val() == 0) {
+            //alert("请输入正确的汇率");
+            //return false;
+        //}
+        return true;
+    }
+
+    function isValueNumber(value) {
+
+        var reg = (/(^-?[0-9]+\.{1}\d+$)|(^-?[1-9][0-9]*$)|(^-?0{1}$)/);
+        var flag = reg.test(value+'');
+        return flag;
+    }
+
+</script>
+<style>
+    .im_form {
+
+    }
+    .im_form h3 {
+        font-size: 18px;
+    }
+    .im_file {
+
+    }
+</style>
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <!--<li><a href="javaScript:uploadExcel.openFile('{:url('/admin/orderexcel/uploadexcel')}')">选择运单号excel文件</a>
+        </li>-->
+        <!--<li><a href="javaScript:uploadExcel.openFile('{:url('/admin/orderexcel/exportexcel')}')">导出结果</a>
+        </li>-->
+
+    </ul>
+
+</div>
+
+<div class="canvas_intro">
+
+    <form method="post" action="{:url('/admin/checkbill/exportdata')}" enctype="multipart/form-data"  onsubmit="return importent();" class="im_form">
+        <h3>导入Excel表：</h3><input  type="file" name="file" id="file_stu" class="im_file" />
+
+        </br>
+        <input type="submit"  value="导出结果" />
+    </form>
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+    </ul>
+
+</div>
+
+<script>
+    //全选
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+
+    });
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            excel9610.search();
+        }
+    }
+</script>

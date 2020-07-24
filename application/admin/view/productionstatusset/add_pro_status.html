@@ -1,0 +1,82 @@
+<div class="canvas_title do-clear">
+</div>
+
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li>
+            <label class="label">工厂生产流水名称<i>*</i>：</label>
+
+            <input name="status_name" type="text" value="" id="status_name" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">简称<i>*</i>：</label>
+
+            <input name="abbreviation" type="text" value="" id="abbreviation"  placeholder="字数控制在10字以内"/>
+
+        </li>
+
+
+        <li>
+
+            <a href="javaScript:addprostatus.save()">保存</a>
+
+        </li>
+
+    </ul>
+
+</div>
+<script>
+    var addprostatus = {
+        status_name:'',
+        abbreviation:'',
+        status:0,
+
+        getdata:function() {
+            addprostatus.status_name = $('#status_name').val().replace(/^\s*|\s*$/g,"");//去除空格
+            addprostatus.abbreviation = $('#abbreviation').val().replace(/^\s*|\s*$/g,"");
+        },
+
+        DataLength:function(fData) {
+            var intLength=0;
+            for (var i=0;i<fData.length;i++)
+            {
+                if ((fData.charCodeAt(i) < 0) || (fData.charCodeAt(i) > 255))
+                    intLength=intLength+2;
+                else
+                    intLength=intLength+1;
+            }
+            return intLength;
+        },
+
+
+        save:function() {
+                addprostatus.getdata();
+                if (addprostatus.status_name == '') {
+                    alert('请输入工厂生产流水名称');
+                    return;
+                }
+            //alert(addprostatus.DataLength(addprostatus.abbreviation));return;
+                if (addprostatus.abbreviation == '') {
+                    alert('请输入简称');
+                    return;
+                }
+                if (addprostatus.DataLength(addprostatus.abbreviation) > 26) {
+                    alert('简称字数过多，请减少');
+                    return;
+                }
+                $.post("{:url('/admin/productionstatusset/add_pro_status')}", {status_name:addprostatus.status_name, abbreviation:addprostatus.abbreviation}, function(res) {
+                    if (res['code'] == 1000) {
+                        alert(res['msg']);
+                        window.location = "{:url('/admin/productionstatusset/index')}";
+                    } else {
+                        alert(res['msg']);
+                        return;
+                    }
+                });
+
+            },
+        }
+</script>

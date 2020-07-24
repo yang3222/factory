@@ -1,0 +1,134 @@
+<style>
+    .openyes {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #5bb75b;
+        color: #fff;
+        font-size: 12px;
+    }
+    .closeno {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #e80c0c;
+        color: #fff;
+        font-size: 12px;
+    }
+</style>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li><a href="{:url('/admin/productionstatusset/add_pro_status')}">添加</a></li>
+        <!--<li><a href="{:url('/admin/productionstatusset/product_status')}">绑定生产状态</a></li>-->
+
+        <!--<li><a href="javaScript:lgstcode.deleteall('{:url('/admin/product/delete')}')">删除</a></li>-->
+
+
+        <!--<li class="input"><input type="text" id="search" name="search" value=""
+
+                                 placeholder="搜索：快递名称/快递code" /></li>
+
+        <li><a href="javaScript:lgstcode.search()">搜索</a></li>-->
+
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli">
+
+        <thead>
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+
+            <!--<th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>-->
+
+            <th width="50" class="center">id</th>
+
+            <th width="100" class="center">生产状态名称</th>
+
+            <th width="100" class="center">简称</th>
+
+            <th width="50" class="center">条形码</th>
+
+            <th class="center" width="150">操作</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {volist name='prostatus' id='value' key='k'}
+
+        <tr>
+
+            <td class="center">{$k}</td>
+
+            <!--<td class="center"><input name="select" type="checkbox" value="{$value.id}" /></td>-->
+
+            <td class="center">{$value.id}</td>
+
+            <td class="center">{$value.status_name}</td>
+
+            <td class="center">{$value.abbreviation}</td>
+
+            <td class="center"><img src="{:url('/admin/productionstatusset/getProStaCodeBar','text='.$value.bar_code.'&ab='.$value.abbreviation)}" /></td>
+
+            <td class="center operation">
+
+                <a href="{:url('/admin/productionstatusset/edit_pro_status','id='.$value.id)}">编辑</a>
+
+                <!--<a href="javaScript:lgstcode.delete('{:url('/admin/product/delete')}',['{$value.id}'])">删除</a>-->
+
+            </td>
+
+        </tr>
+
+        {/volist}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li><a href="{:url('/admin/productionstatusset/add_pro_status')}">添加</a></li>
+
+        <!--<li><a href="javaScript:lgstcode.deleteall('{:url('/admin/product/delete')}')">删除</a></li>-->
+
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<script>
+    var lgstcode = {
+        search:function() {
+            var search_key = $('#search').val().replace(/^\s*|\s*$/g,"");
+
+        },
+    };
+    //document.getElementById('search').focus();
+</script>

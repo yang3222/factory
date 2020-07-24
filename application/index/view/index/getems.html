@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>获取运单号</title>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+        <link href="{:ADMIN_STYLE_URL}css/r.css" rel="stylesheet" type="text/css" />
+
+        <script>
+            var newurl = "http://admin.entsku.com/__/_jc/agent/order.ashx?ActFlag=Order.Sch&Keyword=";
+            function search() {
+                var ordertxt = $("#ordertxt").val().split(" ").join("+");
+                $.get(newurl + ordertxt, "", function(data) {
+                    var txt = [];
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var row = data.rows[i];
+                        txt.push(row.OdrNo + "---" + row.TrnNo);
+                    }
+                    $("#ems").html(txt.join("<br/>============================<br/>"));
+                }, "jsonp");
+            }
+        </script>
+    </head>
+
+    <body>
+        <div style="margin:20px;"><input type="text" id="ordertxt" style="height:38px; border:1px solid #ccc; width:400px; padding:0 10px;"/>
+            <a href="javaScript:search();" style="border:1px solid #ccc; height:40px; line-height:40px; padding:0 10px; display:inline-block; margin-left:10px;">转换为运单号</a>
+        </div>
+        <div id="ems" style="margin:20px;"></div>
+    </body>
+</html>

@@ -1,0 +1,59 @@
+<script>
+    $(function(){
+        select.select();
+    })
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li class="input">
+            <select name="design" id="upplier" style="width: 120px;">
+                <option value="">全部</option>
+                <option value="1" >布料供应商</option>
+                <option value="2" >辅料供应商</option>
+                <option value="3" >材料加工厂</option>
+                <option value="4" >印花供应商</option>
+            </select>  
+        </li>
+        <li class="input"><input type="text" id="search" name="search" value="" 
+      onkeydown="keyFun.key(event,13,search.searchArr,[$('#search'),$('#upplier'),'{:url('/admin/warehouse/addupplier','material_id='.$material_id)}'])" 
+      placeholder="搜索：供应商/联系人" /></li>
+      <li><a href="javaScript:search.searchArr([$('#search'),$('#upplier'),'{:url('/admin/warehouse/addupplier','material_id='.$material_id)}'])">搜索</a></li>
+    </ul>
+    {$pageDiv}
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+                <th width="120" >供应商</th>
+                <th width="120" >联系人</th>
+                <th width="120">电话</th>
+                <th >地址</th>
+                <th width="80" class="center">类型</th>
+                <th width="120" class="center">创建时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='data' id='value' key='k'}
+            <tr>
+                <td>{$k}</td>
+                <td><input name="select" type="checkbox" value="{$value.id}" /></td>
+                <td>{$value.company}</td>
+                <td>{$value.contacts}</td>
+                <td>{$value.tel}</td>
+                <td>{$value.adress}</td>
+                <td class="center">{if condition="$value.type=='1'"}布料供应{elseif condition="$value.type=='2'"}辅料供应{else}材料加工{/if}</td>
+                <td class="center">{$value.create_timer}</td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="javaScript:addupplier.add('{:url('/admin/warehouse/addupplierpost','material_id='.$material_id)}')">添加</a></li>
+    </ul>
+    {$pageDiv}
+</div>

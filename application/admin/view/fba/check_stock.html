@@ -1,0 +1,54 @@
+<div class="modelbox">
+
+    <div class="canvas_title do-clear">
+
+        <ul class="tab_btn tab_btn_fl fl">
+
+
+
+        </ul>
+
+        <ul class="tab_btn fr">
+
+
+            <li><a href="javaScript:openModel.close()">关闭</a></li>
+
+        </ul>
+
+    </div>
+
+    <div class="libox">
+
+        <div class="canvas_intro">
+            <table class="productli fbali" id="box_table">
+
+                <thead>
+
+                <tr>
+                    <th class="center">图片</th>
+                    <th class="center">sku</th>
+                    <th class="center">仓库</th>
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr>
+                <td class="center"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$check.img)[0]}@0e_0o_1l_500h_500w.src' /></td>
+                <td class="center">{$check.sku}<br>{$check.size}</td>
+                <td class="center">
+                    {volist name='list' id='value' key='k'}
+                    {$value.wt_name}({$value.count}件)
+                    <br>
+                    {/volist}
+                </td>
+                </tr>
+                </tbody>
+            </table>
+
+    </div>
+
+
+</div>
+</div>

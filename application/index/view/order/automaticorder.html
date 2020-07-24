@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>飞飞鱼自动下单</title>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/flash.js"></script>
+        <link href="{:INDEX_STYLE_URL}css/style.css" rel="stylesheet" type="text/css" />
+        <script>
+            //249-8945329-0599857:g1017277p91c102s122#1,g1180786p103c117s150#1,g1024155p103c117s150#1,g1184215p154c172s258#1,g1185726p132c146s222#1|
+            //114-5697843-3937013:g811462p145c160s236#1
+            var order = "";
+            var selecttype = "请选择下单类型";
+            var type = "{$data.type}";
+            var uploadType = "EMS";
+            var loadBoo = false;
+
+            //socket准备完毕
+            function OrderComplete() {
+                loadBoo = true;
+                loadObj.getData();
+                $(".disableCss").removeClass("disableCss");
+            }
+            //处理完毕后15秒获取一次新订单
+            var timer = {
+                index: 15,
+                start: function() {
+                    $(".colorbox").hide();
+                    var interval = setTimeout(loadObj.getData, 6000 * timer.index);
+                },
+            }
+
+            var loadObj = {
+                loadindex: 0,
+                postNum: 20,
+                skuData: [],
+                ordIDS: [],
+                rows:null,
+                orderURL: "http://admin.entsku.com/__/_jc/agent/order.ashx",
+                stockURL: "http://webapi.38420.com/api/Stock/QueryStock",
+                getData: function() {
+                    loadObj.loadindex = 0;
+                    loadObj.skuData = [];
+                    loadObj.ordIDS = [];
+                    $.get(loadObj.orderURL,
+                            {
+                                ActFlag: "Order.Sch",
+                                LgstSort: uploadType,
+                                MdlNotIn: "",
+                                OdrStatus: "1",
+                                order: "asc",
+                                jsonp: "1000"
+                            }, function(data) {
+                        if (data.rows.length == 0) {
+                            timer.start();
+                            return;
+                        }
+                        loadObj.rows=data.rows;
+                        loadObj.loadindex=0;
+                        loadObj.loadrows(loadObj.loadindex);
+                    }, "jsonp");
+                },
+                loadrows:function(index){
+                    var orderdata = loadObj.rows[index];
+                    var OdrId = orderdata.OdrId;  //订单ID
+                    var OdrNo = orderdata.OdrNo; //订单号
+                    loadObj.getSku(OdrId, OdrNo);
+                },
+                selectType: function(type, obj) {
+                    uploadType = type;
+                    $(".select_type a").removeClass("current");
+                    $(obj).addClass("current");
+                },
+                getSku: function(OdrId, OdrNo) {
+                    $.get(loadObj.orderURL,
+                            {
+                                ActFlag: "Order.List.OnlyImgEcho",
+                                OdrId: OdrId,
+                                jsonp: "1000"
+                            }, function(data) {
+                        var txt = OdrNo + ":";
+                        var skuArr = [];
+                        for (var i = 0; i < data.rows.length; i++) {
+                            var rowsArr = data.rows[i];
+                            if (rowsArr.JsonA != null) {
+                                try {
+                                    var skuNum = loadObj.getStock(loadObj.getTxt(JSON.parse(rowsArr.JsonA)), OdrNo);
+                                } catch (e) {
+                                    console.log(rowsArr.JsonA, "AAA");
+                                    skuNum = "";
+                                }
+
+                                if (skuNum != "") {
+                                    skuArr.push(skuNum);
+                                }
+                            }
+                            if (rowsArr.JsonB != null) {
+                                try {
+                                    skuNum = loadObj.getStock(loadObj.getTxt(JSON.parse(rowsArr.JsonB)), OdrNo);
+                                } catch (e) {
+                                    console.log(rowsArr.JsonB, "BBB");
+                                    skuNum = "";
+                                }
+                                if (skuNum != "") {
+                                    skuArr.push(skuNum);
+                                }
+                            }
+                        }
+                        if (skuArr.length > 0) {
+                            txt += skuArr.join(",");
+                            loadObj.skuData.push({value: txt, id: OdrId});
+                        } else {
+                            loadObj.skuData.push({id: OdrId});
+                        }
+                        if (loadObj.loadindex == loadObj.rows.length-1) {
+                            loadObj.orderPost();
+                        }else{
+                            loadObj.loadindex++;
+                            loadObj.loadrows(loadObj.loadindex);
+                        }
+                    }, "jsonp");
+                },
+                getStock: function(skuNum, OdrNo) {
+                    var arr = skuNum.split("#");
+                    var sku = arr[0];
+                    var num = arr[1];
+                    var skuType = "";
+                    $.ajax({
+                        type: "post",
+                        url: loadObj.stockURL,
+                        data: {Sku: sku, Number: num, OrderNo: OdrNo},
+                        async: false,
+                        success: function(data) {
+                            var index = Number(data);
+                            if (index >= 0 && num - index > 0) {
+                                skuType = sku + "#" + (num - index);
+                            } else {
+
+                            }
+                            if(index>0){
+                                //var val=$("#textarea").val();
+                                //$("#textarea").val(val+"&#13;"+sku);
+                            }
+                        }
+                    });
+                    return skuType;
+                },
+                getTxt: function(jsonObj) {
+                    return jsonObj.GdsSku + "#" + jsonObj.GdsNum;
+                },
+                orderPost: function() {
+                    if (loadObj.skuData.length == 0) {
+                        timer.start();
+                        return;
+                    }
+                    var postOrderArr = [];
+                    loadObj.ordIDS = [];
+                    while (postOrder.length < loadObj.postNum && loadObj.skuData.length > 0) {
+                        var orderStr = loadObj.skuData.pop();
+                        if (orderStr.value)
+                            postOrderArr.push(orderStr.value);
+                        if (orderStr.id)
+                            loadObj.ordIDS.push(orderStr.id);
+                    }
+                    order = postOrderArr.join("|");
+                    postOrder();
+                    //console.log(order);
+                },
+                //设定订单状态
+                orderSet: function() {
+                    var setOrderID = loadObj.ordIDS.join(",");
+                    $.get(loadObj.orderURL,
+                            {
+                                ActFlag: "Order.Wrk",
+                                OdrIds: setOrderID,
+                                jsonp: "1000"
+                            }, function(data) {
+                        loadObj.orderPost();
+                    }, "jsonp");
+                },
+            }
+
+            //提交结束
+            function alertFun(value, noOpenId) {
+                if(value!=""){
+                    //判断是否下单成功，下单不成功则不设置状态
+                    var tipArr=value.split("/");
+                    if(tipArr[1]&&tipArr[1]!=""){
+                        var orderid=tipArr[1];
+                        var index=loadObj.ordIDS.indexOf(Number(orderid));
+                        if(index>=0)loadObj.ordIDS.splice(index,1);
+                         var val=$("#textarea").val();
+                         if(val!="")val=val+"\n";
+                         $("#textarea").val(val+orderid);
+                         return;
+                    }
+                }
+                loadObj.orderSet();
+            }
+            //value搜索的值，key工厂的key
+            //value 格式  订单号:sku,sku,sku|订单号:sku,sku,sku
+            function postOrder() {
+                if (!loadBoo)
+                    return;
+                $(".colorbox").show();
+                //把下单类型提交上去
+                var printArr = [];
+                var macArr = [];
+                $('input[name="PrintFactory[]"]:checked').each(function() {
+                    printArr.push($(this).val());
+                });
+                $('input[name="MacFactory[]"]:checked').each(function() {
+                    macArr.push($(this).val());
+                });
+                var txt = type + "|||" + order + "==" + printArr.join(",") + "==" + macArr.join(",");
+                thisMovie("ExternalInterfaceExample").OrderPostFun(txt);
+            }
+            function thisMovie(movieName) {
+                if (navigator.appName.indexOf("Microsoft") != -1) {
+                    //判断是否为IE浏览器，条件成立即为IE
+                    return window[movieName];
+                } else {
+                    return document[movieName];
+                }
+            }
+            /*function addorder() {
+                var oid = '587920,587919';
+                $.post("{:url('/index/air/inproduct')}", {openBoo:0, orderID:oid}, function(ress) {console.log(ress)});
+            }
+			function addorder() {
+                $.post("{:url('/index/order/ApiSaveOrder')}", {data:[{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g6801945p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_6801945_425_229","ImgURL":"2018/07-31/1201338760OWLkdbuAbdw.jpg,2018/07-31/12013392771lmNB4r37ET.jpg,2018/07-31/120133990E2ffcFElymcG.jpg,2018/07-31/120134044i1MvWsyQpaPQ.jpg,2018/07-31/120134126tFle2fw0YJf4.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g5803828p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5803828_425_229","ImgURL":"2018/06-28/112757027o6DLCt9p9Q8A.jpg,2018/06-28/112757089QEIFCjfUNPe0.jpg,2018/06-28/112757167WmKdsLwhesQT.jpg,2018/06-28/1127572302XibQKC8xCn9.jpg,2018/06-28/112757292IVb1s854z96Y.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g5803765p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5803765_425_229","ImgURL":"2018/06-28/112701182JGUwyrAFzc2C.jpg,2018/06-28/112701260WMewf31Ls7Fm.jpg,2018/06-28/1127013696lerzSHLA1Y7.jpg,2018/06-28/112701494LlK44SzwEVbO.jpg,2018/06-28/1127016192KSm9p4OGANB.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5734976p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5734976_425_229","ImgURL":"2018/06-26/173256143jW4r7cO7uO8V.jpg,2018/06-26/173256231XiTFSz9oJSRR.jpg,2018/06-26/1732563295zLjDCF8T5Rc.jpg,2018/06-26/173256404Yu83INfa7sr2.jpg,2018/06-26/1732564653osMBdWVR9JY.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5641130p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5641130_425_229","ImgURL":"2018/06-22/171311799V8xESV8YdzJx.jpg,2018/06-22/171311846cA18BF75w0Ul.jpg,2018/06-22/171311799oPAQjwrRYWdX.jpg,2018/06-22/171311830CDpanxnYiLqK.jpg,2018/06-22/17131181473siDSWGu3CR.jpg","Stock":2},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5463817p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5463817_425_229","ImgURL":"2018/06-15/111820923Xswy143nIcqJ.jpg,2018/06-15/111821181QXECYw6uTU23.jpg,2018/06-15/111821259HGamRMhoHIYq.jpg,2018/06-15/111822087uI9sS9jxDAaK.jpg,2018/06-15/111822355GkP5JH00fVPE.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5013218p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5013218_425_229","ImgURL":"2018/05-30/150019452XW3N6m29P5LW.jpg,2018/05-30/1500195273GhL0tYCqOUC.jpg,2018/05-30/150019592S3Hz8APkQyhc.jpg,2018/05-30/150019815HXfNXR7d9gzn.jpg,2018/05-30/150020041eHtmkr0UCu7J.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g4968734p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_4968734_425_229","ImgURL":"2018/05-29/111813043KPJFr6v07JCV.jpg,2018/05-29/111813161UuDL1FN6LUwF.jpg,2018/05-29/111813277KxE1VkLRABme.jpg,2018/05-29/111813412QYqbGoGrw9zE.jpg,2018/05-29/111813496OphkCV4ngegH.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g4885077p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_4885077_425_229","ImgURL":"2018/05-25/175642675o61lHuqoY4Sc.jpg,2018/05-25/175642691lv4rPhGugdg3.jpg,2018/05-25/1756427385H2rQLL0QsT6.jpg,2018/05-25/175642816akbkJyHTQJYq.jpg,2018/05-25/1756427073n6LYSMO9rpo.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g5325212p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5325212_425_229","ImgURL":"2018/06-11/143548323BSodP3nmrn82.jpg,2018/06-11/143548401qFia5NAn5FDL.jpg,2018/06-11/143548479WH3V8iTEAEUa.jpg,2018/06-11/1435484321essTLmVhvdp.jpg,2018/06-11/143548354AjBG0jUalFwr.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5113800p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5113800_425_229","ImgURL":"2018/06-04/154228966P6wfwqqHn2cw.jpg,2018/06-04/154229041rkG6OHB9L3eS.jpg,2018/06-04/154229119p6Xmgog69LyJ.jpg,2018/06-04/154229196E7O505V2k6fk.jpg,2018/06-04/154229276BzXXBgQqodxJ.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g5105161p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5105161_425_229","ImgURL":"2018/06-04/111240184xKv9Ed2HmYPM.jpg,2018/06-04/111240267Thd29kI7BS9v.jpg,2018/06-04/111240350N9oMjULVjsfv.jpg,2018/06-04/111240428aqVzzryFAa0Q.jpg,2018/06-04/111240499KSds7GMeDMtu.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":5,"GdsSku":"g5041559p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5041559_425_229","ImgURL":"2018/05-31/113658515GIyGynk4sNCu.jpg,2018/05-31/113658578i46OjnVxqOK3.jpg,2018/05-31/113658656HcaCXoGKuksk.jpg,2018/05-31/113658765cPDVBxyLCw4f.jpg,2018/05-31/113658844rphtpzNIsm46.jpg","Stock":0},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5041505p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5041505_425_229","ImgURL":"2018/05-31/113629312Cn2PlVMMqU5g.jpg,2018/05-31/113629390EPTkREjyXz7d.jpg,2018/05-31/113629468nKIwdfspdsBW.jpg,2018/05-31/113629531NsAOKPQWSo2t.jpg,2018/05-31/113629609KxRNezRNzi9B.jpg","Stock":1},{"OdrId":654887,"AgntName":"Y_亦菲04","OdrNo":"FBA20190819wyf20","TrnNo":"","LgstCode":"ZT","TimePay":"2019-08-19 16:36:14","OdrMemo":"FBA15HPK3FT1","Urgent":0,"Type":"A","GdsNum":10,"GdsSku":"g5013228p233c268s425","CtgyId":29470,"ProdId":233,"SpecName":"One Size","UpData":"256_5013228_425_229","ImgURL":"2018/05-30/150033878xCUKuQx7G42M.jpg,2018/05-30/150033940PyAMf9jj10ML.jpg,2018/05-30/150034013sTWL65KL3UfL.jpg,2018/05-30/150034076pmPc2KFsAQnK.jpg,2018/05-30/150034139zNlwPvXUTGap.jpg","Stock":0}]}, function(ress) {console.log(ress)});
+            }*/
+
+        </script>
+    </head>
+
+    <body>
+        <div class="colorbox"></div>
+        <div id="flash"> 
+            <!--pid=产品ID config=配置信息-->
+            <script>playswf_tramouse("{:INDEX_STYLE_URL}swf/Main.swf?url={:INDEX_STYLE_URL}swf/OrderSocket&config={:url('/index/order/config','','',true)}&userName={$data.username}&userKey={$data.key}", "100%", "100%")</script>
+        </div>
+        <div class="orderbox">
+            <div class="select_type">
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('EMS', this)" class="current">邮政</a>
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('Aprche', this)">Aprche</a>
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('FED', this)">联邦</a>
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('DHL', this)">DHL</a>
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('FPX', this)">FPX</a>
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('YW', this)">燕文</a>
+                <a href="javaScript:void(0)" onclick="loadObj.selectType('ZT', this)">自提</a>
+            </div>
+            <h1>提交订单</h1>
+            <div class="type">
+                <div class="print">
+                    <span>印花厂：</span>
+                    {volist name='$factorydata' id='value'}
+                    <input name="PrintFactory[]" type="checkbox" id="PrintFactory{$value.id}" value="{$value.id}" /><label for="PrintFactory{$value.id}">{$value.userinfo.Name}</label>
+                    <input id="factory{$value.id}" type="hidden" value="{$value.userinfo.Name}" />
+                    {/volist}
+                </div>
+                <div class="print">
+                    <span>加工厂：</span>
+                    {volist name='$factorydata' id='value'}
+                    <input name="MacFactory[]" type="checkbox" id="MacFactory{$value.id}" value="{$value.id}" /><label for="MacFactory{$value.id}">{$value.userinfo.Name}</label>
+                    {/volist}
+                </div>
+            </div>
+            <div><textarea name="textarea" id="textarea"  style="border: 1px solid #ccc; margin: 20px; height: 300px;"></textarea></div>
+        </div>
+        <div class="post"><a href="javaScript:loadObj.getData()" class="disableCss">提交订单</a></div>
+        <!--<div>
+            <a href="javascript:addorder()">
+                订单
+            </a>
+        </div>-->
+    </body>
+
+</html>

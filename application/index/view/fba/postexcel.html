@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>FBA报表</title>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+        <link href="{:ADMIN_STYLE_URL}css/r.css" rel="stylesheet" type="text/css" />
+        <script>
+            var sku = {
+                url: "http://webapi.38420.com/api/Order/QueryZT",
+                startTime: "",
+                endTime: "",
+                skuArr: [],
+                total: 20,
+                index: 0,
+                skuStr: "",
+                addsku: function(skus) {
+                    if (sku.skuStr != "")
+                        sku.skuStr += ",";
+                    sku.skuStr += "'" + skus + "'";
+                    sku.index++;
+                    if (sku.index >= sku.total) {
+                        sku.index = 0;
+                        sku.skuArr.push(sku.skuStr);
+                        sku.skuStr = "";
+                    }
+                },
+                loadDate: function() {
+                    for (var i = 0; i < sku.skuArr.length; i++) {
+                        sku.getData(sku.skuArr[i]);
+                    }
+                },
+                getData: function(skus) {
+                    var obj = {Sku: skus, BeginTime: sku.startTime, EndTime: sku.endTime};
+                    $.post(sku.url, obj, function(data) {
+                        for (var i = 0; i < data.length; i++) {
+                            $("#name_" + data[i].GdsSku).html(data[i].MdlName);
+                            $("#size_" + data[i].GdsSku).html(data[i].SpecName);
+                            $("#num_" + data[i].GdsSku).html(data[i].GdsNum);
+                        }
+                    });
+                }
+            }
+
+            function method1(tableid) {
+                // 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
+                var table = $("#" + tableid).parent().html();
+                var html = "<html><head><meta charset='utf-8' /></head><body>" + table + "</body></html>";
+                // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
+                var blob = new Blob([html], {type: "application/vnd.ms-excel"});
+                var objectUrl = URL.createObjectURL(blob);
+                var aForExcel = $("<a><span class='forExcel'>下载excel</span></a>").attr("href", objectUrl);
+                $("body").append(aForExcel);
+                $(".forExcel").click();
+                aForExcel.remove();
+            }
+            sku.startTime = "{$time.start}";
+            sku.endTime = "{$time.end}";
+            $(function() {
+                sku.loadDate();
+            })
+        </script>
+
+        <style>
+            table{border-right:1px solid #ccc; border-bottom:1px solid #ccc; width:100%;}
+            td{text-align:center; vertical-align:middle; border:1px solid #ccc; border-right:0; border-bottom:0; height:30px;}
+            tr:hover{background:#efefef;}
+            td span{padding:0 10px;}
+            .import a{display:block; height:46px; line-height:46px; font-size:20px; text-align:center; color:#333; text-decoration:none; background:#efefef;}
+            .import a:hover{background:#999999; color:#000000;}
+        </style>
+
+    </head>
+
+    <body>
+        <div class="import"><a href="javaScript:method1('table0')">导出Excel</a></div>
+        <div>
+            <table id="table0">
+                <tr>
+                    <td>#</td>
+                    <td>sku</td>
+                    <td>产品名称</td>
+                    <td>型号</td>
+                    <td>销售数量</td>
+                    <td>FBA库存数</td>
+                    <td>下单总量</td>
+                    <td>平台售价</td>
+                    <td>到账金额</td>
+                    <td>利润率</td>
+                </tr>
+                {volist name="sku" id="value" key="k"}
+                <tr>
+                    <td>{$k}</td>
+                    <td>{$value.sku}<script>sku.addsku("{$value.sku}")</script></td>
+                    <td id="name_{$value.sku}"></td>
+                    <td id="size_{$value.sku}"></td>
+                    <td>{$value.quantity}</td>
+                    <td>{if condition="isset($value.selltable)"}{$value.selltable}{else}0{/if}</td>
+                    <td id="num_{$value.sku}"></td>
+                    <td>{$value.sales}</td>
+                    <td>{$value.total}</td>
+                    <td></td>
+                </tr>
+                {/volist}
+            </table>
+        </div>
+    </body>
+</html>

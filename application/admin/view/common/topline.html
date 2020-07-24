@@ -1,0 +1,25 @@
+<div class="topline">
+      <h1><img src="{:ADMIN_STYLE_URL}images/logo.png" /></h1>
+      <ul class="rightbox">
+          <audio id="fba_music">
+              <source src="{:ROOT_FBA_MUSIC_SRC}555982.mp3" >
+              Your browser does not support the audio element.
+          </audio>
+          <li class="fba_msg" id="fba_auto_msg_li" style="display: none;">
+              <a href="javaScript:;" class="fba_msg"><span>新消息</span></a>
+              <ul class="nav" id="fba_auto_msg_ul">
+
+              </ul>
+              <!--<audio id="fba_music" src="{:ROOT_FBA_MUSIC_SRC}555982.mp3" ></audio>--><!--autoplay="autoplay" loop="loop"-->
+          </li>
+         <li>
+            <a href="javaScript:;" class="fa move_over"><span>{:session('admin_name')}</span></a>
+            <ul class="nav">
+               <li><a href="{:url('/admin/login/logout')}">退出登录</a></li>
+               <li><a href="{:url('/admin/acount/editpwd')}">修改密码</a></li>
+            </ul>
+         </li>
+         <!--<li class="delete"><a href="#">删除缓存</a></li>-->
+      </ul>
+   </div>
+<button id="fba_btn_mn" style="display: none;"></button>

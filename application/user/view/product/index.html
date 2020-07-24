@@ -1,0 +1,37 @@
+<div class="canvas_title do-clear">
+    {$pageDiv}
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th class="center">产品编号</th>
+                <th>产品名称</th>
+                <th width="100" class="center">缩略图</th>
+                <th width="150" class="center">状态</th>
+                <th>型号</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='data' id='value' key='k'}
+            <tr>
+                <td class="center">{$k}</td>
+                <td class="center">{$value.product.product_num}</td>
+                <td>{$value.product.name}</td>
+                <td>{if condition="strstr($value.product.smallimg,'http')"}<img src='{$value.product.smallimg}@0e_0o_1l_500h_500w.src' />{else}<img src='{:PRODUCT_IMG}{$value.product.smallimg}' />{/if}</td>
+                <td class="center radio">{if condition="$value.product.display=='1'"}<span>开</span>{else}<span class="close">关</span>{/if}</td>
+                <td class="center radio size">
+                    {volist name='value.product.productsize' id='size'}
+                    <span>{$size.Size}</span>
+                    {/volist}
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    {$pageDiv}
+</div>

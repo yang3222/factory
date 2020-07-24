@@ -1,0 +1,155 @@
+<div class="canvas_title do-clear">
+</div>
+<input type="hidden" id="id" value="{$id}" />
+<div class="canvas_intro">
+
+    <ul class="add_from">
+        <li>
+            <label class="label">后台id：</label>
+
+            <input name="" type="text" value="{$data.id}" id="" readonly />
+
+        </li>
+        <li>
+            <label class="label">商品货号SKU<i>*</i>：</label>
+
+            <input name="sku" type="text" value="{$data.sku}" id="sku" readonly />
+
+        </li>
+        <li>
+            <label class="label">商品编码<i>*</i>：</label>
+
+            <input name="commodity_code" type="text" value="{$data.commodity_code}" id="commodity_code" readonly />
+
+        </li>
+
+        <li>
+            <label class="label">商品名称：</label>
+
+            <input name="name" type="text" value="{$data.name}" id="name" />
+
+        </li>
+        <li>
+            <label class="label">商品要素：</label>
+
+            <textarea name="element" type="textarea"  id="element" placeholder="" >{$data.element}</textarea>
+
+        </li>
+        <li>
+            <label class="label">法定计量单位<i>*</i>：</label>
+
+            <input name="unit" type="text" value="{$data.unit}" id="unit" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">法定第二计量单位：</label>
+
+            <input name="second_unit" type="text" value="{$data.second_unit}" id="second_unit" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">规格型号：</label>
+
+            <input name="specification_model" type="text" value="{$data.specification_model}" id="specification_model" placeholder="" />
+
+        </li>
+        <li>
+            <label class="label">法定计量单位面积：</label>
+
+            <input name="unit_area" type="text" value="{$data.unit_area}" id="unit_area" placeholder="如果法定计量单位是面积则填写，否则不需要写" />
+
+        </li>
+        <li>
+            <label class="label">法定第二计量单位面积：</label>
+
+            <input name="sec_unit_area" type="text" value="{$data.sec_unit_area}" id="sec_unit_area" placeholder="如果法定第二计量单位是面积则填写，否则不需要写" />
+
+        </li>
+
+        <li>
+            <label class="label">数量计量单位<i>*</i>：</label>
+
+            <input name="num_unit" type="text" value="{$data.num_unit}" id="num_unit" placeholder="数量的计量单位" />
+
+        </li>
+
+
+        <li>
+
+            <a href="javaScript:editdata.save()">保存</a>
+            <a href="javaScript:editdata.back()">退出修改</a>
+
+        </li>
+
+    </ul>
+
+</div>
+<script>
+    var editdata = {
+        name:'',
+        element:'',
+        unit:'',
+        second_unit:'',
+        id:{$id},
+        specification_model:'',
+        unit_area:'',
+        sec_unit_area:'',
+        num_unit:'',
+
+        back:function() {
+          window.location.href = "{:url('/admin/Orderexcel/index')}";
+        },
+        getdata:function() {
+            editdata.name = $('#name').val().replace(/^\s*|\s*$/g,"");//去除空格
+            editdata.element = $('#element').val().replace(/^\s*|\s*$/g,"");
+            editdata.second_unit = $('#second_unit').val().replace(/^\s*|\s*$/g,"");
+            editdata.specification_model = $('#specification_model').val().replace(/^\s*|\s*$/g,"");
+            editdata.unit = $('#unit').val().replace(/^\s*|\s*$/g,"");
+            editdata.unit_area = $('#unit_area').val().replace(/^\s*|\s*$/g,"");
+            editdata.sec_unit_area = $('#sec_unit_area').val().replace(/^\s*|\s*$/g,"");
+            editdata.num_unit = $('#num_unit').val().replace(/^\s*|\s*$/g,"");
+        },
+        //文字长度
+        DataLength:function(fData) {
+            var intLength=0;
+            for (var i=0;i<fData.length;i++)
+            {
+                if ((fData.charCodeAt(i) < 0) || (fData.charCodeAt(i) > 255))
+                    intLength=intLength+2;
+                else
+                    intLength=intLength+1;
+            }
+            return intLength;
+        },
+        save:function() {
+            editdata.getdata();
+            if (editdata.name == '') {
+                alert('请输入商品名称');
+                return;
+            }
+            if (editdata.unit == '') {
+                alert('请输入法定计量单位');
+                return;
+            }
+            if (editdata.num_unit == '') {
+                alert('请输入数量计量单位');
+                return;
+            }
+            if (editdata.id == '') {
+                alert('编辑出错，请重试');
+                window.location = "{:url('/admin/orderexcel/index')}";
+            }
+
+            $.post("{:url('/admin/orderexcel/editdata')}", {id:editdata.id, name:editdata.name, element:editdata.element, unit:editdata.unit, second_unit:editdata.second_unit, specification_model:editdata.specification_model, unit_area:editdata.unit_area, sec_unit_area:editdata.sec_unit_area, num_unit:editdata.num_unit}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/orderexcel/index')}";
+                } else {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/orderexcel/index')}";
+                }
+            });
+
+        },
+    }
+</script>

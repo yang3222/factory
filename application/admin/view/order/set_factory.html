@@ -1,0 +1,115 @@
+<style>
+    .libox span {
+        padding-left: 10px;
+        font-size: 20px;
+        display: inline-block;
+        line-height: 24px;
+    }
+</style>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<div class="modelbox">
+
+    <div class="canvas_title do-clear">
+
+        <ul class="tab_btn fr">
+
+            {if condition="$orderid == 'cancel'"} {else}
+            <li><a href="javaScript:factory.updateFactory();">确定</a></li>
+            {/if}
+            <li><a href="javaScript:openModel.close()">关闭</a></li>
+
+        </ul>
+
+    </div>
+
+    <div class="libox">
+
+        <div class="factory" id="Printfactorys">
+            <span >印花厂：</span>
+            {volist name='factorys.pri' id='value' key='k'}
+
+            <input type="checkbox" name="Printfactory"  id="Printfactory{$k}" value="{$value.id}"><label for="Printfactory{$k}">{$value.userinfo.Name}</label>
+
+            {/volist}
+
+        </div>
+
+        <div class="factory" id="Macfactorys">
+            <span>加工厂：</span>
+            {volist name='factorys.fac' id='value' key='k'}
+
+            <input type="checkbox" name="Macfactory"  id="Macfactory{$k}" value="{$value.id}"><label for="Macfactory{$k}">{$value.userinfo.Name}</label>
+
+            {/volist}
+
+        </div>
+        {if condition="$orderid == 'cancel'"} <span>该订单已经取消，请刷新重试</span>{/if}
+    </div>
+
+    <input type='hidden' id='orderid' value='{$orderid}'>
+</div>
+
+<script>
+    {volist name='info' id='factory' key='k'}
+    {if condition="$factory.working_type=='1'"}
+    $("[name=Printfactory][value={$factory.factory_id}]").attr("checked", 'checked');
+    {else}
+    $("[name=Macfactory][value={$factory.factory_id}]").attr("checked", 'checked');
+    {/if}
+        {/volist}
+
+            var factory={
+
+                printFactory:[],
+                macFactory:[],
+                orderid:'',
+
+                getOrderId:function(){
+                    factory.orderid=$('#orderid').val();
+                },
+                getPrintFactory:function(){
+
+                    factory.printFactory=[];
+                    $("[name=Printfactory]:checked").each(function(){
+                        factory.printFactory.push($(this).val());
+                    });
+                },
+
+                getMacFactory:function(){
+
+                    factory.macFactory=[];
+                    $("[name=Macfactory]:checked").each(function(){
+                        factory.macFactory.push($(this).val());
+                    });
+                },
+                updateFactory:function(){
+
+                    factory.getOrderId();
+                    factory.getPrintFactory();
+                    factory.getMacFactory();
+                    if (factory.orderid == 'batchsefactory')  {
+                        var ids=[];
+                        $('input:checkbox[name=select]:checked').each(function(k){
+
+                            if($(this).val()!='')ids.push($(this).val())
+
+                        });
+                        $.post("/admin/order/batchSetFactory",{id:ids,pFactory:factory.printFactory,mFactory:factory.macFactory},function(result){
+                            alert(result);
+                            window.location.reload();
+                        });
+                        return;
+                    }
+                    $.post("/admin/order/saveFactory",{id:factory.orderid,pFactory:factory.printFactory,mFactory:factory.macFactory},function(result){
+                        alert(result);
+                        window.location.reload();
+                    });
+                    return;
+                }
+
+
+            }
+
+
+
+</script>

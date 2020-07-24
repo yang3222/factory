@@ -1,0 +1,57 @@
+<style>
+
+</style>
+<script>
+
+    $(function(){
+        fba_get_box_content.select();
+    })
+
+</script>
+<input type="hidden" value="" id="content_box_id" name="content_box_id" />
+<input type="hidden" value="" id="content_fba_id" name="content_fba_id" />
+<div class="modelboxv">
+    <div class="canvas_title do-clear">
+        <ul class="tab_btn fr">
+            <li><a href="javaScript:fba_get_box_content.save('{:url('/admin/Fba/copy_save')}', {$fba_id}, {$box_id});">确认</a></li>
+            <li><a href="javaScript:fba_get_box_content.close();">关闭</a></li>
+        </ul>
+        <ul class="tab_btn fl">
+            <input value="1" id="copy_nums" name="copy_nums" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="复制数量" />
+        </ul>
+    </div>
+    <div class="canvas_intro over_css">
+        <table class="productli">
+            <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="10" class="center"><input name="" type="checkbox" value="" id="box_content_select" /></th>
+                <th width="120" class="center">图片</th>
+                <th width="120" class="center">sku</th>
+                <th width="140" class="center">数量</th>
+                <th width="80" class="center">fnsku</th>
+            </tr>
+
+            </thead>
+
+            <tbody>
+            {volist name="list" id="val" key="k"}
+            <tr>
+                <td class="center">{$k}</td>
+                <td class="center"><input name="content_list_select" type="checkbox" value="{$val.id}" /></td>
+                <td class="center"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$val.img)[0]}@0e_0o_1l_500h_500w.src' /></td>
+                <td class="center">{$val.sku}</td>
+                <td class="center">{$val.num}</td>
+                <td class="center">{$val.fnsku}</td>
+            </tr>
+            {/volist}
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="canvas_title do-clear">
+
+    </div>
+</div>

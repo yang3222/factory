@@ -1,0 +1,161 @@
+<style>
+    .name {
+        line-height: 28px;
+        font-size: 14px;
+        min-height: 28px;
+        position: relative;
+        padding-left: 105px;
+        float: left;
+        margin-bottom: 5px;
+    }
+    .canvas_intro table.product {
+        margin-top: 30px;
+        margin-bottom: 80px;
+        margin-right: 50px;
+        margin-left: 10px;
+    }
+    .canvas_intro table.product {
+        width: 80%;
+        border: solid #000000;
+        border-width: 1px 0px 0px 1px;
+        padding: 2px;
+        margin: 8px 0;
+        margin-bottom: 12px;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        display: table;
+    }
+    .canvas_intro table.product td {
+        padding: 20px 8px;
+        height: 42px;
+        vertical-align: middle;
+        text-align: center;
+        border: solid #000000;
+        border-width: 0px 1px 1px 0px;
+        display: table-cell;
+    }
+    .canvas_intro table.product table.productchild {
+        width: 100%;
+        height: 100%;
+        border: solid #000000;
+        border-width: 1px 0px 0px 1px;
+        margin: 8px 0;
+        margin-bottom: 1px;
+    }
+    .canvas_intro {
+        overflow-y:auto;
+        overflow-x:auto;
+        height:635px;
+    }
+    .modelboxv {
+        width: 1105px;
+        background: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        margin: 0 auto;
+        margin-top: 50px;
+        max-height:calc(100% - 100px);
+        overflow-y: scroll;
+    }
+    input[type='radio'] {
+        display: none;
+    }
+    input[type='radio'] + label {
+        border-radius: 4px;
+        display: inline-block;
+        cursor: pointer;
+        /*height: 155px;*/
+        width: 204px;
+        margin-bottom: 2px;
+        margin-right: 2px;
+        line-height: 36px;
+        background: #fff;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    input[type='radio']:checked +label {
+        border: 1px solid #5eb1e5;
+        background: #5eb1e5;
+        color: #fff;
+    }
+    .qrcodeimg {
+        margin: 1px;
+        width: 200px;
+        /*height: 151.8px;*/
+        /*transform:scale(0.8)*/
+    }
+    .printdiv {
+
+    }
+    div.printcent {
+
+        left: -10000px;
+    }
+
+</style>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jQuery.jsprint.js"></script>
+<!--<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.jqprint-0.3.js"></script>-->
+<!--<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jQuery.print.js"></script>-->
+<!--<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/Print.js"></script>-->
+<!--<script src="{:ADMIN_STYLE_URL}js/jquery-1.10.2.js" type="text/JavaScript" language="javascript"></script>
+<script src="{:ADMIN_STYLE_URL}js/jquery-ui-1.10.4.custom.js"></script>
+<script src="{:ADMIN_STYLE_URL}js/jquery.PrintArea.js" type="text/JavaScript" language="javascript"></script>-->
+<div class="modelboxv">
+
+    <div class="canvas_title do-clear">
+
+        <ul class="tab_btn fr">
+            <li><a href="javaScript:select_ware();">确认</a></li>
+            <li><a href="javaScript:openModel.close()">关闭</a></li>
+        </ul>
+
+    </div>
+
+    <div class="canvas_intro" id="canvas_intro">
+        <div class="printcent" >
+            {volist name = "$list" id="wvs" }
+            <h5 align='center' class='title'><input type="hidden" id='wttype' value="2">{$wvs.name}</h5>
+            {assign name="index" value="0"}
+            {for start="$wvs.x" end="0" comparison="gt" step='-1'  name="i"}
+            {volist name='$wvs.wTables'  id='vt' key='kt'}
+
+            {if condition="$i==$vt.p_x"}
+            {assign name="childs" value=":GetEpWarehouseChild($vt.id)"}
+            {if condition="!empty($childs)"}
+
+            {volist name='$childs'  id='vc' key='kc'}
+
+            <input class="printinput no-print" type="radio" name="wtinput"  id="wtinput{$vt.id}" value="{$vc.id}_{$vt.name}"><label for="wtinput{$vt.id}"> <span style="display: none">{$index+=1}</span>
+            {$vc.name}</label>
+
+            {/volist}
+
+            {else}
+
+            <input class="printinput no-print" type="radio" name="wtinput"  id="wtinput{$vt.id}" value="{$vt.id}_{$vt.name}"><label for="wtinput{$vt.id}"><span style="display: none">{$index+=1}</span>
+            {$vt.name}</label>
+
+
+            {/if}
+            {/if}
+            {/volist}
+
+            {/for}
+
+            {/volist}
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+
+</script>

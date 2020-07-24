@@ -1,0 +1,362 @@
+
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<style>
+    .fbali th {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .fbali td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .openyes {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #5bb75b;
+        color: #fff;
+        font-size: 12px;
+    }
+    td.info{
+        vertical-align: top;
+    }
+    td.timer{text-align: center;}
+    td.timer span{
+        display:inline-block;
+        padding:5px 10px;
+        border-radius: 4px;
+        margin-top:5px;
+    }
+    td.alldate strong{
+        font-size:24px;
+        font-weight:bold;
+    }
+    .closeno {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #e80c0c;
+        color: #fff;
+        font-size: 12px;
+    }
+    .trBox {
+        padding: 10px;
+        height: 60px;
+        animation: fade 1000ms infinite;
+        -webkit-animation: fade 1000ms infinite;
+    }
+    @keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+
+    @-webkit-keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+    .yitijiao {
+        color: #1db100;
+    }
+    .yijieshou {
+        color: #9e19dc;
+    }
+    .yizhuangxiang {
+        color: #e73737;
+    }
+    .yifahuo {
+        color: #374ce7;
+    }
+    .yiwancheng {
+        color: #dc9a19;
+    }
+    .yiquxiao {
+        color: #bdbdbd;
+    }
+
+</style>
+<script>
+
+    $(function(){
+
+        //jeDate("#purchases_date",{
+        //format: "YYYY-MM-DD"
+        //});
+        //jeDate("#purchases_date",{
+        //multiPane:false,
+        //theme:{bgcolor:"#00A1CB",color:"#ffffff", pnColor:"#00CCFF"},
+        //format: "YYYY-MM-DD hh:mm:ss"
+        //});
+    })
+
+
+</script>
+<input type="hidden" id="search_sku" value="{$search_sku}"/>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li class="input"><input type="text" id="search" name="search" value=""
+
+                                 onkeydown="keys_press();"
+
+                                 placeholder="箱标" /></li>
+
+        <li><a href="javaScript:search();">搜索</a></li>
+    </ul>
+
+    <ul class="tab_btn tab_btn_fl fr">
+
+    </ul>
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli fbali">
+
+        <thead>
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+            <th style="width:180px;">订单信息</th>
+            <th class="center">订单状态</th>
+            <th class="center">时效</th>
+            <th class="center">备注</th>
+            <th class="center" width="120">SKU<br/>(已拣/需拣数量）</th>
+            <th class="center">图片</th>
+            <th class="center" width="200">操作</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {volist name='list' id='value' key='k'}
+
+        <tr id="fab_list" class="fba_list {if condition="$value.remind_status == 1"}trBox{else}{/if}">
+
+        <td>{$k}</td>
+
+        <td class="info">
+            <label>箱标：</label>B{$value.id}<br/>
+            <label>FBA货件号：</label>{$value.fba_nums}<br/>
+            <label>业务员：</label>{$value.contact}<br/>
+            <label>店铺名：</label>{$value.shop_name}<br/>
+        </td>
+        <td class="center {$plan_status_color[$value.plan_status]}" style="font-weight: bold;font-size: 16px;">{$plan_status_name[$value.plan_status]}</td>
+        <td class="center alldate">
+            {if condition="$value.plan_status<5"}{assign name="endtime" value=":date('Y-m-d h:i:s')"}{else}{assign name="endtime" value="$value.success_time"}{/if}
+            <strong>{assign name='alldata' value=":floor((strtotime($endtime)-strtotime($value.create_time))/(3600*24))"}{if condition="$alldata>0"}{$alldata}{else}0{/if}</strong>天
+        </td>
+        <td  style="max-width:200px; word-break:break-all; vertical-align: top; padding-top: 0;">{$value.note}</td>
+        <td style="font-size: 16px;">
+            {$value.order.sku}<br/>
+            <span id="order_picking_num_{$value.id}_{$value.order.id}">{$value.order.picking_num}</span>/{$value.order.number}
+        </td>
+
+        <td class="center" width="130">
+            <img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.order.img)[0]}@0e_0o_1l_500h_500w.src' />
+        </td>
+
+        <td class="center operation">
+            <ul class="do-clear operation">
+                {if condition="$value.plan_status >= 1"}
+                <li><a href="javaScript:checkFba({$value.id});">查看详情</a></li>
+                {/if}
+                {if condition="$value.plan_status == 1"}
+                <li><a href="javaScript:startPlan({$value.id});">开始计划</a></li>
+                {/if}
+                {if condition="$value.plan_status == 2"}
+                <li><a href="javaScript:code_pick_nums('{$search_sku}', {$value.id}, {$value.order.id});">拣货</a></li>
+                {/if}
+            </ul>
+        </td>
+        </tr>
+
+        {/volist}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+        <!--<li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>-->
+    </ul>
+
+
+</div>
+
+<script type="text/javascript">
+    /*laydate.render({
+        elem: '#inptime'
+        ,type: 'datetime'
+        ,range: '~'
+        ,format: 'yyyy-MM-dd HH:mm:ss'
+        ,theme: '#70afc4'
+    });*/
+    //全选
+    document.getElementById('search').focus();
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+        var eids = [];
+        $('input:checkbox[name=select]:checked').each(function(k){
+
+            if($(this).val()!='') eids.push($(this).val());
+        });
+    });
+
+    //clearInterval(start_for);
+    //开始计划
+    function startPlan(id) {
+        $.post("{:url('/admin/Fba/startPlan')}", {id:id, status:2}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+    //查看订单详情
+    function checkFba (id) {
+        //$.StandardPost("{:url('/admin/Fba/fba_details')}", {id:id});
+        window.location.href = "{:url('/admin/Fba/fba_details')}" + '?id=' + id;
+    }
+
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            search();
+        }
+    }
+
+    function search() {
+        var value=$('#search').val();
+        var sku_id_time = value.split('_');
+        //if (sku_id_time.length < 3 && sku_id_time[0][0] != 'g') {
+            //alert('扫码有误');
+            //return;
+        //}
+
+        //$.get("{:url('/admin/fba/lists')}", {is_handle:is_handle,time_sort:time_sort,search:value,start_time:start_time,end_time:end_time,sdate:sdate,plan_status:plan_status,payment_status:payment_status});
+        window.location.href = "{:url('/admin/fba/code_pick')}" + "?search=" + value;
+    }
+
+    //箱子列表
+    function get_box_list(id) {
+        window.location.href = "{:url('/admin/Fba/box_lists')}" + '?fba_id=' + id;
+    }
+
+    //完成计划
+    function successPlan(id) {
+        $.post("{:url('/admin/Fba/successPlan')}", {id:id}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+
+    //拣货的数量
+    function code_pick_nums(unskuid = '', fba_id = '', order_id = '') {
+        var unique_id = '';
+        if (unskuid == '') {
+            unique_id = $("#search").val();
+        } else {
+            unique_id = unskuid;
+        }
+        var unique_id_arr = unique_id.split('_');
+        if (unique_id_arr.length < 3) {
+            alert('打印码有错，请重新操作');
+            $("#search").val('');
+            return;
+        }
+        var nums = prompt('请输入拣货数量', 1);
+
+
+        if (nums) {
+            if (nums == '') {
+                alert("拣货量不能为空");
+                pick_nums();
+            }
+            var reg = /^[1-9]\d*$/;
+            if (!reg.test(nums)) {
+                alert('请输入正整数');
+                pick_nums();
+            }
+            if (isNaN(nums)) {
+
+                alert('请输入数字');
+                pick_nums();
+            }
+
+            var caozuo = 'add'//$('input:radio[name=pg_radio]:checked').val();
+            //var fba_id = $("#fba_id").val();
+            if (caozuo == 'add') {
+                $.post("{:url('/admin/Fba/picking_msg')}", {unique_id: unique_id, picking_nums:nums, fba_id:fba_id}, function (res) {
+                    if (res['code'] == 1000) {
+                        $("#search").val('');
+                        $("#order_picking_num_" + fba_id + '_' + order_id).text(res['data']['num']);
+                        if (res['is_here'] == 1) {
+                            alert('该物品已到齐');
+                            return;
+                        }
+                    } else {
+                        $("#search").val('');
+                        alert(res['msg']);
+                        return;
+                    }
+                });
+            } else if(caozuo == 'move') {
+                $.post("{:url('/admin/Fba/picking_msg_del')}", {unique_id: unique_id, picking_nums:nums, fba_id:fba_id}, function (res) {
+                    if (res['code'] == 1000) {
+                        $("#search").val('');
+                        $("#order_picking_num_" + fba_id + '_' + order_id).text(res['data']['num']);
+                    } else {
+                        $("#search").val('');
+                        alert(res['msg']);
+                        return;
+                    }
+                });
+            }
+        } else{
+            $("#search").val('');
+        }
+        document.getElementById('search').focus();
+    }
+</script>

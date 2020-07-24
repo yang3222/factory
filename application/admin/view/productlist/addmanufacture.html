@@ -1,0 +1,141 @@
+<script>
+
+    $(function(){
+
+        select.select();
+
+    })
+
+</script>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_nav fl">
+
+        <li><a href="{:url('/admin/productlist/edit','id='.$list_id . '&' . 'search=' . $search)}">生产单</a></li>
+
+        <li><a href="{:url('/admin/Productlist/manufacture','list_id='.$list_id . '&' . 'search=' . $search)}">材料</a></li>
+
+        <li class="current">
+
+            <a href="javaScript:void(0)">
+
+                {if condition="$type==1"}印花材料
+
+                {elseif condition="$type==2"}其他材料
+
+                {elseif condition="$type==3"}辅料
+
+                {else}包装材料{/if}
+
+            </a>
+
+        </li>
+
+    </ul>
+
+    <ul class="tab_btn tab_btn_fl fr">
+
+        <li class="input"><input type="text" id="search" name="search" value="" 
+
+      onkeydown="keyFun.key(event,13,search.search,[$('#search'),'{:url('/admin/productlist/addmanufacture',['list_id'=>$list_id,'type'=>$type,'search'=>$search])}'])" 
+
+      placeholder="搜索：材料名称/财务编码" /></li>
+
+      <li><a href="javaScript:search.search([$('#search'),'{:url('/admin/productlist/addmanufacture',['list_id'=>$list_id,'type'=>$type,'search'=>$search])}'])">搜索</a></li>
+
+    </ul>
+
+</div>
+
+<div class="canvas_intro">
+
+    <input type="hidden" id="list_id" name="list_id" value="{$list_id}" />
+
+    <input type="hidden" id="type" name="type" value="{$type}" />
+
+    <table class="productli">
+
+        <thead>
+
+            <tr>
+
+                <th width="10" class="center">#</th>
+
+                <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+
+                <th>物料名称</th>
+
+                <th>材料类型</th>
+
+                <th class="center">型号规格</th>
+
+                <th class="center">物料属性</th>
+
+                <th class="center">单位</th>
+
+                <th class="center">价格</th>
+
+                <th>财务编码</th>
+
+                <th width="120">仓库编码</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {volist name='list' id='value' key='k'}
+
+            <tr>
+
+                <td>{$k}</td>
+
+                <td><input name="select" type="checkbox" value="{$value.id}" /></td>
+
+                <td>{$value.name}</td>
+
+                <td>{$value.type}</td>
+
+                <td class="center">{$value.size}</td>
+
+                <td class="center">{$value.att}</td>
+
+                <td class="center">{$value.company}</td>
+
+                <td class="center">￥{$value.money|sprintf='%.2f',###}</td>
+
+                <td>{$value.finance_num}</td>
+
+                <td>{$value.warehouse_num}</td>
+
+            </tr>
+
+            {/volist}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li><a href="javaScript:manufacture.addmaterial('{:url('/admin/productlist/manufactureadd')}','{:url('/admin/Productlist/manufacture','list_id='.$list_id . '&' . 'search=' . $search)}')">添加</a></li>
+
+        <li class="input"><input type="text" id="searchfoot" name="searchfoot" value=""
+
+      onkeydown="keyFun.key(event,13,search.search,[$('#searchfoot'),'{:url('/admin/productlist/addmanufacture',['list_id'=>$list_id,'type'=>$type,'search'=>$search])}'])"
+
+      placeholder="搜索：材料名称/财务编码" /></li>
+
+      <li><a href="javaScript:search.search([$('#searchfoot'),'{:url('/admin/productlist/addmanufacture',['list_id'=>$list_id,'type'=>$type,'search'=>$search])}'])">搜索</a></li>
+
+    </ul>
+
+    {$pageDiv}
+
+</div>

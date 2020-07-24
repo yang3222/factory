@@ -1,0 +1,161 @@
+
+
+<header class="header-cls">
+    <a href="javaScript:history.go(-1);" style="color: #fff;"><span class="iconfont iconleft left-cls"></span></a>
+    <div class="header-title">{$menu[$currentMenu.menu]['nav'][$currentMenu.nav]['title']}</div>
+
+</header>
+<div class="content-cls assign-cls">
+    <div class="ul-list" >
+        <div class="ul-head" onclick="showUl(this)">
+                <div>印花</div>
+            <i class="iconfont iconjiahao"></i>
+        </div>
+        <ul id="fac_li">
+            {volist name='factory' id='value' key='k'}
+                <li class="fac_li" onclick="li_click('fac_li', this)" data-fac="{$value.id}">
+                    {$value.userinfo.Name}
+                </li>
+            {/volist}
+        </ul>
+    </div>
+    <div class="ul-list">
+        <div class="ul-head" onclick="showUl(this)">
+                <div>加工</div>
+            <i class="iconfont iconjiahao"></i>
+        </div>
+        <ul id="mac_li">
+            {volist name='factory' id='value' key='k'}
+                <li class="mac_li" onclick="li_click('mac_li', this)" data-fac="{$value.id}">
+                    {$value.userinfo.Name}
+                </li>
+            {/volist}
+        </ul>
+    </div>
+    <div class="fiex-bottom disNone">
+        <div class="flex-1" onclick="comfirmFn();" >下一步</div>
+    </div>
+    <!--<div class="fiex-bottom disNone">
+        <div class="flex-1" onclick="comfirmFn()">确认</div>
+    </div>-->
+</div>
+
+<script type="text/javascript">
+    var fac_id = '';
+    var mac_id = '';
+    $(function(){
+        // 把所有li绑定点击事件
+        //$('.ul-list li').on('click', function() {
+            //$(this).toggleClass('active');
+        //})
+    });
+    function li_click(id, present) {
+        var ul_li = $("#" + id);
+        //console.log(this);
+        if ($(present).hasClass('active')) {
+            ul_li.find('.' + id).removeClass('active');
+            //$('.fiex-bottom').addClass('disNone');
+            if (id == 'fac_li') {
+                fac_id = '';
+            } else if(id == 'mac_li') {
+                mac_id = '';
+            }
+        } else {
+            ul_li.find('.' + id).removeClass('active');
+            $(present).addClass('active');
+            $('.fiex-bottom').removeClass('disNone');
+            if (id == 'fac_li') {
+                fac_id = $(present).attr("data-fac");
+            } else if(id == 'mac_li') {
+                mac_id = $(present).attr("data-fac");
+            }
+        }
+    }
+    // 显示隐藏内容选择
+    function showUl(present) {
+        if ($(present).is('.select-cls')) {
+            //$('.fiex-bottom').addClass('disNone');
+        } else {
+            $('.ul-list').find('.select-cls').removeClass('select-cls');
+            //$('.ul-list').find('.active').removeClass('active');
+            //$('.fiex-bottom').removeClass('disNone');
+        }
+        $(present).toggleClass('select-cls');
+    }
+
+    // 确定选择类型与公司
+    function comfirmFn() {
+        /*$('.select-cls>div').addClass('msg-cls');
+        let nowMachining = '';
+        console.log($('.select-cls').siblings('ul').find('.active').text());
+        $('.select-cls').siblings('ul').find('.active').each(function(element){
+            console.log(element);
+            console.log($(this).text());
+            nowMachining += $(this).text() + ';'
+        });
+        $('.select-cls .msg-cls p').text(nowMachining);*/
+        // 成功后隐藏
+        $('.select-cls').removeClass('select-cls');
+        //$('.fiex-bottom').addClass('disNone');
+        factory.searchOrder();
+    }
+    //单选框取消功能
+    $("input[type='radio']").on('click', function() {
+        if ($(this).data('ischecked') == true) {
+            $(this).prop('checked', false);
+            $(this).data('ischecked', false);
+        } else {
+            $(this).prop('checked', true);
+            $(this).data('ischecked', true);
+        }
+        $(this).parents('.factory').siblings('.factory').find("input[type='radio']").data('ischecked', false);
+    });
+    var factory={
+
+        printFactory:[],
+        macFactory:[],
+        orderid:'',
+
+        getOrderId:function(){
+            factory.orderid=$('#orderid').val();
+        },
+        getPrintFactory:function(){
+            factory.printFactory=[];
+            if (fac_id != '') {
+                factory.printFactory.push(fac_id);
+            }
+            //$("[name=Printfactory]:checked").each(function(){
+                //factory.printFactory.push($(this).val());
+            //});
+        },
+
+        getMacFactory:function(){
+            factory.macFactory=[];
+            if (mac_id != '') {
+                factory.macFactory.push(mac_id);
+            }
+            //$("[name=Macfactory]:checked").each(function(){
+                //factory.macFactory.push($(this).val());
+            //});
+        },
+        searchOrder:function(){
+
+            //factory.getOrderId();
+            factory.getPrintFactory();//打印
+            factory.getMacFactory();//加工
+            if (factory.printFactory.length == 0 && factory.macFactory.length == 0) {
+                alert('请选择印花/加工工厂');
+                return;
+            }
+            var url = "{:url('/user/productionmanage/orderFac')}"+'?pFactory=' + factory.printFactory.join(',') + '&mFactory=' + factory.macFactory.join(',');
+
+            window.location = url;
+            //$.post("/admin/productionmanage/OrderFac",{pFactory:factory.printFactory,mFactory:factory.macFactory},function(result){
+            //alert(result);
+            //window.location = result;
+            //});
+        }
+
+
+    }
+</script>

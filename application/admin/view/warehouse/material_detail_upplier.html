@@ -1,0 +1,49 @@
+<script>
+    $(function(){
+        select.select();
+    })
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_nav fl">
+        <li><a href="{:url('/admin/warehouse/edit','id='.$data.id)}">材料信息</a></li>
+        <li  class="current"><a href="javaScript:void(0)">供应商</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+                <th>供应商</th>
+                <th>地址</th>
+                <th>联系人</th>
+                <th>电话</th>
+                <th>商家类型</th>
+                <th class="center" width="130">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='data.materialupplier' id='upplier' key='k'}
+             <tr>
+                <td class="center">{$k}</td>
+                <td class="center"><input name="select" type="checkbox" value="{$upplier.pivot.id}" /></td>
+                <td>{$upplier.company}</td>
+                <td>{$upplier.adress}</td>
+                <td>{$upplier.contacts}</td>
+                <td>{$upplier.tel}</td>
+                <td>{if condition="$upplier.type=='1'"}布料供应{elseif condition="$upplier.type=='2'"}辅料供应{else}材料加工{/if}</td>
+                <td class="center operation">
+                    <a href="javaScript:material.delete('{:url('/admin/warehouse/deleteUpplier')}',['{$upplier.pivot.id}'])">删除</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/admin/warehouse/addUpplier','id='.$data.id)}">添加</a></li>
+        <li><a href="javaScript:material.deleteall('{:url('/admin/warehouse/deleteUpplier')}')">删除</a></li>
+    </ul>
+</div>

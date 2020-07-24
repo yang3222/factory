@@ -1,0 +1,120 @@
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<script>
+    $(function(){
+	$('.custom-date').dateRangePicker($("input[name='start_date']"),$("input[name='end_date']"));
+        order.productsearch="{$searchproduct}".split(",");
+        order.factorysearch="{$searcfactory}".split(",");
+    })
+    function excelFun(url){
+        $.StandardPost(url,{
+            search:$("#search").val(),
+            start_time:$("#start_date").val(),
+            end_time:$("#end_date").val(),
+            product_id:order.productsearch,
+            factorysearch:order.factorysearch
+        });
+    }
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="javaScript:openModel.openWindow('{:url('/admin/product/openwindows')}')">按产品</a></li>
+        <li><a href="javaScript:openModel.openWindow('{:url('/admin/factory/openWindows')}')">按工厂</a></li>
+        <li><a href="javaScript:excelFun('{:url('/admin/finance/excel')}')">导出订单Excel</a></li>
+        <li><a href="javaScript:alert('还未开始做')">导出材料Excel</a></li>
+    </ul>
+    <ul class="tab_btn tab_btn_fl fr">
+        <li class="date">
+            <select class='custom-date' name='custom_date' id="date">
+                <option value='7'  selected='selected'>7天</option>
+                <option value='30' >30 天</option>
+                <option value='90' >90 天</option>
+                <option value='180' >180 天</option>
+                <option value='365' >365 天</option>
+                <option value='custom' >自定义</option>
+            </select>
+            <input type="hidden" name="start_date" id="start_date" value="{$date.start_time}">
+            <input type="hidden" name="end_date" id="end_date" value="{$date.end_time}">
+        </li>
+        <li class="input"><input type="text" id="search" name="search" value="" style="width: 150px;"
+      onkeydown="keyFun.key(event,13,order.search,[$('#search'),'{:url('/admin/finance/index')}'])" 
+      placeholder="搜索：产品名称/产品ID" /></li>
+      <li><a href="javaScript:order.search([$('#search'),'{:url('/admin/finance/index')}'])">搜索</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <table class="productli orderli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="180">订单信息</th>
+                <th width="130" class="center">缩略图</th>
+                <th width="80" class="center">型号/数量</th>
+                <th class="center">备注</th>
+                <th class="center" width="200">加工厂/状态</th>
+                <th class="center" width="120">时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='list' id='value' key='k'}
+            <tr>
+                <td class="center">{$k}</td>
+                <td class="info">
+                    <label>id：</label>{$value.id}<br/>
+                    <label>订单号：</label>{$value.OrdNum}<br/>
+                    <label>SKU：</label>{$value.GdsSku}<br/>
+                    <label>运单号：</label>{$value.TrnNo}<br/>
+                    <label>分销商：</label>{$value.AgntName}<br/>
+                    <label>来源：</label>{$value.Type}<br/>
+                    <label>产品ID：</label>{$value.product_id}<br/>
+                </td>
+                <td  class="center"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.ImgURL)[0]}@0e_0o_1l_500h_500w.src' /></td>
+                <td class="center num {if condition="$value.Urgent==1"}urgent{/if}">
+                    <span>{$value.SpecName}</span><br/><strong>{$value.GdsNum}件</strong>
+                    {if condition="$value.Urgent==1"}<br/><strong>!加急</strong>{/if}
+                </td>
+                <td>
+                    {if !empty($value.OdrMemo)}<span>客户：</span>{$value.OdrMemo}<br/>{/if}
+                    {if !empty($value.FFYMemo)}<span>平台：</span>{$value.FFYMemo}<br/>{/if}
+                    {if !empty($value.SignMemo)}<span>签收：</span>{$value.SignMemo}{/if}
+                </td>
+                <td class="center">
+                    <ul class="factory">
+                    {assign name="factorys" value=":GetOrderFactory($value.id)"}
+                    {volist name='value.orderFactory' id='factory'}
+                    <li>
+                        {if condition="$factory.sign==0"}{assign name="sign_type" value="新订单"/}{assign name="signtime" value='$value.GetTimer'}
+                        {elseif condition="$factory.sign==1"}{assign name="sign_type" value="生产中"/}{assign name="signtime" value='$factory.pro_time'}
+                        {elseif condition="$factory.sign==2"}{assign name="sign_type" value="已出库"/}{assign name="signtime" value='$factory.library_time'}{/if}
+                        <h4><b>{if condition="$factory.working_type=='1'"}印花：{else}加工：{/if}</b>{$factory.userinfo.Name}</h4>
+                        {if condition="$value.status==1"}<span class="stop">暂停</span><i>{:date('Y-m-d',strtotime($value.SignTimer))}</i>
+                        {elseif condition="$value.status==2"}<span class="sign">签收</span><i>{:date('Y-m-d',strtotime($value.SignTimer))}</i>
+                        {elseif condition="$value.status==3"}<span class="cancel">({$sign_type}) 取消</span><i>{:date('Y-m-d',strtotime($value.SignTimer))}</i>
+                        {else}
+                        <span>{$sign_type}</span><i>{:date('Y-m-d',strtotime($signtime))}</i>
+                        {/if}
+                    </li>
+                    {/volist}
+                    </ul>
+                </td>
+                <td class="info center" >
+                    <label>亚马逊：</label>{:date('Y-m-d',strtotime($value.AmzTimer))}<br/>
+                    <label>提交：</label>{:date('Y-m-d',strtotime($value.GetTimer))}<br/>
+                    {if condition="$value.status<2"}{assign name="endtime" value=":date('Y-m-d h:i:s')"}{else}{assign name="endtime" value="$value.SignTimer"}{/if}
+                    <label>时效：</label><strong>{assign name='alldata' value=":floor((strtotime($endtime)-strtotime($value.GetTimer))/(3600*24))"}{if condition="$alldata>0"}{$alldata}{else}0{/if}天</strong>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    {$pageDiv}
+</div>
+<div class="message" id="tip_windows">
+    <div class="box">
+        <h3>修改备注<a href="javaScript:windowoperation.hide($('#tip_windows'))" class="close"><img src="{:ADMIN_STYLE_URL}images/closecut.png" /></a></h3>
+        <textarea name="" cols="" rows="" id="message"></textarea>
+        <div class="btn"><a href="javaScript:orderoperation.yesclick($('#message').val());">确认</a><a href="javaScript:windowoperation.hide($('#tip_windows'))">取消</a></div>
+    </div>
+</div>

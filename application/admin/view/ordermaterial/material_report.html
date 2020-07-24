@@ -1,0 +1,54 @@
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<script>
+
+</script>
+
+<div class="canvas_title height_title do-clear">
+    <ul class="tab_nav ordertab fl">
+       <!-- <li ><a href="{:url('/admin/ordermaterial/index')}">全部</a></li>-->
+
+
+    </ul>
+
+</div>
+
+<div class="canvas_intro">
+
+    <table class="productli orderli">
+        <thead>
+        <tr>
+            <th width="10" class="center">#</th>
+            <th width="10" class="center">材料名称</th>
+            <th width="10" class="center">材料使用量</th>
+        </tr>
+        </thead>
+        <tbody>
+        {volist name='list' id='value' key='k'}
+        <tr>
+            <td class="center">{$k}</td>
+            <td class="center">{$value.material.name}</td>
+            <td class="center">{$value.dosage}{$value.material.company}</td>
+        </tr>
+        {/volist}
+        </tbody>
+    </table>
+
+</div>
+
+
+
+<div class="message" id="tip_windows">
+
+    <div class="box">
+
+        <h3>修改备注<a href="javaScript:" class="close"><img src="" /></a></h3>
+
+        <textarea name="" cols="" rows="" id="message"></textarea>
+
+        <div class="btn"><a href="javaScript:">确认</a><a href="javaScript:">取消</a></div>
+
+    </div>
+
+</div>
+

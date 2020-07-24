@@ -1,0 +1,292 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>后台登录</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/amazeui.min.css" type="text/css" media="screen" />
+
+
+    <style>
+        /* Write your styles */
+        html,body {background:url(../static/admin/images/login_bgx.gif);}
+        /* 登陆logo */
+        .myapp-login {rgb(42,144,223) top no-repeat; background-size: 100%; height: 100%;}
+        .myapp-login .myapp-login-bg { padding-top: 30px;  height: 100%;}
+        .myapp-login .myapp-login-logo { width: 100%; text-align: center;}
+        .myapp-login .myapp-login-logo i { font-size:120px; color: #fff;}
+        .myapp-login .myapp-login-form { margin: 0 auto; float:none; padding-top: 20px; }
+            .myapp-login .myapp-login-form  .am-form .am-form-group input { font-size: 14px; padding:10px 0 ;background:none; text-align: center; border: 1px solid #cccccc; color: #000000;}
+        .myapp-login .myapp-login-form  .am-form button { background: url(../static/admin/images/loginbtnbg.gif) repeat-x #2f96b4; width: 100%; border-radius: 30px; color: #fff; border: solid 1px #2f96b4; font-size: 14px; margin-top: 20px;}
+        .myapp-login .myapp-login-form  .am-form .login-text {font-size: 14px; width: 100%; color: #fff; padding-top: 20px; text-align: center;}
+        .am-form input{background-color: #000}
+        .no-click {pointer-events:none;border: 1px solid #a14c09; }
+        .myapp-login .myapp-login-form  .am-form .loginbtn { background: url(../static/admin/images/loginbtnbg.gif) repeat-x #2f96b4; width: 100%; border-radius: 30px; color: #fff; border: solid 1px #2f96b4; font-size: 14px; margin-top: 20px;}
+
+    </style>
+    <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/login.js"></script>
+    <script>
+        $(function(){
+            code.imgurl="{:url('/user/login/code')}";
+            code.Img=$('#codeimg');
+            login.UserName=$('#user');
+            login.PassWord=$('#pwd');
+            login.Code=$('#code');
+            login.Tip=$('#tiptxt');
+            login.PostURL="{:url('/user/login/checklogin')}";
+            login.IndexURL="{:url('/user/index')}";
+            login.entEvent();
+            var isMobile = "{$isMobile}";
+            if (isMobile == 1) {
+                user_login.btn_show('usercode_login');
+            } else {
+                user_login.btn_show('account_login');
+            }
+        });
+        function imgcode() {
+            code.img();
+        }
+        function login_post() {
+            alert('asdf');
+            login.post();
+        }
+    </script>
+</head>
+<body>
+    <div class="am-g myapp-login">
+        <div class="myapp-login-bg">
+            <div class="myapp-login-logo">
+                <!--<i class="am-icon-stumbleupon"></i>-->
+                <img src="{:ADMIN_STYLE_URL}images/login_logo.png" />
+            </div>
+            <div class="am-u-sm-10 myapp-login-form">
+                <div class="">
+                    <button class="am-btn" id="a_login" onclick="user_login.btn_show('account_login')">账号登入</button>
+                    <button class="am-btn" id="u_login" onclick="user_login.btn_show('usercode_login')">二维码登录</button>
+                </div>
+                <div class="am-form">
+                    <fieldset>
+
+                        <div id="account_login">
+
+                            <div class="am-form-group">
+                                <input type="email" class="" id="user" value="" placeholder="账号" onkeydown="keyspress()">
+                            </div>
+                            <div class="am-form-group">
+                                <input type="password" class="" id="pwd" value=""  placeholder="密码" onkeydown="keyspress()">
+                            </div>
+                            <div class="am-form-group">
+                                <input name="" id="code" type="text" class="code" placeholder="验证码" style="width: 49%; float: left;" onkeydown="keyspress()">
+                                <img title="点击刷新" id="codeimg" src="{:url('/user/login/code')}" onclick="imgcode();" style="width: 49%;height: 38px; float: right;"/>
+                            </div>
+                            <p><a href="javaScript:login.post()" class="btn am-btn loginbtn">登录</a></p>
+                        </div>
+
+                        <div id="usercode_login" style="display: none;">
+                            <div class="am-form-group">
+                                <input name="" id="user_code" type="password" placeholder="登录码" onkeydown="keyspress()">
+                            </div>
+                            <p><a href="javaScript:user_login.user_post()" class="btn am-btn loginbtn">登录</a></p>
+                        </div>
+                        <!--<div class="login-text">
+                            Forgot Password?
+                        </div>-->
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            user_login.user_post();
+        }
+    }
+    var user_login = {
+        //登入方式切换
+        btn_show:function (btn) {
+            if (btn == 'account_login') {
+                $("#" + btn).show();
+                $("#usercode_login").hide();
+                $("#a_login").addClass('no-click');
+                $("#u_login").removeClass('no-click');
+                document.getElementById('user').focus();
+            } else {
+                $("#" + btn).show();
+                $("#account_login").hide();
+                $("#u_login").addClass('no-click');
+                $("#a_login").removeClass('no-click');
+                document.getElementById('user_code').focus();
+            }
+        },
+        //登录码提交
+        user_post:function() {
+            var user_code = $("#user_code").val();
+            if (user_code == '') {
+                alert('登录码不能为空');
+                return;
+            }
+            $.post("{:url('/user/login/usercode_checklogin')}",{user_code:user_code},function(data){
+                console.log(data.code);
+                if(data.code == 1000){
+                    window.location.href = "{:url('/user/index')}";
+                }else{
+                    //code.img();
+                    alert(data.msg);
+                }
+
+            });
+        }
+    };
+    var login={
+
+        UserName:"",//用户名
+
+        PassWord:"",//密码
+
+        Code:"",//验证码
+
+        Tip:"",//提示内容
+
+        NoUser:"请输入您的账号", //没有用户名提示内容
+
+        NoPwd:"请输入您的密码", //没有密码提示内容
+
+        NoCode:"请输入验证码", //没有验证码提示内容
+
+        PostURL:"", //提交路径
+
+        IndexURL:"",// 登录成功后跳转的地址
+
+        //提交数据
+
+        post:function(){
+
+            //login.alert('');
+            //if(!login.judgeValue(login.UserName,login.NoUser))return;
+            //if(!login.judgeValue(login.PassWord,login.NoPwd))return;
+            //if(!login.judgeValue(login.Code,login.NoCode))return;
+            login.UserName = $('#user').val();
+            login.PassWord = $('#pwd').val();
+            login.Code = $('#code').val();
+            if (login.UserName == '') {
+                alert('请输入您的账号');
+                return;
+            }
+            if (login.PassWord == '') {
+                alert('请输入您的密码');
+                return;
+            }
+            if (login.Code == '') {
+                alert('请输入验证码');
+                return;
+            }
+
+            var obj={
+
+                User:login.UserName,
+
+                Pwd:login.PassWord,
+
+                Code:login.Code
+
+            };
+
+            $.post(login.PostURL,obj,login.postHandle);
+            //login.PostURL="{:url('/admin/login/checklogin')}";
+            //login.IndexURL="{:url('/admin/index')}";
+
+        },
+
+        //数据提交完毕
+
+        postHandle:function(data){
+
+            if(data=="1"){
+
+                window.location.href=login.IndexURL;
+
+            }else{
+
+                code.img();
+
+                login.alert(data);
+
+            }
+
+        },
+
+        //判断是否为空
+
+        judgeValue:function(obj,tip){
+
+            if(obj.val()==""){
+
+                login.alert(tip);
+
+                return false;
+
+            }
+
+            return true;
+
+        },
+
+        //提示内容
+
+        alert:function(value){
+
+            login.Tip.html(value);
+
+        },
+
+        //回车事件
+
+        entEvent:function(){
+
+            $("input[type='text']").keyup(function(event){
+
+                if (event.keyCode == 13){
+
+                    login.post();
+
+                }
+
+            });
+
+        }
+
+    };
+
+    //验证码
+
+    var code={
+
+        imgurl:"",//验证码地址
+
+        Img:"",//验证码图片容器
+
+        //更新验证码
+
+        img:function(){
+
+            var url=code.imgurl+"?"+Math.floor(Math.random()*100000);
+
+            code.Img.attr('src',url);
+
+        },
+
+    };
+
+
+</script>
+</body>
+</html>

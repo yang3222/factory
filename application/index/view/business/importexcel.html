@@ -1,0 +1,453 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>导出业务报表</title>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+        <link href="{:ADMIN_STYLE_URL}css/r.css" rel="stylesheet" type="text/css" />
+        <script>
+            $(function() {
+                //loadOrd.start(ordarr);
+                //psku.load();
+                $(".tabbox li").click(function() {
+                    showtable($(this).index());
+                })
+                showtable(0);
+                addpsku.create();
+                psku.loading();
+                logistics.loadorder();
+            })
+            function showtable(index) {
+                $(".tabbox li").removeClass("current");
+                $(".content>table").hide();
+                $("#table" + index).show();
+                $(".tabbox li").eq(index).addClass("current");
+            }
+            var loadnum=20;
+            var logistics={
+                // url:"http://admin.entsku.com/__/_jc/agent/order.ashx?ActFlag=Order.Sch&OdrStatus=0&Keyword=",
+                url:"http://webapi.38420.com/api/Order/OrderAll",
+                orderarr:[],
+                money:0,
+                index:0,
+                addorder:function(ordernum){
+                    logistics.orderarr.push(ordernum);
+                    if(logistics.orderarr.length==loadnum)logistics.loadorder();
+                },
+                loadorder:function(){
+                    if(logistics.orderarr.length==0)return;
+                    logistics.index++;
+                    var orders=logistics.orderarr.join(" ");
+                    $.post(logistics.url,{Keyword:orders},function(data){
+                        var rows=data;
+                        for(var i=0;i<rows.length;i++){
+                            logistics.money+=Math.round(Number(rows[i].TranMny)*100)/100;
+                        }
+                        logistics.index--;
+                        if(logistics.index==0){
+                            $("#TranMny").html(Math.round(logistics.money*100)/100);
+                        }
+                    })
+                    logistics.orderarr=[];
+                }
+            };
+            var userorder={}
+            var psku = {
+                url: "http://admin.entsku.com/__/_jc/design/product.ashx?ActFlag=Product.Sku.Grd&rows=1000000",
+                imgurl: "http://kjds-img.img-cn-shanghai.aliyuncs.com/",
+                loading: function() {
+                    $.get(psku.url, null, function(data) {
+                        for (var i = 0; i < data.rows.length; i++){
+                                var product = data.rows[i];
+                                $(".img" + product.ProdSku).attr("src", psku.imgurl + product.ImgPath + "@0e_0o_1l_50h_50w.src");
+                                $(".gg" + product.ProdSku).html(product.SpecName);
+                                $(".zl" + product.ProdSku).html(product.ProdWeight + "g");
+                                {if condition = "isset($type)"}
+                                $(".vip" + product.ProdSku).html(product.VipPrice);
+                                $(".cb" + product.ProdSku).html(product.CostPrice);
+                                var allnum= $(".allvip" + product.ProdSku).html();
+                                if(allnum){
+                                    $(".allvip" + product.ProdSku).html(Math.round(allnum*product.VipPrice*10)/10);
+                                    $(".allcb" + product.ProdSku).html(Math.round(allnum*product.CostPrice*10)/10);
+                                }
+                                {/if}
+                                $(".name" + product.ProdSku).html($("#product"+product.ProdId).val()+"("+product.ProdId+")");
+                        }
+                    }, 'jsonp')
+                }
+            }
+            var addpsku = {
+                skuarr: {},
+                ordersku:[],
+                url:"http://admin.entsku.com/__/_jc/agent/goods.ashx?ActFlag=Goods.All&Keywords=",
+                add: function(psku,sku, allnum, fbanum, cancelnum,allmoney) {
+                    addpsku.ordersku.push(sku);
+                    if(addpsku.ordersku.length==loadnum)addpsku.loadsku(false);
+                    if (!addpsku.skuarr[psku])
+                        addpsku.skuarr[psku] = {all: 0, fba: 0, cancel: 0,money:{}};
+                    addpsku.skuarr[psku].all += allnum;
+                    addpsku.skuarr[psku].fba += fbanum;
+                    addpsku.skuarr[psku].cancel += cancelnum;
+                    for(var name in allmoney){
+                        if(!addpsku.skuarr[psku].money[name])addpsku.skuarr[psku].money[name]=0;
+                        addpsku.skuarr[psku].money[name]+=Number(allmoney[name]);
+                    }
+                },
+
+                //产品数据
+                create: function() {
+                    addpsku.loadsku(true);
+                    var index = 0;
+                    var tbody = "";
+                    console.log(addpsku.skuarr)
+                    for (var name in addpsku.skuarr) {
+                        index++;
+                        tbody += addpsku.addtr(index, name, addpsku.skuarr[name]);
+                    }
+                    $("#allproduct").html(tbody);
+                },
+
+                //卖家信息
+                adduserinfo:function(obj){
+                    index=0;
+                   var tbody="";
+                   for(var name in obj){
+                       index++;
+                       var tr="<tr>";
+                       tr+="<td>"+index+"</td>";
+                       tr+="<td>"+obj[name].name+"</td>";
+                       tr+="<td>"+obj[name].num+"</td>";
+                       tr+="<td>"+obj[name].fba+"</td>";
+                       tr+="<td>"+obj[name].cancel+"</td>";
+                       var txt="";
+                       for(var money in obj[name].money){
+                           var moneyvalue=Math.round(Number(obj[name].money[money])*100)/100;
+                           var moneytitle=money=="US"?"":"<i>"+money+"</i>"
+                           txt+="<span>"+moneytitle+moneyvalue+"</span>";
+                       }
+                       tr+="<td>"+txt+"</td>";
+                       tr+="</tr>";
+                       tbody+=tr;
+                   }
+                   $("#allName").html(tbody);
+                },
+                addtr: function(index, psku, numobj) {
+                    var tr = "<tr>";
+                    tr += "<td>" + index + "</td>";
+                    tr += "<td class='name" + psku + "'></td>";
+                    tr += "<td class='imgtd'><img  class='img" + psku + " src='' width='50' /></td>";
+                    tr += "<td>" + psku + "</td>";
+                    tr += "<td class='gg" + psku + "'></td>";
+                    tr += "<td>" + numobj.all + "</td>";
+                    tr += "<td>" + numobj.fba + "</td>";
+                    tr += "<td>" + numobj.cancel + "</td>";
+                    {if condition="isset($type)"}
+                    tr += "<td class='allvip"+psku+"'>"+numobj.all+"</td>";
+                    tr += "<td class='allcb"+psku+"'></td>";
+                    {/if}
+                    var money="";
+                    for(var name in addpsku.skuarr[psku].money){
+                        var type=name!="US"?"("+name+")":"";
+                        money+=type+Math.round(addpsku.skuarr[psku].money[name]*100)/100;
+                    }
+                    tr += "<td>" + money + "</td>";
+                    tr +="</tr>";
+                    return tr;
+                },
+                loadsku:function(boo){
+                    var search=addpsku.ordersku.join('+');
+                    console.log(addpsku.ordersku.length+"sku数量")
+                    addpsku.ordersku=[];
+                    if(search==""){
+                        if(boo)addpsku.adduserinfo(userorder);
+                        return;
+                    }
+                    $.get(addpsku.url+search,"",function (data) {
+			var rows=data.rows;
+                        console.log(rows.length+"返回的sku")
+                        console.log(1)
+			for(var i=0;i<rows.length;i++){
+
+			                var sku=rows[i]['GdsSku'];
+                            var name=rows[i]['AgntName'];
+                            var img=psku.imgurl +rows[i]['ImgPath']+ "@0e_0o_1l_50h_50w.src";
+                            $(".img" + sku).attr("src", img);
+                            $(".name" + sku).html(name);
+                            var username=rows[i].AgntUser;
+                            if(!userorder[username])userorder[username]={name:rows[i]['AgntName'],num:0,fba:0,cancel:0,money:{}};
+                            userorder[username].num+=Number($('.num'+sku).text());
+                            userorder[username].fba+=Number($('.fbanum'+sku).text());
+                            userorder[username].cancel+=Number($('.cancelnum'+sku).text());
+                            $('.money'+sku).each(function(){
+                                $bz=$(this).find("i").html();
+                                if(!$bz)$bz="US";
+                                var money=$(this).find("b").html();
+                                if(!userorder[username].money[$bz])userorder[username].money[$bz]=0;
+                                userorder[username].money[$bz]+=Number(money);
+                            })
+			}
+                        console.log(userorder[username].num+"销售总数")
+                        if(boo)addpsku.adduserinfo(userorder);
+		    },"jsonp");
+                }
+            }
+            function method1(tableid) {	
+		// 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
+		var table=$("#"+tableid).parent().html();
+		var table=$('table').parent().clone();
+		$(table).find('td.imgtd').remove();
+		table=$(table).html();
+                    var html = "<html><head><meta charset='utf-8' /></head><body>" + table + "</body></html>";
+                     // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
+                    var blob = new Blob([html], {type: "application/vnd.ms-excel"});
+                    var objectUrl = URL.createObjectURL(blob);
+                    var aForExcel = $("<a><span class='forExcel'>下载excel</span></a>").attr("href", objectUrl);
+                    $("body").append(aForExcel);
+                    $(".forExcel").click();
+                    aForExcel.remove();
+                }
+        </script>
+        <style>
+            table{border-right:1px solid #ccc; border-bottom:1px solid #ccc; width:100%; display:none;}
+            td{text-align:center; vertical-align:middle; border:1px solid #ccc; border-right:0; border-bottom:0; height:30px;}
+            tr:hover{background:#efefef;}
+            td span{padding:0 10px; display: inline-block; margin: 0 5px;}
+            td span i{margin-right:5px;}
+            td span i,td span b{font-style:normal; font-weight: normal;}
+            td.money span{padding: 0;}
+            .content{ padding:10px; }
+            .dc{position:fixed; right:10px; top:10px; border:1px solid #ccc; background:#efefef; text-decoration:none; color:#666; padding:0 20px; display:block; height:40px; line-height:40px;}
+            .tabbox{height:41px; border-bottom:1px solid #ccc; padding-left:10px; margin-top:10px;}
+            .tabbox li{float:left; margin-right:5px; height:40px; line-height:40px; border:1px solid #ccc; background:#efefef;}
+            .tabbox li a{text-decoration:none; color:#666; padding:0 20px; display:block; height:40px; line-height:40px;}
+            .tabbox li.current{border-bottom:1px solid #fff; background:#fff;}
+        </style>
+    </head>
+
+    <body>
+        <a href="javaScript:method1('table0')" id="dcsj" class="dc">导出数据</a>
+        <ul class="tabbox">
+            <li class="current"><a href="javaScript:void(0)">SKU数据</a></li>
+            <li><a href="javaScript:void(0)">产品数据</a></li>
+            <li><a href="javaScript:void(0)">卖家数据</a></li>
+        </ul>
+        <div class="content">
+            <table id="table0">
+                <thead>
+                    <tr>
+                        <td width="60">#</td>
+                        <td>SKU</td>
+                        <td class='imgtd'>SKU缩略图</td>
+                        <td>产品编码</td>
+                        <td class='imgtd'>产品缩略图</td>
+                        <td>规格</td>
+                        <td>重量</td>
+                        {if condition="isset($type)"}
+                        <td>vip(￥)</td>
+                        <td>成本(￥)</td>
+                        {/if}
+                        <td>销售总数</td>
+                        <td>FBA件数</td>
+                        <td>退货件数</td>
+                        <td>卖家</td>
+                        <td>销售额</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {assign name='allnum' value='0'}
+                    {assign name='allfbanum' value='0'}
+                    {assign name='allcancelnum' value='0'}
+                    <?php $allmoney=array(); ?>
+                    
+                    {volist name='skudata' id='sku' key='ak'}
+                    {assign name='skuval' value='$key'}
+                    {assign name='allnum' value='$allnum+$sku.Num'}
+                    {assign name='allfbanum' value='$allfbanum+$sku.fbaNum'}
+                    {assign name='allcancelnum' value='$allcancelnum+$sku.cancelNum'}
+                    {assign name='keyname' value="$key"}
+                    {assign name='productsku' value=':preg_replace("/g.*p/","p",$key)'}
+                    <tr>
+                        <td width="60">{$ak}</td>
+                        <td>{$key}</td>
+                        <td class='imgtd'><img  class="img{$key}" src="" width="50" /></td>
+                        <td>{$productsku}</td>
+                        <td class='imgtd'><img  class="img{$productsku}" src="" width="50" /></td>
+                        <td class='gg{$productsku}'></td>
+                        <td class='zl{$productsku}'></td>
+                        {if condition="isset($type)"}
+                        <td class='vip{$productsku}'></td>
+                        <td class='cb{$productsku}'></td>
+                        {/if}
+                        <td class="num{$key}">{$sku.Num}</td>
+                        <td class="fbanum{$key}">{$sku.fbaNum}</td>
+                        <td class="cancelnum{$key}">{$sku.cancelNum}</td>
+                        <td class="name{$key}"></td>
+                        <td class="money">
+                            <script>var currentobj={}</script>
+                            {volist name="sku.Currency" id="currency" key="k"}
+                            {if condition="$k>1"},{/if}
+                            <span class="money{$keyname}">
+                                {if condition="$currency!='US'"}<i>{$currency}</i>{/if}
+                                <b>{$sku[$currency.'Currency']}</b>
+                                <?php
+                                if(!isset($allmoney[$currency]))$allmoney[$currency]=0;
+                                $allmoney[$currency]+=$sku[$currency.'Currency'];
+                                ?>
+                            </span>
+                            <script>currentobj["{$currency}"]="{$sku[$currency.'Currency']}"</script>
+                            {/volist}
+                            <script>addpsku.add("{$productsku}","{$skuval}", {$sku.Num}, {$sku.fbaNum}, {$sku.cancelNum},currentobj)</script>
+                        </td>
+                    </tr>
+                    {/volist}
+                    <?php $advermoney=array(); ?>
+                    {volist name="other" id="value" key='k'}
+                    <tr>
+                        <td>#</td>
+                        <td>{$key}</td>
+                        <td width="60" colspan='{if condition="isset($type)"}12{else}10{/if}' style=" text-align: left;">
+                            {volist name="value" id="value0"}
+                               <?php $outkey = $key; ?>
+                               {volist name="value0" id="value1"}
+                               <span>
+                               {if condition="!empty($key)"}{$key}{else}{$outkey}{/if}
+                               {volist name="value1" id="value2"}
+                               <?php 
+                               if(!isset($advermoney[$key]))$advermoney[$key]=0;
+                               $advermoney[$key]+=$value2;
+                               $allmoney[$key]+=$value2;
+                               ?>
+                               ({$value2})</span>
+                               {/volist}
+                               {/volist}
+                            {/volist}
+                        </td>
+                    </tr>
+                    {/volist}
+                    <tr>
+                        <td width="60">#</td>
+                        <td>总费用</td>
+                        <td>
+                        {volist name="advermoney" id="adver" key='k'}
+                        {if condition="$key=='US'"}{$key}{/if}{:abs($adver)}
+                        {/volist}
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>总数</td>
+                        {if condition="isset($type)"}
+                        <td></td>
+                        <td></td>
+                        {/if}
+                        <td>{$allnum}</td>
+                        <td>{$allfbanum}</td>
+                        <td>{$allcancelnum}</td>
+                        <td></td>
+                        <td>
+                        {volist name="allmoney" id="value"}
+                        {$value}
+                        {/volist}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="60"></td>
+                        <td></td>
+                        <td>
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        {if condition="isset($type)"}
+                        <td></td>
+                        <td></td>
+                        {/if}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="table1">
+                <thead>
+                    <tr>
+                        <td width="60">#</td>
+                        <td width="200">产品</td>
+                        <td class='imgtd' width="50">缩略图</td>
+                        <td width="200">sku</td>
+                        <td width="200">型号</td>
+                        <td>销售总数</td>
+                        <td>FBA</td>
+                        <td>退货件数</td>
+                        {if condition="isset($type)"}
+                        <td>VIP总成本</td>
+                        <td>工厂总成本</td>
+                        {/if}
+                        <td>销售额</td>
+                    </tr>
+                </thead>
+                <tbody id="allproduct">
+
+                </tbody>
+                <tr>
+                    <td>#</td>
+                    <td>物流费用(不含FBA)(RMB)</td>
+                    <td class='imgtd'></td>
+                    <td></td>
+                    {if condition="isset($type)"}
+                    <td></td>
+                    <td></td>
+                    {/if}
+                    <Td></Td>
+                    <Td></Td>
+                    <td></td>
+                    <td></td>
+                    <td id="TranMny"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class='imgtd'></td>
+                    <td></td>
+                    {if condition="isset($type)"}
+                    <td></td>
+                    <td></td>
+                    {/if}
+                    <Td></Td>
+                    <Td></Td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <table id="table2">
+                <thead>
+                    <tr>
+                        <td width="60">#</td>
+                        <td>卖家</td>
+                        <td>销售总数</td>
+                        <td>FBA件数</td>
+                        <td>退货件数</td>
+                        <td>销售额</td>
+                    </tr>
+                </thead>
+                <tbody id="allName">
+
+                </tbody>
+            </table>
+        </div>
+        <div style="display: none;">
+            {volist name="products" id="product"}
+            <input type="hideen" id="product{$product.product_id}" value="{$product.name}" />            
+            {/volist}
+            <script>
+            {volist name="ordData" id="ord"}
+            logistics.addorder("{$ord}");
+            {/volist}
+            </script>
+        </div>
+    </body>
+</html>

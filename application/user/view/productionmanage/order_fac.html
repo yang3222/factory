@@ -1,0 +1,350 @@
+
+<style>
+    .canvas_intro {margin:30px;}
+    input[type='checkbox']{
+        display: none;
+    }
+    input[type='checkbox'] +label{
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius:4px;
+        display:inline-block;
+        cursor: pointer;
+        height: 350px;
+        margin-bottom: 12px;
+        margin-right: 12px;
+        line-height: 36px;
+        padding: 0 24px;
+        background: #fff;
+        border: 1px solid #ccc;
+        text-align:center;
+        /*font-weight: bold;*/
+        font-size: 18px;
+    }
+    input[type='checkbox'] +label:hover{
+        border:1px solid #5eb1e5;
+    }
+    input[type='checkbox']:checked +label{
+        border:1px solid #fff;
+        background:#5eb1e5;
+        color: #000;
+    }
+    .listIMG {
+        height: 200px;
+        width: 200px;
+    }
+    .fac_name {
+        padding: 0 15px;
+        line-height: 28px;
+    }
+    .gdsnums {
+        font-size: 18px;
+        color: #990000;
+        font-weight: bold;
+    }
+    .gdsdays {
+        font-size: 18px;
+        color: #5bb75b;
+        font-weight: bold;
+    }
+    .ugrens {
+        color: #990000;
+    }
+    .hpfac {
+        border: 1px solid #5eb1e5;
+        height: 28px;
+        background: #fff;
+        margin-right: 2px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        padding: 5px 8px 5px 8px;
+        font-size: 13px;
+    }
+    .hmfac {
+        border:1px solid #5eb1e5;
+        height: 28px;
+        background: #fff;
+        margin-right: 2px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        padding: 5px 8px 5px 8px;
+        font-size: 13px;
+    }
+    .confirm_button {
+        background: #287fdc;
+        vertical-align: middle;
+        text-align: center;
+        color: #fff;
+        border-radius: 4px;
+        margin: 0 15px;
+        padding: 5px 20px 5px 20px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function() {
+
+        //if ($reload) {
+            //alert('请选择打印/加工工厂');
+            //window.location = "{:url('/user/productionmanage/index')}";
+       // }
+    });
+
+</script>
+<!--<input type="hidden" id="pFactory" name="pFactory" value="" />-->
+<input type="hidden" id="mFactory" name="mFactory" value="{$mFactory.user_id}" />
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+        <li class="input">
+            <input type="text" id="searchOrdNum" name="searchOrdNum" value="" style="width: 150px;" placeholder="搜索：订单号/订单ID(OrdNum/OdrId)" onkeydown="keyspress()" />
+        </li>
+
+        <li><a href="javaScript:order.search()">搜索</a></li>
+        <span class="fac_name">加工厂：{if condition="empty($mFactory.Name)"}(无){else}{$mFactory.Name}{/if}</span>
+    </ul>
+
+</div>
+
+<div class="canvas_intro" id="order" style="overflow: hidden;">
+
+        {volist name='list' id='value' key='k'}
+        <!--<hhh id="del{$value.id}">
+        <input type="checkbox" name="orderData"  id="{$value.OrdNum}{$k}" value="{$value.id}" />
+        <label for="{$value.OrdNum}{$k}">
+            订单号：{$value.OrdNum}</br>
+            产品ID：{$value.product_id}</br>
+            数量：{$value.GdsNum}&nbsp;&nbsp;天数：{assign name='date' value=":floor((strtotime(date('Y-m-d h:i:s'))-strtotime($value.AmzTimer))/(3600*24))"}{if condition="$date>0"}{$date}{else}0{/if}天</br>
+            <img class="listIMG" src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.ImgURL)[0]}@0e_0o_1l_500h_500w.src' /></br>
+            印花厂：{volist name='$value.orderFactory' id='orv' key='ork'}{if condition="$orv.working_type == 1"}{$orv.userinfo.Name}{/if}{/volist}&nbsp;
+            加工厂：{volist name='$value.orderFactory' id='orv' key='ork'}{if condition="$orv.working_type == 2"}{$orv.userinfo.Name}{/if}{/volist}&nbsp;
+        </label>
+        </hhh>-->
+        {/volist}
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl ">
+        <li><a href="javaScript:order.appointFac()" id="setFac">批量指派工厂</a></li>
+        <li><a href="javaScript:order.cancelallPro()" id="cancel_set_id" style="background-color: #ff0000;" >批量取消指派</a></li>
+    </ul>
+</div>
+<!--<div style="word-wrap:break-word;">
+    <label class="label">无数据单号：</label><textarea id="no_data" style="width: 500px;height: 100px;"></textarea>
+</div>-->
+
+
+<script type="text/javascript">
+
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            order.search();
+        }
+    }
+
+
+    var factory = {
+        printFactory:[],
+        macFactory:[],
+
+        getPrintFactory:function(){
+
+            factory.printFactory=[];
+            $("[name=Printfactory]:checked").each(function(){
+                factory.printFactory.push($(this).val());
+            });
+        },
+
+        getMacFactory:function(){
+            factory.macFactory=[];
+            $("[name=Macfactory]:checked").each(function(){
+                factory.macFactory.push($(this).val());
+            });
+        },
+    };
+
+
+    var order = {
+
+        productsearch:[],
+        factorysearch:[],
+        printFactory:'',
+        macFactory:'',
+        appointOrd:[],
+
+        getFac:function(){
+            //order.printFactory = $('#pFactory').val();
+            order.macFactory = $('#mFactory').val();
+        },
+
+        getOrd:function(){
+
+            order.appointOrd=[];
+            $("[name=orderData]:checked").each(function(){
+                order.appointOrd.push($(this).val());
+            });
+        },
+
+        search:function(){
+            order.getFac();
+            var searchOrdNum = $('#searchOrdNum').val();
+            document.getElementById('searchOrdNum').value = '';
+            if (searchOrdNum == '') {
+                alert('订单号不能为空');
+                document.getElementById('searchOrdNum').focus();
+                return;
+            }
+
+            //document.getElementById('order').innerHTML = '搜索中...';
+            $.post("{:url('/user/productionmanage/orderFac')}", {mFactory:order.macFactory, OrdNum:searchOrdNum}, function (res) {
+
+                var orderHtml = document.getElementById('order');
+                var html = orderHtml.innerHTML;
+                if (res.list.length == 0) {
+                    //orderHtml.innerHTML = '无数据';
+                    //document.getElementById('searchOrdNum').value = '';
+                    //document.getElementById('no_data').innerHTML += searchOrdNum + ',';
+                    document.getElementById('searchOrdNum').focus();
+                    return;
+                }
+                for(var i = 0; i < res.list.length; i++) {
+                    var check = '';
+                    if (res.autoConfirm == true) {
+                        check = 'checked';
+                    }
+                    var days = 0;
+                    var startTime = new Date(res.list[i].AmzTimer); // 开始时间
+                    var endTime = new Date(); // 结束时间
+                    days = Math.floor((endTime - startTime) / (24 * 3600 * 1000));
+                    if (days < 1) {days = 0;}
+                    var imgArr = res.list[i].ImgURL.split(',');
+                    var imgUrl = '';
+                    if (imgArr.length > 0) {imgUrl = imgArr[0];}
+                    var pFac = '';//印花
+                    var mFac = '';//加工
+                    var urgen = '';console.log(res.list[i].Urgent);
+                    if (res.list[i].Urgent == 1) {
+                        urgen = '<span class="ugrens">(急)</span>';
+                    }
+                    for (var j = 0; j < res.list[i].orderFactory.length; j++) {
+                        if (res.list[i].orderFactory[j].working_type == 1) {pFac += res.list[i].orderFactory[j].userinfo.Name;}
+                        if (res.list[i].orderFactory[j].working_type == 2) {mFac += res.list[i].orderFactory[j].userinfo.Name;}
+                    }
+                    var hpfac = '';
+                    var hmfac = '';
+                    if (pFac != '') {hpfac = '<span class="hpfac">' + pFac + '</span>';}
+                    if (mFac != '') {hmfac = '<span class="hmfac">' + mFac + '</span>';}
+                    html = '<div style="float:left;text-align: center;padding: 20px;" id="del' + res.list[i].id + '"><input type="checkbox" name="orderData"  id="' + res.list[i].OrdNum + i + '" value="' + res.list[i].id + '"'  + check + ' />' +
+                        '<label for="' + res.list[i].OrdNum + i + '">' +
+                        res.list[i].OrdNum + urgen + '</br>' +
+                        '<span class="gdsnums">' + res.list[i].GdsNum + '件/</span>' +
+                        '<span class="gdsdays">' + days + '天</span></br>' +
+                        '<img class="listIMG" src="http://kjds-img.img-cn-shanghai.aliyuncs.com/' + imgUrl + '@0e_0o_1l_500h_500w.src" /></br>' +
+                        hpfac +
+                        '&nbsp;' + hmfac +
+                        '</label></br>' +
+                        '<a href="javascript:order.autoappointFac(' + res.list[i].id + ')" style="color: #fff;" class="confirm_button" id="confirm' + res.list[i].id + '">确认指派</a>' +
+                        '<a href="javascript:order.cancelPro(' + res.list[i].id + ')" style="color: #fff;background-color: #ff0000;" class="confirm_button" id="cancel' + res.list[i].id + '">取消指派</a>' +
+                        '</div>' + html;
+                }
+                orderHtml.innerHTML = html;
+                //document.getElementById('searchOrdNum').value = '';
+                document.getElementById('searchOrdNum').focus();
+                if (res.list.length == 1) {
+                    //setTimeout(function () {order.autoappointFac(res.list[0].id)}, 5000);
+                    var count = 3;
+                    document.getElementById('cancel' + res.list[0].id).remove();
+                    var star = window.setInterval(function(){
+                        document.getElementById("confirm" + res.list[0].id).innerHTML = "自动指派(" + (count--) + 's)';
+                        if(count == 0){
+                            window.clearInterval(star);
+                            //document.getElementById("setFac").innerHTML = "指派工厂";
+                            order.autoappointFac(res.list[0].id);
+                        }
+                    }, 1000);
+                }
+            });
+            //window.location = "{:url('/admin/productionmanage/orderFac')}"+'?pFactory=' + order.printFactory + '&mFactory=' + order.macFactory + '&OrdNum=' + searchOrdNum;
+        },
+
+        //批量取消自动指派状态
+        cancelallPro:function() {
+            order.getOrd();
+            if (order.appointOrd.length == 0) {
+                alert('请选择需要取消的订单');
+                document.getElementById('searchOrdNum').focus();
+                return;
+            }
+            document.getElementById('searchOrdNum').focus();
+            for (var dd = 0; dd < order.appointOrd.length; dd++) {
+                document.getElementById('del' + order.appointOrd[dd]).remove();
+                //document.getElementById('brdel' + order.appointOrd[dd]).remove();
+            }
+        },
+        //取消自动指派状态
+        cancelPro:function(ord_id) {
+            var orderpro = ord_id;
+            document.getElementById('searchOrdNum').focus();
+            document.getElementById('del' + orderpro).remove();
+        },
+
+        autoappointFac:function(ord_id) {
+            order.getFac();
+            //order.getOrd();
+            var ord = [ord_id];
+
+            if (ord.length == 0) {
+                alert('请选择需要指派订单');
+                document.getElementById('searchOrdNum').focus();
+                return;
+            }
+
+            $.post("{:url('/user/productionmanage/appointFac')}", {order_id:ord,mFactory:order.macFactory}, function(res) {
+                if (res['code'] != 1000) {
+                    alert(res['msg']);
+                    document.getElementById('searchOrdNum').focus();
+                    return;
+                }
+                //alert(res['msg']);
+                document.getElementById('searchOrdNum').focus();
+                document.getElementById('del' + ord_id).remove();
+                //document.getElementById('del' + ord_id).remove();
+                //document.getElementById('order').innerHTML = '';
+                //window.location = "{:url('/admin/productionmanage/orderFac')}"+'?pFactory=' + order.printFactory + '&mFactory=' + order.macFactory;
+            });
+        },
+
+        appointFac:function() {
+            order.getFac();
+            order.getOrd();
+            //var searchOrdNum = $('#searchOrdNum').val();
+
+            if (order.appointOrd.length == 0) {
+                alert('请选择需要指派订单');
+                document.getElementById('searchOrdNum').focus();
+                return;
+            }
+
+            $.post("{:url('/user/productionmanage/appointFac')}", {order_id:order.appointOrd,mFactory:order.macFactory}, function(res) {
+                if (res['code'] != 1000) {
+                    alert(res['msg']);
+                    document.getElementById('searchOrdNum').focus();
+                    return;
+                }
+                alert(res['msg']);
+                document.getElementById('searchOrdNum').focus();
+                for (var dd = 0; dd < order.appointOrd.length; dd++) {
+                    document.getElementById('del' + order.appointOrd[dd]).remove();
+                    //document.getElementById('brdel' + order.appointOrd[dd]).remove();
+                }
+                //document.getElementById('order').innerHTML = '';
+                //window.location = "{:url('/admin/productionmanage/orderFac')}"+'?pFactory=' + order.printFactory + '&mFactory=' + order.macFactory;
+            });
+        }
+
+    };
+    document.getElementById('searchOrdNum').focus();//将输入光标定位到搜索框
+</script>

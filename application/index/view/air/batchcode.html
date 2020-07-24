@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<batchcodes>
+    {volist name="list" id="value"}
+    <batchcode>
+        <id>{$value.id}</id>
+        <code>{$value.batch_code}</code>
+        <time>{:date('Y-m-d H:i',strtotime($value.create_time))}</time>
+        <state>{$value.status}</state>
+    </batchcode>
+    {/volist}
+</batchcodes>

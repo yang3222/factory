@@ -1,0 +1,44 @@
+<?php
+
+return [
+    'user_menu'=>array(
+        'ybp'=>array(
+            'title'=>'仪表盘',
+            'class'=>'ybp',
+            'url'=>url('/user/ybp'),
+        ),
+        'order'=>array(
+            'title'=>'订单管理',
+            'class'=>'',
+            'nav'=>array(
+                'order_list'=>array('title'=>'订单列表','url'=>url('/user/order')),
+                'nav1'=>array('title'=>'生产派单','url'=>url('/user/Productionmanage/orderFac')),
+                'nav2'=>array('title'=>'生产状态管理','url'=>url('/user/productionstatusset')),
+                'nav3'=>array('title'=>'生产状态指派','url'=>url('/user/productionstatusset/product_status')),
+                //'nav1'=>array('title'=>'生产补片','url'=>url('/user/order')),
+            ),
+        ),
+        'product'=>array(
+            'title'=>'产品管理',
+            'class'=>'',
+            'nav'=>array(
+                'product_list'=>array('title'=>'产品列表','url'=>url('/user/product')),
+            ),
+        ),
+        'menu3'=>array(
+            'title'=>'分类管理',
+            'class'=>'',
+            'nav'=>array(
+                'nav0'=>array('title'=>'生产分类','url'=>url('/user/menu')),
+            ),
+        ),
+        'menu4'=>array(
+            'title'=>'账号管理',
+            'class'=>'',
+            'nav'=>array(
+                'nav1'=>array('title'=>'工厂信息','url'=>url('/user/acount')),
+            ),
+        ),
+    ),
+];
+

@@ -1,0 +1,673 @@
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<style>
+    .fbali th {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .fbali td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .openyes {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #5bb75b;
+        color: #fff;
+        font-size: 12px;
+    }
+    .closeno {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #e80c0c;
+        color: #fff;
+        font-size: 12px;
+    }
+    .trBox {
+        padding: 10px;
+        height: 60px;
+        animation: fade 1000ms infinite;
+        -webkit-animation: fade 1000ms infinite;
+    }
+    @keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+
+    @-webkit-keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+
+    .order_top {
+        text-align: left;
+        vertical-align: middle;
+        display: inline-table;
+        border:1px solid #e6e6e6;
+        /*//background-color: #e6e6e6;*/
+        font-size: 12px;
+        font-weight: bold;
+        padding: 4px 10px;
+        margin: 1px;
+        width: 170px;
+        height: 120px;
+    }
+    .canvas_title_fba {
+        height: 38px;
+        background: #70afc4;
+        font-size: 14px;
+        color: #fff;
+        padding-left: 10px;
+        position: relative;
+    }
+    .box_line {
+        height: 1px;
+        background: #70afc4;
+    }
+
+    input[type='radio'] + label {
+        cursor: pointer;
+        background: #fff;
+        text-align: center;
+        font-weight: bold;
+    }
+    input[type='radio']:checked +label {
+        border: 1px solid #5eb1e5;
+        background: #5eb1e5;
+    }
+    .box_pro {
+        border: 1px solid #5eb1e5;
+        background: #5eb1e5;
+    }
+    .fnsku_div {
+        text-align: left;
+        vertical-align: middle;
+        display: inline-table;
+        /*border:1px solid #e6e6e6;*/
+        /*//background-color: #e6e6e6;*/
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 10px;
+    }
+    .order_right {
+        text-align: left;
+        vertical-align: middle;
+        display: inline-table;
+        float: right;
+        /*border:1px solid #e6e6e6;*/
+        /*//background-color: #e6e6e6;*/
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 10px;
+    }
+    .button_a {
+        padding: 5px 10px;
+        background: #5e87b0;
+        color: #fff;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+        margin-right: 2px;
+    }
+    .hide_div {
+        display: none;
+    }
+</style>
+
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jQuery.jsprint.js"></script>
+<div class="canvas_title_fba do-clear"><!--height_title-->
+
+    <ul class="tab_nav ordertab fl">
+
+    </ul>
+
+    <ul class="tab_btn tab_btn_fl fr">
+        <li><a href="javaScript:checkFba({$fba_id});">返回详情</a></li>
+    </ul>
+
+</div>
+<input type="hidden" id="fba_id" value="{$fba_id}"/>
+<input type="hidden" id="box_id" value=""/>
+<div class="canvas_intro">
+    {volist name="list" id="v" key="k"}
+
+        <a href="javaScript:" onclick="get_box_pro('{$v.id}', '{$v.case_no}');">
+        <div class="order_top" style="" id="select_box_fba_div{$v.id}">
+            <input class="" type="hidden" name="select_box_fba_in"  id="select_box_fba_in{$v.id}" value="{$v.case_no}">
+        <span>箱号：{$v.case_no}</span><br/>
+        <span>库位：{$v.case_location}</span><br/>
+        <div class="box_line"></div>
+        {volist name="$v.fbaCodePick" id="fcp" key="fck"}
+        <span>{$fcp.fnsku}&nbsp;&nbsp;({$fcp.num}个)</span><br/>
+        {/volist}
+        </div>
+        </a>
+
+    {/volist}
+    <br/>
+    <div class="fnsku_div hide_div" style="width: 350px" id="fnsku_div">
+        <input id="fnsku_input" name="fnsku_input" type="text" placeholder="请输入FNSKU码" onkeydown="keys_press()"/>
+        <input id="add" name="fnsku_radio" type="radio" value="add" checked="checked"/><label for="add">添加</label>
+        <input id="move" name="fnsku_radio" type="radio" value="move"/><label for="move">移除</label>
+    </div>
+    <!--<div class="order_right hide_div" id="com_sealing" style=""><a class="button_a" href="javaScript:edit_box('seal');" style="color: #fff;">确认封箱</a></div>
+    <div class="order_right hide_div" id="restart_box" style=""><a class="button_a" href="javaScript:edit_box('open');" style="color: #fff;">开箱重装</a></div>-->
+    <table class="productli fbali">
+
+        <thead>
+        <tr>
+            <th class="center">图片</th>
+            <th class="center">SKU</th>
+            <th class="center">数量</th>
+            <th class="center" >规格</th>
+            <th class="center" >FNSKU</th>
+            <th class="center" >箱号</th>
+            <th class="center" >操作</th>
+        </tr>
+
+        </thead>
+
+        <tbody id="box_tbody">
+
+        {volist name='code_pick' id='cp' key='cpk'}
+
+        <tr class="fba_list">
+            <td class="center"><img src="http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$cp.img)[0]}@0e_0o_1l_500h_500w.src" /></td>
+            <td class="center">{$cp.sku}</td>
+            <td class="center">{$cp.num}</td>
+            <td class="center">{$cp.size}</td>
+            <td class="center">{$cp.fnsku}</td>
+            <td class="center">{$cp.case_no}</td>
+            <td class="center operation">
+                <a href="javaScript:box_lists_del_cont('{$cp.fnsku}');"  class="">移除</a>
+            </td>
+        </tr>
+
+        {/volist}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+<div class="canvas_title_fba do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+        <!--<li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>-->
+    </ul>
+
+
+</div>
+<div class="canvas_intro">
+<table class="productli fbali">
+
+    <thead>
+    <tr>
+        <th class="center">图片</th>
+        <th class="center">SKU</th>
+        <th class="center">剩余拣货数量</th>
+        <th class="center" >规格</th>
+        <th class="center" >FNSKU</th>
+        <th class="center" >操作</th>
+    </tr>
+
+    </thead>
+
+    <tbody id="blorder_tbody">
+
+    {volist name='order' id='oval'}
+    {if condition="$oval.picking_num == 0"}
+    {else}
+        <tr class="fba_list" id="blorder_tr_{$oval.id}">
+            <td class="center"><img src="http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$oval.img)[0]}@0e_0o_1l_500h_500w.src" /></td>
+            <td class="center">{$oval.sku}</td>
+            <td class="center" id="blorder_td_{$oval.id}">{$oval.picking_num}</td>
+            <td class="center">{$oval.size}</td>
+            <td class="center">{$oval.fnsku}</td>
+            <td class="center operation">
+                <a href="javaScript:box_lists_add_cont('{$oval.fnsku}');"  class="">添加</a>
+            </td>
+        </tr>
+    {/if}
+    {/volist}
+
+    </tbody>
+
+</table>
+
+</div>
+<div class="canvas_title_fba do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+        <!--<li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>-->
+    </ul>
+
+
+</div>
+<script>
+    //$("html, body").scrollTop(0).animate({scrollTop: $("#scroll").offset().top});
+    $(function(){
+
+        var check_box_id = "{$box_id}";
+        if (check_box_id != '') {
+            get_box_pro(check_box_id);
+        }
+
+    });
+
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+        var eids = [];
+        $('input:checkbox[name=select]:checked').each(function(k){
+
+            if($(this).val()!='') eids.push($(this).val());
+        });
+    });
+
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            operating();
+        }
+    }
+
+    //添加
+    function box_lists_add_cont(fnsku) {
+        var op_nums = prompt('请输入产品数量', 1);
+
+        if (op_nums) {
+            if (op_nums == '') {
+                alert("拣货量不能为空");
+                return;
+            }
+            var reg = /^[1-9]\d*$/;
+            if (!reg.test(op_nums)) {
+                alert('请输入正整数');
+                return;
+            }
+            if (isNaN(op_nums)) {
+                alert('请输入数字');
+                return;
+            }
+            var box_id = $("#box_id").val();
+            var fba_id = $("#fba_id").val();
+            var fn_sku = fnsku;
+            //var fnsku_radio = $('input:radio[name=fnsku_radio]:checked').val();
+            if (box_id == '') {
+                alert('请选择箱子');
+                return;
+            }
+            if (fn_sku == '') {
+                alert('请输入FNSKU码');
+                return;
+            }
+            $.post("{:url('/admin/fba/add_box_contents')}", {
+                fba_id: fba_id,
+                box_id: box_id,
+                fnsku: fn_sku,
+                nums:op_nums
+            }, function (res) {
+                if (res['code'] == 1000) {
+                    if (res['save'] == 'save') {//src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$cp.img)[0]}@0e_0o_1l_500h_500w.src'
+                        var img_url = res['data'].img.split(',');
+                        var htmltr = "<tr class=\"fba_list\" id='fba_list_" + res['data'].id + "'>" +
+                            "            <td class=\"center\"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/" + img_url[0] + "@0e_0o_1l_500h_500w.src' /></td>" +
+                            "            <td class=\"center\">" + res['data'].sku + "</td>" +
+                            "            <td class=\"center\"><input readonly type='text' id='box_num_input_" + res['data'].id + "' value='" + res['data'].num + "' /></td>" +
+                            "            <td class=\"center\">" + res['data'].size + "</td>" +
+                            "            <td class=\"center\">" + res['data'].fnsku + "</td>" +
+                            "            <td class=\"center\">" + res['data'].case_no + "</td>" +
+                            "<td class=\"center operation\">" +
+                            "<a href=\"javaScript:box_lists_del_cont('" + res['data'].fnsku + "');\">移除</a></td>" +
+                            "        </tr>";
+                        $("#box_tbody").append(htmltr);//加到尾部
+
+                        if (res['data'].sub_pick_order != 0) {
+                            $("#blorder_td_" + res['data'].order_id).text(res['data'].sub_pick_order);
+                        } else {
+                            $("#blorder_tr_" + res['data'].order_id).remove();
+                        }
+                    } else {
+                        $("#box_num_input_" + res['data'].id).val(res['data'].num);
+                        if (res['data'].sub_pick_order != 0) {
+                            $("#blorder_td_" + res['data'].order_id).text(res['data'].sub_pick_order);
+                        } else {
+                            $("#blorder_tr_" + res['data'].order_id).remove();
+                        }
+                    }
+
+                    $("#fnsku_input").val('');
+                    document.getElementById('fnsku_input').focus();
+                    return;
+                } else {
+                    alert(res['msg']);
+                    $("#fnsku_input").val('');
+                    document.getElementById('fnsku_input').focus();
+                    return;
+                }
+            });
+        }
+        $("#fnsku_input").val('');
+        document.getElementById('fnsku_input').focus();
+    }
+
+    //删除
+    function box_lists_del_cont(fnsku) {
+        var op_nums = prompt('请输入产品数量', 1);
+
+        if (op_nums) {
+            if (op_nums == '') {
+                alert("拣货量不能为空");
+                return;
+            }
+            var reg = /^[1-9]\d*$/;
+            if (!reg.test(op_nums)) {
+                alert('请输入正整数');
+                return;
+            }
+            if (isNaN(op_nums)) {
+                alert('请输入数字');
+                return;
+            }
+            var box_id = $("#box_id").val();
+            var fba_id = $("#fba_id").val();
+            var fn_sku = fnsku;
+            //var fnsku_radio = $('input:radio[name=fnsku_radio]:checked').val();
+            if (box_id == '') {
+                alert('请选择箱子');
+                return;
+            }
+            if (fn_sku == '') {
+                alert('请输入FNSKU码');
+                return;
+            }
+            $.post("{:url('/admin/fba/delete_box_contents')}", {
+                fba_id: fba_id,
+                box_id: box_id,
+                fnsku: fn_sku,
+                nums: op_nums,
+            }, function (res) {
+                if (res['code'] == 1000) {
+                    if (res['op'] == 'del') {
+                        $("#fba_list_" + res['id'].code_id).remove();
+                    } else if (res['op'] = 'sub') {
+                        $("#box_num_input_" + res['id'].code_id).val(res['data']);
+                    }
+                    if($("#blorder_tr_" + res['id'].id).length > 0) {
+                        var td_nums = $("#blorder_td_" + res['id'].id).text();
+                        var new_nums = parseInt(td_nums) + parseInt(op_nums);
+                        $('#blorder_td_' + res['id'].id).text(new_nums);
+                    } else {
+                        var move_img_url = res['id'].img.split(',');
+                        var move_html = "<tr class=\"fba_list\" id=\"blorder_tr_" + res['id']['id'] + "\">" +
+                            "            <td class=\"center\"><img src=\"http://kjds-img.img-cn-shanghai.aliyuncs.com/" + move_img_url[0] + "@0e_0o_1l_500h_500w.src\" /></td>" +
+                            "            <td class=\"center\">" + res['id'].sku + "</td>" +
+                            "            <td class=\"center\" id=\"blorder_td_ " + res['id'].id + "\">" + res['id'].picking_num + "</td>" +
+                            "            <td class=\"center\">" + res['id'].size + "</td>" +
+                            "            <td class=\"center\">" + res['id'].fnsku + "</td>" +
+                            "<td class=\"center operation\">" +
+                            "<a href=\"javaScript:box_lists_add_cont('" + res['id'].fnsku + "');\">移除</a></td>" +
+                            "        </tr>";
+                        $("#blorder_tbody").append(move_html);//加到尾部
+                    }
+                    $("#fnsku_input").val('');
+                    document.getElementById('fnsku_input').focus();
+                    return;
+                } else {
+                    alert(res['msg']);
+                    $("#fnsku_input").val('');
+                    document.getElementById('fnsku_input').focus();
+                    return;
+                }
+            });
+        }
+        $("#fnsku_input").val('');
+        document.getElementById('fnsku_input').focus();
+    }
+
+    //修改箱子，添加与移除
+    function operating() {
+        var op_nums = prompt('请输入产品数量', 1);
+
+        if (op_nums) {
+            if (op_nums == '') {
+                alert("拣货量不能为空");
+                return;
+            }
+            var reg = /^[1-9]\d*$/;
+            if (!reg.test(op_nums)) {
+                alert('请输入正整数');
+                return;
+            }
+            if (isNaN(op_nums)) {
+                alert('请输入数字');
+                return;
+            }
+            var box_id = $("#box_id").val();
+            var fba_id = $("#fba_id").val();
+            var fn_sku = $("#fnsku_input").val();
+            var fnsku_radio = $('input:radio[name=fnsku_radio]:checked').val();
+            if (box_id == '') {
+                alert('请选择箱子');
+                return;
+            }
+            if (fn_sku == '') {
+                alert('请输入FNSKU码');
+                return;
+            }
+            if (fnsku_radio == undefined) {
+                alert('请选择操作方式');
+                return;
+            }
+            if (fnsku_radio == 'add') {
+                $.post("{:url('/admin/fba/add_box_contents')}", {
+                    fba_id: fba_id,
+                    box_id: box_id,
+                    fnsku: fn_sku,
+                    nums:op_nums
+                }, function (res) {
+                    if (res['code'] == 1000) {
+                        if (res['save'] == 'save') {//src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$cp.img)[0]}@0e_0o_1l_500h_500w.src'
+                            var img_url = res['data'].img.split(',');
+                            var htmltr = "<tr class=\"fba_list\" id='fba_list_" + res['data'].id + "'>" +
+                                "            <td class=\"center\"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/" + img_url[0] + "@0e_0o_1l_500h_500w.src' /></td>" +
+                                "            <td class=\"center\">" + res['data'].sku + "</td>" +
+                                "            <td class=\"center\"><input readonly type='text' id='box_num_input_" + res['data'].id + "' value='" + res['data'].num + "' /></td>" +
+                                "            <td class=\"center\">" + res['data'].size + "</td>" +
+                                "            <td class=\"center\">" + res['data'].fnsku + "</td>" +
+                                "            <td class=\"center\">" + res['data'].case_no + "</td>" +
+                                "<td class=\"center operation\">" +
+                                "<a href=\"javaScript:box_lists_add_cont('" + res['data'].fnsku + "');\">移除</a></td>" +
+                                "        </tr>";
+                            $("#box_tbody").append(htmltr);//加到尾部
+
+                            if (res['data'].sub_pick_order != 0) {
+                                $("#blorder_td_" + res['data'].order_id).text(res['data'].sub_pick_order);
+                            } else {
+                                $("#blorder_tr_" + res['data'].order_id).remove();
+                            }
+                        } else {
+                            $("#box_num_input_" + res['data'].id).val(res['data'].num);
+                            if (res['data'].sub_pick_order != 0) {
+                                $("#blorder_td_" + res['data'].order_id).text(res['data'].sub_pick_order);
+                            } else {
+                                $("#blorder_tr_" + res['data'].order_id).remove();
+                            }
+                        }
+
+                        $("#fnsku_input").val('');
+                        document.getElementById('fnsku_input').focus();
+                        return;
+                    } else {
+                        alert(res['msg']);
+                        $("#fnsku_input").val('');
+                        document.getElementById('fnsku_input').focus();
+                        return;
+                    }
+                });
+            } else if (fnsku_radio == 'move') {
+                $.post("{:url('/admin/fba/delete_box_contents')}", {
+                    fba_id: fba_id,
+                    box_id: box_id,
+                    fnsku: fn_sku,
+                    nums: op_nums,
+                }, function (res) {
+                    if (res['code'] == 1000) {
+                        if (res['op'] == 'del') {
+                            $("#fba_list_" + res['id'].code_id).remove();
+                        } else if (res['op'] = 'sub') {
+                            $("#box_num_input_" + res['id'].code_id).val(res['data']);
+                        }
+                        if($("#blorder_tr_" + res['id'].id).length > 0) {
+                            var td_nums = $("#blorder_td_" + res['id'].id).text();
+                            var new_nums = parseInt(td_nums) + parseInt(op_nums);
+                            $('#blorder_td_' + res['id'].id).text(new_nums);
+                        } else {
+                            var move_img_url = res['id'].img.split(',');
+                            var move_html = "<tr class=\"fba_list\" id=\"blorder_tr_" + res['id']['id'] + "\">" +
+                                "            <td class=\"center\"><img src=\"http://kjds-img.img-cn-shanghai.aliyuncs.com/" + move_img_url[0] + "@0e_0o_1l_500h_500w.src\" /></td>" +
+                                "            <td class=\"center\">" + res['id'].sku + "</td>" +
+                                "            <td class=\"center\" id=\"blorder_td_ " + res['id'].id + "\">" + res['id'].picking_num + "</td>" +
+                                "            <td class=\"center\">" + res['id'].size + "</td>" +
+                                "            <td class=\"center\">" + res['id'].fnsku + "</td>" +
+                                "<td class=\"center operation\">" +
+                                "<a href=\"javaScript:box_lists_del_cont('" + res['id'].fnsku + "');\">移除</a></td>" +
+                                "        </tr>";
+                            $("#blorder_tbody").append(move_html);//加到尾部
+                        }
+                        $("#fnsku_input").val('');
+                        document.getElementById('fnsku_input').focus();
+                        return;
+                    } else {
+                        alert(res['msg']);
+                        $("#fnsku_input").val('');
+                        document.getElementById('fnsku_input').focus();
+                        return;
+                    }
+                });
+            }
+        }
+        $("#fnsku_input").val('');
+        document.getElementById('fnsku_input').focus();
+    }
+
+    //开箱重装,状态修改为1
+    function edit_box(op) {
+        var box_id = $("#box_id").val();
+        $.post("{:url('/admin/fba/edit_case_status')}", {op:op, box_id:box_id}, function(res) {
+            if (res['code'] == 1000) {
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+
+    //封箱
+    function sealing_box() {
+        $.post("{:url('/admin/fba/')}", {}, function(res) {
+
+        });
+    }
+
+    //获取箱子产品详细
+    function get_box_pro(box_id,case_no) {
+        $("#box_id").val(box_id);
+        $(".order_top").removeClass('box_pro');
+        $("#select_box_fba_div" + box_id).addClass('box_pro');
+
+        $.post("{:url('/admin/fba/get_box_contents')}", {box_id:box_id}, function (res) {
+            if (res['data'].length > 0) {
+                var box_html = document.getElementById('box_tbody');
+                var htmls = '';
+                if (res['case_status'] == 2) {
+                    $("#fnsku_div").hide();
+                    //$("#com_sealing").hide();
+                    //$("#restart_box").show();
+                    box_html.innerHTML = '';
+                    for (var i = 0; i < res['data'].length; i++) {
+                        var img_url = res['data'][i].img.split(',');
+                        htmls += "<tr class=\"fba_list\" id='fba_list_" + res['data'][i].id + "'>" +
+                            "            <td class=\"center\"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/" + img_url[0] + "@0e_0o_1l_500h_500w.src' /></td>" +
+                            "            <td class=\"center\">" + res['data'][i].sku + "</td>" +
+                            "            <td class=\"center\">" + res['data'][i].num + "</td>" +
+                            "            <td class=\"center\">" + res['data'][i].size + "</td>" +
+                            "            <td class=\"center\">" + res['data'][i].fnsku + "</td>" +
+                            "            <td class=\"center\">" + res['data'][i].case_no + "</td>" +
+                            "<td class=\"center operation\">" +
+                            "<a href=\"javaScript:box_lists_del_cont('" + res['data'][i].fnsku + "');\">移除</a></td>" +
+                            "        </tr>";
+                    }
+
+                } else {
+                    //$("#restart_box").hide();
+                    $("#fnsku_div").show();
+                    //$("#com_sealing").show();
+                    document.getElementById('fnsku_input').focus();
+                    box_html.innerHTML = '';
+                    for (var i = 0; i < res['data'].length; i++) {
+                        var img_url = res['data'][i].img.split(',');
+                        htmls += "<tr class=\"fba_list\" id='fba_list_" + res['data'][i].id + "'>" +
+                            "            <td class=\"center\"><img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/" + img_url[0] + "@0e_0o_1l_500h_500w.src' /></td>" +
+                            "            <td class=\"center\">" + res['data'][i].sku + "</td>" +
+                            "            <td class=\"center\"><input readonly type='text' id='box_num_input_" + res['data'][i].id + "' value='" + res['data'][i].num + "' /></td>" +
+                            "            <td class=\"center\">" + res['data'][i].size + "</td>" +
+                            "            <td class=\"center\">" + res['data'][i].fnsku + "</td>" +
+                            "            <td class=\"center\">" + res['data'][i].case_no + "</td>" +
+                            "<td class=\"center operation\">" +
+                            "<a href=\"javaScript:box_lists_del_cont('" + res['data'][i].fnsku + "');\">移除</a></td>" +
+                            "        </tr>";
+                    }
+
+                }
+                box_html.innerHTML = htmls;
+                return;
+            } else {
+                //$("#restart_box").hide();
+                $("#fnsku_div").show();
+                //$("#com_sealing").show();
+                document.getElementById('fnsku_input').focus();
+                var box_html = document.getElementById('box_tbody');
+                box_html.innerHTML = '';
+                return;
+            }
+        });
+    }
+
+    function checkFba (id) {
+        window.location.href = "{:url('/admin/Fba/fba_details')}" + '?id=' + id;
+
+    }
+</script>

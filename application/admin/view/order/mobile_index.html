@@ -1,0 +1,292 @@
+<style>
+    .button-box {margin: 0.2rem 0.3rem;display: flex;}
+    .button-box a{
+        border-radius: 10px;
+        line-height: 0.94rem;
+        font-size: 0.36rem;
+        padding: 0;
+        color: #000000;
+        margin: 2px;
+        text-align: center;
+    }
+    .new_order {
+        width: 25%;
+        background-color: #fab703;
+    }
+    .pro_order {
+        width: 25%;
+        background-color: #60c2f4;
+    }
+    .out_order {
+        width: 25%;
+        background-color: #fa4903;
+    }
+    .all_order {
+        width: 25%;
+        background-color: #fa4903;
+    }
+    .total_gds {
+        font-size: 0.36rem;
+        font-weight: bold;
+    }
+
+</style>
+<header class="header-cls">
+    <a href="javaScript:history.go(-1);" style="color: #fff;"><span class="iconfont iconleft left-cls"></span></a>
+    <div class="header-title">{$menu[$currentMenu.menu]['nav'][$currentMenu.nav]['title']}</div>
+    <!--<span class="iconfont icondelete right-cls"></span>-->
+    <!--<span class="right-cls completeBtn disNone">完成</span>-->
+</header>
+
+<div class="content-cls">
+    <div class="button-box">
+        <a class="all_order" href="{:url('/admin/order/index')}">全部订单</a>
+        <a class="new_order" href="{:url('/admin/order/index','type=1')}">新订单</a>
+        <a class="pro_order" href="{:url('/admin/order/index','type=2')}">生产中</a>
+        <a class="out_order" href="{:url('/admin/order/index','type=3')}">已出库</a>
+    </div>
+    <div class="input-box">
+        <input type="text" placeholder="输入订单号搜索" id="search" onkeydown="keyspress()" value="" />
+        <input type="hidden" id="type" value="{$sign}"/>
+        <!--<input type="hidden" id="date" value="365"/>
+        <input type="hidden" name="start_date" id="start_date" value="$date.start_time">
+        <input type="hidden" name="end_date" id="end_date" value="$date.end_time">-->
+    </div>
+    <ul class="list-cls" id="order">
+        <li class="total_gds">产品总量：{$total_gds}</li>
+        {volist name='list' id='value' key='k'}
+        <li>
+            {if condition="$value.status<2  || $value.status==4"}{assign name="endtime" value=":date('Y-m-d h:i:s')"}{else}{assign name="endtime" value="$value.SignTimer"}{/if}
+
+            <div class="font-bold">订单号：<span class="flex-1">{$value.OrdNum}{if condition="$value.Urgent==1"}<strong>(急)</strong>{/if}</span><span>{$value.GdsNum}件/{if condition="$value.status == 5"}0{else}{assign name='alldata' value=":floor((strtotime($endtime)-strtotime($value.AmzTimer))/(3600*24))"}{if condition="$alldata>0"}{$alldata}{else}0{/if}{/if}天</span></div>
+            <div>SKU：<span class="flex-1">{$value.GdsSku}</span>
+                <!--<input type="checkbox" name="orderData" value="id" class="checkBtn disNone">-->
+            </div>
+            <div class="img-box">
+                <img src="http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.ImgURL)[0]}@0e_0o_1l_500h_500w.src" alt="">
+                <div class="flex-1" style="font-size: 0.24rem">
+                {volist name='value.production_status' id='order_status_id' key='osikey'}
+                    {if condition="$osikey <= 4"}
+                    <span class="prostatus">{$order_status_id.status}</br>
+                    {$order_status_id.add_time|mb_substr=5,11,'utf-8'}</span></br>
+                    {else}
+                    {/if}
+                    {/volist}
+                    </div>
+                <div class="flex-1" style="font-size: 0.24rem">
+                    {assign name="factorys" value=":GetOrderFactory($value.id)"}
+
+                    {volist name='value.orderFactory' id='factory'}
+                    {if condition="$factory.sign==0"}{assign name="sign_type" value="新订单"/}{assign name="signtime" value='$value.GetTimer'}
+
+                    {elseif condition="$factory.sign==1"}{assign name="sign_type" value="生产中"/}{assign name="signtime" value='$factory.pro_time'}
+
+                    {elseif condition="$factory.sign==2"}{assign name="sign_type" value="已出库"/}{assign name="signtime" value='$factory.library_time'}{/if}
+                    <p>{if condition="$factory.working_type=='1'"}印花：{else}加工：{/if}<span>{$factory.userinfo.Name}</span></br><span>{:date('m-d H:i',strtotime($signtime))}</span></p>
+                    {/volist}
+                </div>
+            </div>
+        </li>
+        {/volist}
+    </ul>
+
+    <p style="text-align: center; display: none;" id="loadmore">加载更多数据中</p>
+    <p style="text-align: center; display: none;" id="buttom_p">没有更多数据了</p>
+    <!--<div class="fiex-bottom disNone">
+        <div class="flex-1">
+            <input type="checkbox" id="checkAll">
+            <label for="checkAll">全选</label>
+        </div>
+        <div class="del-cls"><a href="javaScript:" style="color: #fff;">删除</a></div>
+    </div>-->
+    <input type="hidden" id="search_data" value="" />
+</div>
+
+<script type="text/javascript">
+    var lastpages = "{$lastpage}";
+    var currentpages = "{$currentpage}";
+
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            search();
+        }
+    }
+
+    var downs = true;
+    $(window).scroll(function() {
+        //
+        var scrollTop = $(this).scrollTop();
+        var scrollHeight = $(document).height();
+        var windowHeight = $(this).height();
+
+        if (scrollTop + windowHeight >= scrollHeight) {
+            //alert("{$sign}");
+            //触发后执行的方法
+            if (!downs) {
+                return;
+            }
+            $("#loadmore").show();
+            downs = false;
+            if (lastpages == 0) {
+                $("#loadmore").hide();
+                $("#buttom_p").show();
+                setTimeout(function() {
+                    downs = true;
+                }, 2000);
+                return;
+            }
+            if (currentpages < lastpages) {
+                currentpages++;
+                var searchs = $("#search_data").val();
+
+                $.post("{:url('/admin/order/index','type='.$sign)}" + "?page=" + currentpages, {search: searchs}, function(data) {
+                    /*if($("#loadmore").hasClass('disNone')){
+                        $("#loadmore").removeClass('disNone');
+                    }*/
+                    var order_html = document.getElementById('order');
+                    //order_html.innerHTML = '';
+                    if (data.list.length > 0) {
+                        var htmls = order_html.innerHTML;
+                        for (var i = 0; i < data.list.length; i++) {
+                            var imgArr = data.list[i].ImgURL.split(',');
+                            var imgUrl = '';
+                            if (imgArr.length > 0) {imgUrl = imgArr[0];}
+                            var pFac = '';//印花
+                            var mFac = '';//加工
+                            var urgen = '';
+                            if (data.list[i].Urgent == 1) {
+                                urgen = '<span class="">(急)</span>';
+                            }
+                            for (var j = 0; j < data.list[i].orderFactory.length; j++) {
+                                if (data.list[i].orderFactory[j].working_type == 1) {pFac += data.list[i].orderFactory[j].userinfo.Name;}
+                                if (data.list[i].orderFactory[j].working_type == 2) {mFac += data.list[i].orderFactory[j].userinfo.Name;}
+
+                            }
+                            var prostatushtml = '';//状态html
+                            for (var ji = 0; ji < data.list[i].production_status.length; ji++) {
+                                var addtimestr = data.list[i].production_status[ji].add_time.substr(5,5);
+                                if (ji <= 4) {prostatushtml += '<span class="prostatus">' + data.list[i].production_status[ji].status + addtimestr +'</span></br>';}
+                            }
+                            var hpfac = '';
+                            var hmfac = '';
+                            if (pFac != '') {hpfac = pFac;}
+                            if (mFac != '') {hmfac = mFac;}
+
+                            htmls += '<li>' +
+                                '<div class="font-bold">订单号：<span class="flex-1">' + data.list[i].OrdNum + urgen +'</span><span>' + data.list[i].GdsNum + '件/天</span></div>' +
+                                '<div>SKU：<span class="flex-1">' + data.list[i].GdsSku + '</span>' +
+                                '</div>' +
+                                '<div class="img-box">' +
+                                '<img src="http://kjds-img.img-cn-shanghai.aliyuncs.com/' + imgUrl +'@0e_0o_1l_500h_500w.src" alt="">' +
+                                '<div class="flex-1" style="font-size: 0.24rem">' + prostatushtml +
+                                '</div>' +
+                                '<div class="flex-1" style="font-size: 0.24rem">' +
+                                '<p>印花：<span>' + hpfac + '</span></p>' +
+                                '<p>加工：<span>' + hmfac + '</span></p>' +
+                                '</div>' + '</div></li>';
+                        }
+                        order_html.innerHTML = htmls;
+                        $("#loadmore").hide();
+                    } else {
+                        $("#loadmore").hide();
+                        $("#buttom_p").show();
+                    }
+                    lastpages = data.lastpage;
+                    currentpages = data.currentpage;
+                    document.getElementById('search').focus();
+                });
+            } else {
+                $("#loadmore").hide();
+                $("#buttom_p").show();
+            }
+            setTimeout(function() {
+                downs = true;
+                return;
+            }, 3000)
+        }
+        //$("#loadmore").hide();
+    });
+
+    //搜索
+    function search() {
+        var search = $('#search').val();
+        document.getElementById('search').value = '';
+        document.getElementById('search_data').value = search;
+        if (search == '') {
+            alert('请输入搜索内容');
+            return;
+        }
+        /*if(!$("#buttom_p").hasClass('disNone')){
+            $("#buttom_p").addClass('disNone');
+        }*/
+        //window.location.href = "{:url('/admin/order/index','type='.$sign)}" + '?search=' + search;
+        $.post("{:url('/admin/order/index','type='.$sign)}", {search:search}, function(data) {
+            var order_html = document.getElementById('order');
+            order_html.innerHTML = '';
+            if (data.list.length > 0) {
+                var htmls = order_html.innerHTML;
+                for (var i = 0; i < data.list.length; i++) {
+                    var imgArr = data.list[i].ImgURL.split(',');
+                    var imgUrl = '';
+                    if (imgArr.length > 0) {imgUrl = imgArr[0];}
+                    var pFac = '';//印花
+                    var mFac = '';//加工
+                    var urgen = '';
+                    if (data.list[i].Urgent == 1) {
+                        urgen = '<span class="">(急)</span>';
+                    }
+                    console.log(data.list[i]);
+                    for (var j = 0; j < data.list[i].orderFactory.length; j++) {
+                        var sign_type = '';
+                        var sign_time = data.list[i].GetTimer.substr(5,11);
+                        if (data.list[i].orderFactory[j]['sign'] == 0) {
+                            sign_type = '新订单';
+                            sign_time = data.list[i].GetTimer.substr(5,11);
+                        } else if (data.list[i].orderFactory[j]['sign'] == 1) {
+                            sign_type = '生产中';
+                            sign_time = data.list[i].orderFactory[j].pro_time.substr(5,11);
+                        } else if (data.list[i].orderFactory[j]['sign'] == 2) {
+                            sign_type = '已出库';
+                            sign_time = data.list[i].orderFactory[j].library_time.substr(5,11);
+                        }
+                        if (data.list[i].orderFactory[j].working_type == 1) {pFac += data.list[i].orderFactory[j].userinfo.Name + '</br>' + sign_time;}
+                        if (data.list[i].orderFactory[j].working_type == 2) {mFac += data.list[i].orderFactory[j].userinfo.Name + '</br>' + sign_time;}
+
+                    }
+                    var prostatushtml = '';//状态html
+                    for (var ji = 0; ji < data.list[i].production_status.length; ji++) {
+                        var addtimestr = data.list[i].production_status[ji].add_time.substr(5,11);
+                        if (ji <= 4) {prostatushtml += '<span class="prostatus">' + data.list[i].production_status[ji].status + addtimestr +'</span></br>';}
+                    }
+                    var hpfac = '';
+                    var hmfac = '';
+                    if (pFac != '') {hpfac = pFac;}
+                    if (mFac != '') {hmfac = mFac;}
+
+                    htmls += '<li>' +
+                        '<div class="font-bold">订单号：<span class="flex-1">' + data.list[i].OrdNum + urgen +'</span><span>' + data.list[i].GdsNum + '件/天</span></div>' +
+                        '<div>SKU：<span class="flex-1">' + data.list[i].GdsSku + '</span>' +
+                        '</div>' +
+                        '<div class="img-box">' +
+                        '<img src="http://kjds-img.img-cn-shanghai.aliyuncs.com/' + imgUrl +'@0e_0o_1l_500h_500w.src" alt="">' +
+                        '<div class="flex-1" style="font-size: 0.24rem">' + prostatushtml +
+                                '</div>' +
+                        '<div class="flex-1" style="font-size: 0.24rem">' +
+                        '<p>印花：<span>' + hpfac + '</span></p>' +
+                        '<p>加工：<span>' + hmfac + '</span></p>' +
+                        '</div>' + '</div></li>';
+                }
+                order_html.innerHTML = htmls;
+            } else {
+                order_html.innerHTML = '';
+                $("#buttom_p").show();
+            }
+            lastpages = data.lastpage;
+            currentpages = data.currentpage;
+            document.getElementById('search').focus();
+            return;
+        });
+    }
+    document.getElementById('search').focus();
+</script>

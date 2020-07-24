@@ -1,0 +1,181 @@
+<div class="canvas_intro">
+
+    <ul class="add_from">
+
+        <li>
+
+           <label class="label">供应商属性<i>*</i></label>
+
+           <input name="attribute" type="text" value="{$data.attribute}" id="attribute" />
+
+       </li>
+
+       <li>
+
+           <label class="label">品类<i>*</i></label>
+
+           <select name="type" id="type">
+            <option value="0" selected="selected">请选择品类</option>
+           <option value="1">布料供应</option>
+           <option value="2">辅料供应</option>
+           <option value="3">材料加工</option>
+           <option value="4">印花供应</option>
+         </select>
+
+       </li>
+
+        <li>
+
+           <label class="label">供应商名称<i>*</i></label>
+
+           <input type="hidden" id="id" name="id" value="{$data.id}" />
+
+           <!-- <input type="hidden" id="type" name="type" value="" /> -->
+
+           <input name="company" type="text" value="{$data.company}" id="company" />
+
+        </li>
+
+        <li>
+
+           <label class="label">供应商简称<i>*</i></label>
+
+           <input name="company_for_short" type="text" value="{$data.company_for_short}" id="company_for_short" />
+
+        </li>
+
+        <li>
+
+           <label class="label">账期/付款方式<i>*</i></label>
+
+           <input name="payment_days" type="text" value="{$data.payment_days}" id="payment_days" />
+
+        </li>
+
+        <li>
+
+           <label class="label">联系人<i>*</i></label>
+
+           <input name="contacts" type="text" value="{$data.contacts}" id="contacts" />
+
+       </li>
+
+       <li>
+
+           <label class="label">联系人职位<i>*</i></label>
+
+           <input name="contacts_position" type="text" value="{$data.contacts_position}" id="contacts_position" />
+
+       </li>
+
+        <li>
+
+           <label class="label">联系电话<i>*</i></label>
+
+           <input name="tel" type="text" value="{$data.tel}" id="tel" />
+
+        </li>
+
+        <li>
+
+           <label class="label">邮箱<i>*</i></label>
+
+           <input name="email" type="text" value="{$data.email}" id="email" />
+
+        </li>
+        <li>
+
+            <label class="label">汇款账号用户名(对公)<i>*</i></label>
+
+            <input name="remittance_num_company_name" type="text" value="{$data.remittance_num_company_name}" id="remittance_num_company_name" />
+
+        </li>
+        <li>
+
+            <label class="label">汇款账号开户行(对公)<i>*</i></label>
+
+            <input name="remittance_num_company_bank" type="text" value="{$data.remittance_num_company_bank}" id="remittance_num_company_bank" />
+
+        </li>
+
+        <li>
+
+           <label class="label">汇款账号(对公)<i>*</i></label>
+
+           <input name="remittance_num_company" type="text" value="{$data.remittance_num_company}" id="remittance_num_company" />
+
+        </li>
+        <li>
+
+            <label class="label">汇款账号用户名(对私)<i>*</i></label>
+
+            <input name="remittance_num_private_name" type="text" value="{$data.remittance_num_private_name}" id="remittance_num_private_name" />
+
+        </li>
+        <li>
+
+            <label class="label">汇款账号开户行(对私)<i>*</i></label>
+
+            <input name="remittance_num_private_bank" type="text" value="{$data.remittance_num_private_bank}" id="remittance_num_private_bank" />
+
+        </li>
+
+        <li>
+
+           <label class="label">汇款账号(对私)<i>*</i></label>
+
+           <input name="remittance_num_private" type="text" value="{$data.remittance_num_private}" id="remittance_num_private" />
+
+        </li>
+
+
+        <li>
+
+           <label class="label">供应商地址<i>*</i></label>
+
+           <input name="adress" type="text" value="{$data.adress}" id="adress" />
+
+       </li>
+
+        
+
+       <li>
+
+           <label class="label">主要购入材料<i>*</i></label>
+
+           <textarea placeholder="材料名称" name="main_purchased_materials" id="main_purchased_materials">{$data.main_purchased_materials}</textarea>
+
+       </li>
+
+       <li>
+
+           <label class="label">备注</label>
+
+           <textarea placeholder="备注" name="note" id="note">{$data.note}</textarea>
+
+       </li>
+
+       <li>
+
+           <label class="label">状态:</label>
+
+           <input type="radio" name="display" id="display" {if condition="$data.display=='1'"}checked="checked"{/if} value="1" />
+
+               <label for="display">开</label>
+
+           <input type="radio" name="display" id="display1" {if condition="$data.display=='0'"}checked="checked"{/if} value="0" />
+
+               <label for="display1">关</label>
+
+       </li>
+
+       <li>
+
+           <a href="javaScript:upplier.save('{:url('/admin/upplier/save')}',{$is_edit})">保存</a>
+           <a href="javaScript:history.go(-1);" style="color: #fff;">返回</a>
+
+       </li>
+
+    </ul>
+
+</div>

@@ -1,0 +1,56 @@
+<script>
+    $(function(){
+        Member.UserInput=$("#User");
+        Member.PwdInput=$("#Pwd");
+        Member.IdInput=$("#id");
+        Member.NameInput=$("#Name");
+        Member.TelInput=$("#Tel");
+        Member.MemoArea=$("#Memo");
+        Member.TypeInput=$("#Type");
+        
+        Member.NoUser="请输入账号！";
+        Member.NoPwd="请输入密码！";
+        Member.SuccessURL="{:url('/admin/member')}";
+    })
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_nav fl">
+        <li><a href="{:url('/admin/factory/edit','id='.$id)}">工厂信息</a></li>
+        <li {if condition='$type==1'} class="current"{/if}><a href="{:url('/admin/factory/product',['id'=>$id,'type'=>'1'])}">印花产品</a></li>
+        <li {if condition='$type==2'} class="current"{/if}><a href="{:url('/admin/factory/product',['id'=>$id,'type'=>'2'])}">加工产品</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+                <th width="150">产品名称</th>
+                <th width="150">缩略图</th>
+                <th>产品编码</th>
+                <th class="center" width="150">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='data' id='value' key='k'}
+            <tr>
+                <td class="center">{$k}</td>
+                <td class="center"><input name="select" type="checkbox" value="{$value.id}" /></td>
+                <td>{$value.product.name}</td>
+                <td>{if condition="strstr($value.product.smallimg,'http')"}<img src='{$value.product.smallimg}@0e_0o_1l_500h_500w.src' />{else}<img src='{:PRODUCT_IMG}{$value.product.smallimg}' />{/if}</td>
+                <td>{$value.product.product_num}</td>
+                <td class="center operation">
+                    <a href="javaScript:select.delete('{:url('/admin/factory/deleteProduct')}',['{$value.id}'])">删除</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/admin/factory/addProduct',['factory_id'=>$id,'type'=>$type])}">添加</a></li>
+        <li><a href="javaScript:select.deleteall('{:url('/admin/factory/deleteProduct')}')">删除</a></li>
+    </ul>
+</div>

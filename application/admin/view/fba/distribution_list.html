@@ -1,0 +1,176 @@
+<style>
+    .name {
+        line-height: 28px;
+        font-size: 14px;
+        min-height: 28px;
+        position: relative;
+        padding-left: 105px;
+        float: left;
+        margin-bottom: 5px;
+    }
+    .canvas_intro table.product {
+        margin-top: 30px;
+        margin-bottom: 80px;
+        margin-right: 50px;
+        margin-left: 10px;
+    }
+    .canvas_intro table.product {
+        width: 80%;
+        border: solid #000000;
+        border-width: 1px 0px 0px 1px;
+        padding: 2px;
+        margin: 8px 0;
+        margin-bottom: 12px;
+    }
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        display: table;
+    }
+    .canvas_intro table.product td {
+        padding: 20px 8px;
+        height: 42px;
+        vertical-align: middle;
+        text-align: center;
+        border: solid #000000;
+        border-width: 0px 1px 1px 0px;
+        display: table-cell;
+    }
+    .canvas_intro table.product table.productchild {
+        width: 100%;
+        height: 100%;
+        border: solid #000000;
+        border-width: 1px 0px 0px 1px;
+        margin: 8px 0;
+        margin-bottom: 1px;
+    }
+    .canvas_intro {
+        overflow-y:auto;
+        overflow-x:auto;
+        height:calc(100% - 50px);
+    }
+    .modelboxv {
+        width: 1105px;
+        background: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        margin: 0 auto;
+        margin-top: 50px;
+        height:calc(100% - 100px);
+    }
+
+
+    input[type='checkbox'] + label {
+        border-radius: 4px;
+        display: inline-block;
+        cursor: pointer;
+        /*height: 155px;*/
+        width: 204px;
+        margin-bottom: 2px;
+        margin-right: 2px;
+        line-height: 36px;
+        background: #fff;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    input[type='radio'] + label {
+        border-radius: 4px;
+        display: inline-block;
+        cursor: pointer;
+        /*height: 155px;*/
+        width: 204px;
+        margin-bottom: 2px;
+        margin-right: 2px;
+        line-height: 36px;
+        background: #fff;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-weight: bold;
+        font-size: 18px;
+    }
+    input[type='checkbox']:checked +label {
+        border: 1px solid #5eb1e5;
+        background: #5eb1e5;
+        color: #fff;
+    }
+    input[type='radio']:checked +label {
+        border: 1px solid #5eb1e5;
+        background: #5eb1e5;
+        color: #fff;
+    }
+    .qrcodeimg {
+        margin: 1px;
+        width: 200px;
+        /*height: 151.8px;*/
+        /*transform:scale(0.8)*/
+    }
+    .printdiv {
+
+    }
+    div.printcent {
+
+        left: -10000px;
+    }
+
+</style>
+
+<div class="modelboxv">
+
+    <div class="canvas_title do-clear">
+
+        <ul class="tab_btn tab_btn_fl fl">
+
+
+
+        </ul>
+
+        <ul class="tab_btn fr">
+
+            <li><a href="javaScript:print_ckbox_pdf({$fba_id});">打印</a></li>
+            <li><a href="javaScript:openModel.close()">关闭</a></li>
+
+        </ul>
+
+    </div>
+
+    <div class="canvas_intro" id="print_table_box">
+
+        <table class="productli fbali" id="ckbox_list_table">
+
+            <thead>
+
+            <tr>
+
+                <th class="center">图片</th>
+                <th class="center">SKU</th>
+                <th class="center">仓库</th>
+                <th class="center">需拣货量</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {volist name='list' id='value' key='k'}
+            <tr class="">
+                <td class="center"><img style="width: 100px;height: 100px" src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.img)[0]}@0e_0o_1l_500h_500w.src' /></td>
+                <td class="center">{$value.sku}<br>{$value.size}</td>
+                <td class="center">
+                    {volist name='$value.meatil' id='mv' key='mk'}
+                    {$mv.wt_name}({$mv.count}件)
+                    <br>
+                    {/volist}
+                </td>
+                <td class="center">{$value.pick}</td>
+
+            </tr>
+
+            {/volist}
+            </tbody>
+        </table>
+    </div>
+</div>

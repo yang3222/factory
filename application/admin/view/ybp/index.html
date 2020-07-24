@@ -1,0 +1,87 @@
+<link rel="stylesheet" href="{:USER_STYLE_URL}css/date.css" type="text/css" media="screen" />
+
+<script type="text/javascript" src="{:USER_STYLE_URL}js/date.js"></script>
+<script src="{:USER_STYLE_URL}js/echarts.js"></script>
+
+<script type="text/javascript">
+ $(function(){
+        $('.custom-date').dateRangePicker($("input[name='start_date']"),$("input[name='end_date']"));
+        order.productsearch="{$searchproduct}".split(",");
+        select.select();
+    })
+  </script>
+
+
+<div class="canvas_title do-clear">
+
+    
+
+    <ul class="tab_btn tab_btn_fl fr">
+
+        <li><a href="javaScript:openModel.openWindow('{:url('/admin/product/openwindows')}')">按产品</a></li>
+
+        <li class="date">
+
+            <select class='custom-date' name='custom_date' id="date">
+
+                <option value='7'  selected='selected'>7天</option>
+
+                <option value='30' >30 天</option>
+
+                <option value='90' >90 天</option>
+
+                <option value='180' >180 天</option>
+
+                <option value='365' >365 天</option>
+
+                <option value='custom' >自定义</option>
+
+            </select>
+
+            <input type="hidden" name="start_date" id="start_date" value="{$date.start_date}">
+
+            <input type="hidden" name="end_date" id="end_date" value="{$date.end_date}">
+
+        </li>
+        
+        
+
+      <li><a href="javaScript:order.search([$('#search'),'{:url('/admin/ybp/index','type='.$sign)}'])">搜索</a></li>
+
+    </ul>
+
+</div>
+<div id="chartmain" style="height:400px"></div>
+<script type="text/javascript">
+     
+ //指定图标的配置和数据
+        var option = {
+            title:{
+                text:''
+            },
+            tooltip:{
+                 trigger: "item",
+                 formatter: " {b}<br/>{a} : {c}件"
+            },
+            legend:{
+                data:['用户来源']
+            },
+            xAxis:{
+                data:[{$dataStr}]
+            },
+            yAxis:{
+
+            },
+            series:[{
+                name:'订单量',
+                type:'line',
+                data:[{$orderCount}]
+            }]
+        };
+        //初始化echarts实例
+        var myChart = echarts.init(document.getElementById('chartmain'));
+
+        //使用制定的配置项和数据显示图表
+        myChart.setOption(option);
+
+</script>

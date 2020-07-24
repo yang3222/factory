@@ -1,0 +1,66 @@
+<script>
+    $(function() {
+        //checkFun.init($("#selecttitle"), $("input[name='select']"));
+    })
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/admin/member/add')}">添加</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="150">账号</th>
+                <th width="150">用户名</th>
+                <th width="200">电话</th>
+                <th class="center">所属组</th>
+                <th>备注</th>
+                <th class="center" width="40">状态</th>
+                <th class="center" width="40">订单操作权限</th>
+                <th class="center">添加时间</th>
+                <th class="center">用户登入码</th>
+                <th class="center" width="100">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='member' id='value' key='k'}
+            <tr class="navline">
+                <td class="center">{$k}</td>
+                <td>{$value.User}</td>
+                <td>{$value.userinfo.Name}</td>
+                <td>{$value.userinfo.Tel}</td>
+                <td class="center">
+                    {volist name='$value.authGroup' id='authv' key='authk'}
+                    {$authv.title}{if condition='$authk < count($value.authGroup)'}，{else}{/if}
+                    {/volist}
+                </td>
+                <td>{:htmlspecialchars_decode($value.userinfo.Memo)}</td>
+                <td class="center radio">
+                    {if condition="$value.reviewed=='1'"}<span>开</span>
+                    {elseif condition="$value.reviewed=='2'"}<span class="close">关</span>
+                    {else}<span class="inside">审</span>
+                    {/if}
+                </td>
+                <td class="center radio">
+                    {if condition="$value.operation_auth==1"}<span>是</span>
+                    {else}<span class="close">否</span>
+                    {/if}
+                </td>
+                <td class="center">{$value.Timer}</td>
+                <td class="center"><img src="{:url('/admin/Member/getUserCodeBar','text='.$value.user_code)}"></td>
+                <td class="center operation">
+                    <a href="{:url('/admin/member/edit','id='.$value.id)}">编辑</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/admin/member/add')}">添加</a></li>
+    </ul>
+</div>

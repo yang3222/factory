@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+{include file='common/member' title='后台登录' /}
+<script>
+    $(function(){
+        code.imgurl="{:url('/user/login/code')}";
+        code.Img=$("#codeimg");
+        login.UserName=$('#user');
+        login.PassWord=$('#pwd');
+        login.Code=$('#code');
+        login.Tip=$('#tiptxt');
+        login.PostURL="{:url('/user/login/checklogin')}";
+        login.IndexURL="{:url('/user/index')}";
+        login.entEvent();
+    })
+</script>
+</head>
+
+<body class="login">
+   <div class="loginbox">
+      <h1><a href="#"><img src="{:ADMIN_STYLE_URL}images/login_logo.png" /></a></h1>
+      <div class="login-form">
+         <h2>会员登录</h2>
+         <input name="" id="user" type="text" placeholder="账号">
+         <input name="" id="pwd" type="password" placeholder="密码">
+         <div class="yzm do-clear">
+            <input name="" id="code" type="text" class="code" placeholder="验证码">
+            <img title="点击刷新" id="codeimg" src="{:url('/user/login/code')}" onclick="code.img()" />
+         </div>
+         <a href="javaScript:login.post()" class="btn">登录</a>
+         <span id="tiptxt" class="logintip"></span>
+      </div>
+   </div>
+</body>
+</html>

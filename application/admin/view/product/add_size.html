@@ -1,0 +1,21 @@
+<div class="canvas_title do-clear">
+    <ul class="tab_nav fl">
+        <li><a href="{:url('/admin/product/edit','id='.$data.product_id)}">产品信息</a></li>
+        <li class="current"><a href="javaScript:;">型号</a></li>
+        <li ><a href="{:url('/admin/product/factory','product_id='.$data.product_id)}">工厂</a></li>
+        <li ><a href="{:url('/admin/product/manufacture','product_id='.$data.product_id)}">生产单</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <ul class="add_from">
+        <li>
+           <label class="label">型号<i>*</i></label>
+           <input type="hidden" id="id" name="id" value="{$data.id}" />
+           <input type="hidden" id="product_id" name="product_id" value="{$data.product_id}" />
+           <input name="Size" type="text" value="{$data.Size}" id="Size" />
+        </li>
+       <li>
+           <a href="javaScript:productSize.save('{:url('/admin/product/postSize')}')">保存</a>
+       </li>
+    </ul>
+</div>

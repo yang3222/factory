@@ -1,0 +1,42 @@
+<div class="modelbox">
+
+    <div class="canvas_title do-clear">
+
+        <h3>生产状态详情</h3>
+
+    </div>
+
+    <ul class="infobox do-clear">
+
+        <li><label>生产状态：</label>
+
+            <ul class="factory">
+
+                {volist name="orderstatus" id='status'}
+
+                <li>
+                    {$status.status}
+                    <i>{$status.add_time}</i>
+                </li>
+                {/volist}
+
+            </ul>
+
+        </li>
+
+
+
+
+    </ul>
+
+    <div class="canvas_title do-clear">
+
+        <ul class="tab_btn fr">
+
+            <li><a href="javaScript:openModel.close()">确定</a></li>
+
+        </ul>
+
+    </div>
+
+</div>

@@ -1,0 +1,74 @@
+<style>
+    .add_from>li label.label {
+        position: absolute;
+        left: 0;
+        top: 0;
+        text-align: right;
+        width: 210px;
+        height: 52px;
+        line-height: 52px;
+        font-size: 14px;
+    }
+    .add_from>li {
+        border-bottom: 1px solid #f5f5f5;
+        min-height: 22px;
+        padding: 10px 0;
+        position: relative;
+        padding-left: 217px;
+    }
+    .add_from li>input[type='text'] {
+        border: 1px solid #cccccc;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        height: 30px;
+        width: 400px;
+        padding: 0 5px;
+        color: #666;
+    }
+    .add_from li label.label i {
+        color: #ff0000;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>
+<div class="modelbox">
+    <div class="canvas_title do-clear">
+        <ul class="tab_btn fr">
+            <li><a href="javaScript:openeditgroup.close()">关闭</a></li>
+        </ul>
+    </div>
+    <div class="canvas_intro">
+        <input name="id" type="hidden" value="{if condition='!empty($editgroup)'}{$editgroup.id}{/if}" id="id" />
+        <ul class="add_from">
+
+            <li>
+                <label class="label">用户组名称<i>*</i>：</label>
+
+                <input name="title_name" type="text" value="{if condition='!empty($editgroup.title)'}{$editgroup.title}{/if}" id="title_name" />
+
+            </li>
+            <li>
+                <label class="label">管理组类型<i>*</i>：</label>
+
+                <select name="types" id="types">
+                    <option value="1" {if condition="$editgroup.types=='1'"}selected="selected"{/if}>管理员</option>
+                    <option value="2" {if condition="$editgroup.types=='2'"}selected="selected"{/if}>工厂</option>
+                </select>
+
+            </li>
+
+        </ul>
+
+    </div>
+    <div class="canvas_title do-clear">
+        <ul class="tab_btn fr">
+            {if condition='!empty($editgroup)'}
+            <li><a href="javaScript:openeditgroup.update_name()">保存</a></li>
+            {else}
+            <li><a href="javaScript:openeditgroup.save_name()">保存</a></li>
+            {/if}
+        </ul>
+    </div>
+</div>

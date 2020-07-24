@@ -1,0 +1,127 @@
+<style>
+    .modelbox .libox .factory input[type='radio']{
+        display: none;
+    }
+    .modelbox .libox .factory input[type='radio'] +label{
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius:4px;
+        display:inline-block;
+        cursor: pointer;
+        height: 39px;
+        margin-bottom: 12px;
+        margin-right: 12px;
+        line-height: 36px;
+        padding: 0 24px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+    .modelbox .libox .factory input[type='radio'] +label:hover{
+        border:1px solid #5eb1e5;
+    }
+    .modelbox .libox .factory input[type='radio']:checked +label{
+        border:1px solid #5eb1e5;
+        background:#5eb1e5;
+        color: #fff;
+    }
+</style>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+
+<div class="canvas_title do-clear">
+    <ul class="tab_btn fr">
+
+        <li><a href="javaScript:factory.searchOrder();">下一步</a></li>
+
+        <!--<li><a href="javaScript:openModel.close()">关闭</a></li>-->
+
+    </ul>
+</div>
+<div class="modelbox">
+<!--<div class="canvas_title do-clear">-->
+
+
+
+<!--</div>-->
+
+<div class="libox">
+
+    <div class="factory" id="Printfactorys">
+        <span >印花厂：</span>
+        {volist name='pri' id='value' key='k'}
+
+        <input type="radio" name="Printfactory"  id="Printfactory{$k}" value="{$value.id}"><label for="Printfactory{$k}">{$value.userinfo.Name}</label>
+
+        {/volist}
+
+    </div>
+
+    <div class="factory" id="Macfactorys">
+        <span>加工厂：</span>
+        {volist name='fac' id='value' key='k'}
+
+        <input type="radio" name="Macfactory"  id="Macfactory{$k}" value="{$value.id}"><label for="Macfactory{$k}">{$value.userinfo.Name}</label>
+
+        {/volist}
+
+    </div>
+
+</div>
+
+<input type='hidden' id='orderid' value=''>
+</div>
+
+<script>
+    //单选框取消功能
+    $("input[type='radio']").on('click', function() {
+        if ($(this).data('ischecked') == true) {
+            $(this).prop('checked', false);
+            $(this).data('ischecked', false);
+        } else {
+            $(this).prop('checked', true);
+            $(this).data('ischecked', true);
+        }
+        $(this).parents('.factory').siblings('.factory').find("input[type='radio']").data('ischecked', false);
+    });
+    var factory={
+
+        printFactory:[],
+        macFactory:[],
+        orderid:'',
+
+        getOrderId:function(){
+            factory.orderid=$('#orderid').val();
+        },
+        getPrintFactory:function(){
+            factory.printFactory=[];
+            $("[name=Printfactory]:checked").each(function(){
+                factory.printFactory.push($(this).val());
+            });
+        },
+
+        getMacFactory:function(){
+            factory.macFactory=[];
+            $("[name=Macfactory]:checked").each(function(){
+                factory.macFactory.push($(this).val());
+            });
+        },
+        searchOrder:function(){
+
+            //factory.getOrderId();
+            factory.getPrintFactory();//打印
+            factory.getMacFactory();//加工
+            if (factory.printFactory.length == 0 && factory.macFactory.length == 0) {
+                alert('请选择印花/加工工厂');
+                return;
+            }
+            var url = "{:url('/admin/productionmanage/orderFac')}"+'?pFactory=' + factory.printFactory.join(',') + '&mFactory=' + factory.macFactory.join(',');
+
+            window.location = url;
+            //$.post("/admin/productionmanage/OrderFac",{pFactory:factory.printFactory,mFactory:factory.macFactory},function(result){
+                //alert(result);
+                //window.location = result;
+            //});
+        }
+
+
+    }
+</script>

@@ -1,0 +1,39 @@
+<div class="canvas_title do-clear">
+    <ul class="tab_nav fl">
+        <li><a href="{:url('/admin/product/edit','id='.$data.id)}">产品信息</a></li>
+        <li class="current"><a href="javaScript:;">型号</a></li>
+        <li ><a href="{:url('/admin/product/factory','product_id='.$data.id)}">工厂</a></li>
+        <li ><a href="{:url('/admin/product/manufacture','product_id='.$data.id)}">生产单</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="10" class="center"><input name="" type="checkbox" value="" onchange="productSize.change(this)" /></th>
+                <th>型号</th>
+                <th class="center" width="130">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='data.productsize' id='size' key='k'}
+             <tr>
+                <td class="center">{$k}</td>
+                <td class="center"><input name="select" type="checkbox" value="{$size.id}" /></td>
+                <td>{$size.Size}</td>
+                <td class="center operation">
+                    <a href="{:url('/admin/product/editSize','id='.$size.id)}">编辑</a>
+                    <a href="javaScript:productSize.delete('{$size.id}','{:url('/admin/product/deleteSize')}')">删除</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/admin/product/addSize','product_id='.$data.id)}">添加</a></li>
+        <li><a href="javaScript:productSize.deleteAll('{:url('/admin/product/deleteSize')}')">删除</a></li>
+    </ul>
+</div>

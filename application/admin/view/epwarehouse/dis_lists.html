@@ -1,0 +1,166 @@
+<script>
+
+    $(function(){
+
+        select.select();
+
+    })
+
+</script>
+<style type="text/css" media=print>
+    .noprint{display : none }
+    .yinc td{
+        border-left: 1px solid;border-top: 1px solid;
+        width:200px;
+    }
+
+</style>
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+<!--        <li><a href="javaScript:materialdetail.deleteAll('{:url('/admin/warehouse/materialDetailDel')}')">删除</a></li>-->
+<!--        <li><a href="{:url('/admin/warehouse/exportExcel')}" download='物料.xlsx' target="_blank">导出Excel数据</a></li>-->
+        <li><a href="javaScript:;" onclick="preview(1,'all')">打印全部</a></li>
+        <li><a href="javaScript:;" onclick="preview(1,'select')">打印选中</a></li>
+
+        <li class="input"><input type="text" id="search" name="search" value=""
+
+                                 onkeydown="keyFun.key(event,13,search.search,[$('#search'),'{:url('/admin/epwarehouse/disLists')}'])"
+
+                                 placeholder="搜索：sku" /></li>
+
+        <li><a href="javaScript:search.searchArray(['{:url('/admin/epwarehouse/disLists')}','search'])">搜索</a></li>
+        <li><a href="javaScript:materialdetail.deleteAll('{:url('/admin/epwarehouse/canceldisLists')}','批量取消')">批量取消</a></li>
+
+    </ul>
+
+    {$pageDiv}
+
+</div>
+
+<div class="canvas_intro">
+    <!--startprint1-->
+    <table class="productli" style="border-bottom:1px solid;text-align: center" border="1" cellspacing="0" cellpadding="0">
+
+        <thead class="noprint">
+
+        <tr>
+
+            <th width="10" class="center">#</th>
+
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+
+            <th width="140" class="center">图片</th>
+            <th width="140" class="center">订单号二维码</th>
+            <th width="140" class="center">sku</th>
+            <th width="140" class="center">库位</th>
+            <th class="center" width="200">操作</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {volist name='data' id='value' key='k'}
+        <tr class="yinc" style="width: 50%;height: 105px">
+            <td class="center noprint">{$k}</td>
+            <td class="center noprint"><input name="select" type="checkbox" value="{$value.sku}" /></td>
+            <td><img style="width: 100px;" src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.whmd.ep_img)[0]}@0e_0o_1l_500h_500w.src' /></td>
+            <td>
+                {if condition = "!empty($value.neworder_id)"}
+                <img style="width: 100px;" src="{:ROOT_NEWORDER_IMG}{$value.neworder.OrdNum}.png" /><br>
+                {$value.neworder.OrdNum}
+                {/if}
+            </td>
+            <td>{$value.sku}<br><span>id:</span>{$value.whmd.skuid}<br>{$value.whmd.spec}</td>
+            {assign name = "wt_data" value=':getWtdata($value.whmd.unique_id)'}
+            <td>
+                {if condition = "!empty($wt_data)"}
+                {volist name = "$wt_data" id="vw" key="kw"}
+                <label class='material' id="label_{$vw.id}" style='white-space:nowrap;'>{$vw.wt_name}({$vw.count}件)&nbsp;</label><br>
+                {/volist}
+                {/if}
+                {if condition = "!empty($value.neworder_id)"}
+                <br><label class='material' style='white-space:nowrap;'><b style="color: green">需要数量:</b>{$value.neworder.GdsNum}</label>
+                {/if}
+            </td>
+
+            <td class="center operation noprint">
+                <a href="javaScript:materialdetail.delete('{$value.sku}','{:url('/admin/epwarehouse/canceldisLists')}','取消')">取消</a>
+<!--                <a href="javaScript:;" class="printchecked">打印配货单</a>-->
+            </td>
+
+        </tr>
+
+        {/volist}
+
+        </tbody>
+    </table>
+    <!--endprint1-->
+
+
+
+</div>
+
+    <script language="javascript">
+
+        function preview(oper,type='') {
+
+            if(oper < 10) {
+                // $(".yinc").css('float','left');
+
+
+                var s=document.getElementsByName("select")
+                console.log(s)
+                // return false;
+                for(var i=0;i<s.length;i++){
+                    console.log(s[i].parentNode)
+                    // return false;
+                    if (type == 'select'){
+                        if (s[i].checked == false){
+                            s[i].parentNode.parentNode.style.display='none';//隐藏不需要打印部分
+                        }
+                    }
+
+                }
+
+                var o=document.getElementsByClassName("noprint")
+                for(var i=0;i<o.length;i++){
+                    o[i].style.display='none';//隐藏不需要打印部分
+                }
+                bdhtml =window.document.body.innerHTML;//获取当前页的html代码
+
+                sprnstr = "<!--startprint" + oper + "-->";//设置打印开始区域
+
+                eprnstr = "<!--endprint" + oper + "-->";//设置打印结束区域
+
+                prnhtml =bdhtml.substring(bdhtml.indexOf(sprnstr) + 18); //从开始代码向后取html
+
+                prnhtml = prnhtml.substring(0,prnhtml.indexOf(eprnstr));//从结束代码向前取html
+
+                window.document.body.innerHTML= prnhtml;
+
+                window.print();
+
+                window.location.reload();
+            } else{
+                window.print();
+            }
+
+        }
+
+
+
+
+
+    </script>
+<div class="canvas_title do-clear">
+
+    <ul class="tab_btn tab_btn_fl fl">
+
+    </ul>
+
+    {$pageDiv}
+
+</div>

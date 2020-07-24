@@ -1,0 +1,43 @@
+<script>
+    var editpwd={
+        save:function(){
+            if($("#new_pwd").val().lengh<6){
+                alert("密码必须大于6位数");
+                return;
+            }
+            if($("#new_pwd").val()!=$("#yes_new_pwd").val()){
+                alert("新密码不一致，请重新设置");
+                return;
+            }
+            if($("#old_pwd").val()==$("#yes_new_pwd").val()){
+                alert("旧密码与新密码一致，请重新设置");
+                return;
+            }
+            $.post("{:url('/user/acount/edit')}",{old:$("#old_pwd").val(),new:$("#new_pwd").val()},function(data){
+                alert(data);
+            })
+        }
+    }
+</script>
+<div class="canvas_title do-clear">
+   <h2>修改密码</h2>
+</div>
+<div class="canvas_intro">
+   <ul class="add_from">
+      <li>
+         <label class="label">旧密码<i>*</i></label>
+         <input name="old_pwd" type="password" id="old_pwd" value="" />
+      </li>
+      <li>
+         <label class="label">新密码<i>*</i></label>
+         <input name="new_pwd" type="password" id="new_pwd" value="" />
+      </li>
+      <li>
+         <label class="label">确认新密码<i>*</i></label>
+         <input name="yes_new_pwd" type="password" id="yes_new_pwd" value="" />
+      </li>
+      <li>
+         <a href="javaScript:editpwd.save()">保存</a>
+      </li>
+   </ul>
+</div>

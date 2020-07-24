@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>FBA报表</title>
+        <script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+        <link href="{:ADMIN_STYLE_URL}css/r.css" rel="stylesheet" type="text/css" />
+        <script>
+            var sku = {
+                url: "http://webapi.38420.com/api/Order/QueryZT",
+                gurl:"http://admin.entsku.com/__/_jc/agent/goods.ashx?ActFlag=Goods.All&Keywords=",
+                startTime: "",
+                endTime: "",
+                skuArr: [],
+                total: 20,
+                index: 0,
+                skuStr: "",
+                loadindex:0,
+                gloadindex:0,
+                addsku: function(skus,boo) {
+                    if (sku.skuStr != "")
+                        sku.skuStr += ",";
+                    sku.skuStr += "'" + skus + "'";
+                    sku.index++;
+                    if (sku.index >= sku.total||boo) {
+                        sku.index = 0;
+                        sku.skuArr.push(sku.skuStr);
+                        sku.skuStr = "";
+                    }
+                },
+                loadDate: function() {
+                    if(sku.loadindex<sku.skuArr.length){
+                        sku.getData(sku.skuArr[sku.loadindex]);
+                    }else if(sku.loadindex==sku.skuArr.length+1){
+                        {if condition="$user"}sku.getProduct();{/if}
+                    }
+                    sku.loadindex++;
+                },
+                getData: function(skus,boo) {
+                    var obj = {Sku: skus, BeginTime: sku.startTime, EndTime: sku.endTime};
+                    $.post(sku.url, obj, function(data) {
+                        //if(boo)console.log(data);
+                        for (var i = 0; i < data.length; i++) {
+                            $("#num_" + data[i].GdsSku).html(data[i].GdsNum);
+                            $("#user_" + data[i].GdsSku).html(data[i].AgntName);
+                        }
+                        var skuArr=skus.split(',');
+                        for(var j=0;j<skuArr.length;j++){
+                            var onesku=skuArr[j].split("'").join("");
+                            setPd.init(onesku);
+                        }
+                        sku.loadDate();
+                    });
+                },
+                getProduct:function(){
+                    var skuArr=[];
+                    $(".user_sku").each(function(){
+                        if($(this).html()==""){
+                            var sku=$(this).attr("id").split("user_").join("");
+                            if(skuArr.indexOf(sku)<0){
+                                skuArr.push(sku);
+                            }
+                        }
+                    })
+                    sku.loadGood(skuArr);
+                },
+                loadGood:function(arr){
+                    var newarr=[];
+                    var num=sku.gloadindex+20;
+                    num=(num>arr.length?arr.length:num);
+                    for(var i=sku.gloadindex;i<num;i++){
+                        newarr.push(arr[i]);
+                    }
+                    sku.gloadindex=i;
+                    var search=newarr.join('+');
+                     $.get(sku.gurl+search,"",function (data) {
+                         var rows=data.rows;
+			for(var j=0;j<rows.length;j++){
+                            var skuNum=rows[j]['GdsSku'];
+                            var name=rows[j]['AgntName'];
+                            $("#user_" + skuNum).html(name);
+                        }
+                        sku.loadGood(arr);
+                     },"jsonp");
+                }
+            }
+            //获取产品的sku
+            var psku={
+                url: "http://admin.entsku.com/__/_jc/design/product.ashx?ActFlag=Product.Sku.Grd&rows=1000000",
+                loading: function() {
+                    $.get(psku.url, null, function(data) {
+                        for (var i = 0; i < data.rows.length; i++){
+                                var product = data.rows[i];
+                                $(".size_"+product.ProdSku).html(product.SpecName);
+                                $(".name_"+product.ProdSku).html(product.MdlName);
+                        }
+                    }, 'jsonp')
+                }
+            }
+            var setPd={
+                init:function(sku){
+                    var num=Number($("#num_" + sku).html());
+                    var usernum=Number($("#user_num_" + sku).html());
+                    var sales=Number($("#sales_" + sku).html());
+                    var quantity=Number($("#quantity_" + sku).html());
+                    var sell=Number($("#sell_" + sku).html());
+                    var endingquantity=Number($("#endingquantity_" + sku).html());
+                    var pd1 = (sell + usernum >= endingquantity) ? "是" : "否";
+                    $("#pd1_" + sku).html(pd1);
+                    var pd2="-";
+                    if(usernum > quantity){
+                        pd2=(sales == 0)?"否":"是";
+                    }
+                    //var pd2 = (num > quantity && sales == 0) ? "否" : "是";
+                    $("#pd2_" + sku).html(pd2);
+                }
+            }
+
+            function method1(tableid) {
+                // 使用outerHTML属性获取整个table元素的HTML代码（包括<table>标签），然后包装成一个完整的HTML文档，设置charset为urf-8以防止中文乱码
+                var table = $("#" + tableid).parent().html();
+                var html = "<html><head><meta charset='utf-8' /></head><body>" + table + "</body></html>";
+                // 实例化一个Blob对象，其构造函数的第一个参数是包含文件内容的数组，第二个参数是包含文件类型属性的对象
+                var blob = new Blob([html], {type: "application/vnd.ms-excel",name:"1223123"});
+                var objectUrl = URL.createObjectURL(blob);
+                var aForExcel = $("<a><span class='forExcel'>下载excel</span></a>").attr("href", objectUrl);
+                $("body").append(aForExcel);
+                $(".forExcel").click();
+                aForExcel.remove();
+            }
+            sku.startTime = "{$time.start}";
+            sku.endTime = "{$time.end}";
+            $(function() {
+                sku.loadDate();
+                psku.loading();
+                
+                sku.getData("'g1025062p132c146s222'",true);
+            })
+        </script>
+
+        <style>
+            table{border-right:1px solid #ccc; border-bottom:1px solid #ccc; width:100%;}
+            td{text-align:center; vertical-align:middle; border:1px solid #ccc; border-right:0; border-bottom:0; height:30px;}
+            tr:hover{background:#efefef;}
+            td span{padding:0 10px;}
+            .import a{display:block; height:46px; line-height:46px; font-size:20px; text-align:center; color:#333; text-decoration:none; background:#efefef;}
+            .import a:hover{background:#999999; color:#000000;}
+        </style>
+
+    </head>
+
+    <body>
+        <div class="import"><a href="javaScript:method1('table0')">导出Excel</a></div>
+        <div>
+            <table id="table0">
+                <tr>
+                    <td>#</td>
+                    {if condition="$user"}
+                    <td>业务员</td>
+                    {/if}
+                    <td>sku</td>
+                    <td>款号</td>
+                    <td>品名</td>
+                    <td>规格</td>
+                    <td>本年度销售金额({$money})</td>
+                    <td>本年度到账金额({$money})</td>
+                    <td>本年度退款金额({$money})</td>
+                    <td>本年度退款到账金额({$money})</td>
+                    <td>本年度动销量</td>
+                    <td>本年度销售量</td>
+                    <td>本年度退款量</td>
+                    <td>本年度配货量（系统）</td>
+                    <td>本年度配货量（业务员）</td>
+                    <td>上年度期末库存</td>
+                    <td>上月度期末库存</td>
+                    <td>期初库存</td>
+                    <td>期末库存</td>
+                    <td>已接收</td>
+                    <td>已退货</td>
+                    <td>已找到</td>
+                    <td>入库商品总数</td>
+                    <td>已售出</td>
+                    <td>已移除</td>
+                    <td>丢失</td>
+                    <td>已弃置</td>
+                    <td>其他</td>
+                    <td>出库商品总数</td>
+                    <td>差异</td>
+                    <td>上年度期末库存+本年度配货量（业务员）>=期末库存</td>
+                    <td>本年度配货量（业务员）>本年度销售量时，销售金额不为0</td>
+                    <td>销售金额>=到账金额</td>
+                    <td>到账率(到账金额/销售金额)>=40%}</td>
+                </tr>
+                {volist name="sku" id="value" key="k"}
+                {assign name='productsku' value=':preg_replace("/g.*p/","p",$value.sku)'}
+                <tr>
+                    <td>{$k}</td>
+                    {if condition="$user"}
+                    <td id="user_{$value.sku}" class="user_sku"></td>
+                    {/if}
+                    <td>{$value.sku}<script>sku.addsku("{$value.sku}",{if condition="count($sku)==$k"}true{else}false{/if})</script></td>
+                    <td>{$productsku}</td>
+                    <td class="name_{$productsku}"></td>
+                    <td class="size_{$productsku}"></td>
+                    <td id="sales_{$value.sku}">{$value.sales}</td>
+                    <td id="total_{$value.sku}">{$value.total}</td>
+                    <td>{$value.refundsales}</td>
+                    <td>{$value.refundtotal}</td>
+                    <td id="dxquantity_{$value.sku}">{$value.userquantity+$value.selltable-$value.endingquantity}</td>
+                    <td id="quantity_{$value.sku}">{$value.quantity}</td>
+                    <td>{$value.refund}</td>
+                    <td id="num_{$value.sku}"></td>
+                    <td id="user_num_{$value.sku}">{$value.userquantity}</td>
+                    <td id="sell_{$value.sku}">{if condition="isset($value.selltable)"}{$value.selltable}{else}0{/if}</td>
+                    <td>{if condition="isset($value.selltableold)"}{$value.selltableold}{else}0{/if}</td>
+                    <td>{$value.beginningquantity}</td>
+                    <td id="endingquantity_{$value.sku}">{$value.endingquantity}</td>
+                    
+                    <td>{$value.received}</td>
+                    <td>{$value.returned}</td>
+                    <td>{$value.found}</td>
+                    <td>{$value.received+$value.returned+$value.found}</td>
+                    <td>{$value.sold}</td>
+                    <td>{$value.removed}</td>
+                    <td>{$value.lost}</td>
+                    <td>{$value.disposed}</td>
+                    <td>{$value.other}</td>
+                    <td>{$value.sold+$value.removed+$value.lost+$value.disposed+$value.other}</td>
+                    <td>{$value.discrepantquantity}</td>
+                    
+                    <td id="pd1_{$value.sku}"></td>
+                    <td id="pd2_{$value.sku}"></td>
+                    <td>{if condition="$value.sales>=$value.total"}是{else}否{/if}</td>
+                    <td>{if condition="$value.total>=0.4*$value.sales&&$value.total!=0"}是{else}{if condition="$value.total!=0"}否{else}-{/if}{/if}</td>
+                </tr>
+                {/volist}
+            </table>
+        </div>
+    </body>
+</html>

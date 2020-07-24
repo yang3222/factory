@@ -1,0 +1,1069 @@
+
+<link rel="stylesheet" href="{:ADMIN_STYLE_URL}css/date.css" type="text/css" media="screen" />
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/date.js"></script>
+<style>
+    .fbali th {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .fbali td {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #e6e6e6;
+    }
+    .openyes {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #5bb75b;
+        color: #fff;
+        font-size: 12px;
+    }
+    .closeno {
+        display: inline-block;
+        height: 22px;
+        line-height: 22px;
+        padding: 0 10px;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        background: #e80c0c;
+        color: #fff;
+        font-size: 12px;
+    }
+    .trBox {
+        padding: 10px;
+        height: 60px;
+        animation: fade 1000ms infinite;
+        -webkit-animation: fade 1000ms infinite;
+    }
+    @keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+
+    @-webkit-keyframes fade {
+        from {
+            opacity: 1.0;
+        }
+        50% {
+            opacity: 0.4;
+        }
+        to {
+            opacity: 1.0;
+        }
+    }
+    .fbatoptab{
+        margin:4px 10px;
+        text-align: left;
+        width:calc(100% - 20px);
+
+    }
+    .fbatoptab td{
+        height:36px;
+        vertical-align: middle;
+        font-weight:bold;
+        font-size:14px;
+    }
+    .fbatoptab td label{
+        display:inline-block;
+    }
+    .btnbox{
+        margin:4px 10px;
+        margin-top:20px;
+    }
+    .btnbox .writeNum{
+        float:left;
+    }
+    .btnbox .btn_c{
+        float:right;
+    }
+
+    .order_top {
+        text-align: left;
+        vertical-align: middle;
+        display: inline-table;
+        /*border:1px solid #e6e6e6;*/
+        /*//background-color: #e6e6e6;*/
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 10px;
+    }
+    .order_right {
+        text-align: left;
+        vertical-align: middle;
+        display: inline-table;
+        float: right;
+        /*border:1px solid #e6e6e6;*/
+        /*//background-color: #e6e6e6;*/
+        font-size: 14px;
+        font-weight: bold;
+        padding: 4px 10px;
+    }
+
+    .fba_top1 {
+        vertical-align: middle;
+        font-weight: bold;
+        padding: 10px 10px 5px 5px;
+        font-size: 16px;
+        width: auto;
+        height: 37px;
+        margin: 2px;
+    }
+
+    .button_a {
+        padding: 5px 10px;
+        min-width:60px;
+        background: #5e87b0;
+        color: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        margin-right: 4px;
+        display:inline-block;
+        text-align: center;
+    }
+    .check_stock:hover,
+    .button_a:hover{
+        background:#6d9ccc;
+    }
+    .btnbox .btn_c .button_a{
+        min-width:60px;
+    }
+    .canvas_intro table.orderli td.operation a{
+        margin-top:10px;
+    }
+
+    .check_stock {
+        background: #e6e6e6;
+        color: #eeb54c;
+        -moz-border-radius: 3px;
+        -webkit-border-radius: 3px;
+        border-radius: 3px;
+        margin-right: 2px;
+    }
+
+    .button_a2 {
+        float: right;
+        padding: 5px 10px;
+        background: #5e87b0;
+        color: #fff;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        border-radius: 2px;
+    }
+    .button_a3 {
+        float: right;
+        padding: 5px 10px;
+        background: #5e87b0;
+        color: #fff;
+        -moz-border-radius: 4px;
+        -webkit-border-radius: 4px;
+        border-radius: 4px;
+        bottom: 0px;
+        margin-right: 2px;
+    }
+    .wno_input {
+        border: 1px solid #cccccc;
+        color: #666;
+        border-radius: 4px;
+        height:24px;
+        width:150px;
+        margin-right:12px;
+        padding: 0 10px;
+    }
+    .button_hide {
+        display: none;
+    }
+    .canvas_title_fba {
+        height: 20px;
+        background: #70afc4;
+        font-size: 14px;
+        color: #fff;
+        padding-left: 10px;
+        position: relative;
+    }
+    .msg {
+        padding: 1px;
+        height: 300px;
+        width: 600px;
+        /*padding: 10px;*/
+        display: inline-table;
+        border:1px solid #e6e6e6;
+    }
+    .box {
+        padding: 1px;
+        /**height: 300px;*/
+        float:right;
+        width: 60%;
+        min-width:500px;
+        /*padding: 10px;*/
+        /*display: inline-table;
+        position: inherit;*/
+        /*border:1px solid #e6e6e6;*/
+    }
+    .msg_box{ margin:0 20px;}
+    .msg {
+        height: 300px;
+        width: 30%;
+        display: inline-table;
+        float:left;
+        position: relative;
+        border:0;
+        padding-bottom: 12px;
+        /*border:1px solid #e6e6e6;*/
+    }
+    .msgr {
+        height: 160px;
+        padding:12px;
+        background-color: #efefef;
+        border-radius:6px 6px 0 0;
+        overflow-y: scroll;
+    }
+    .msgw{
+        resize:none;
+        width:100%;
+        text-align: right;
+    }
+    .msg .button_a2{
+        width:100%;
+        height:36px;
+        line-height:36px;
+        padding:0;
+        margin:0;
+        text-align: center;
+        font-size:14px;
+    }
+    .msgw textarea{
+        width:calc(100% - 22px);
+        padding:10px;
+        height:60px;
+        font-size:12px;
+        border:1px solid #ccc;
+        border-radius:0 0 6px 6px;
+        border-top:0;
+        margin-bottom:10px;
+    }
+    .diburoot {
+        height: 20px;
+        background: #70afc4;
+        font-size: 14px;
+        color: #fff;
+        padding-left: 10px;
+        position: relative;
+    }
+    .ban_point {
+        pointer-events: none;
+    }
+    .box_tr {
+        display: none;
+    }
+    .yitijiao {
+        color: #1db100;
+    }
+    .yijieshou {
+        color: #9e19dc;
+    }
+    .yizhuangxiang {
+        color: #e73737;
+    }
+    .yifahuo {
+        color: #374ce7;
+    }
+    .yiwancheng {
+        color: #dc9a19;
+    }
+    .yiquxiao {
+        color: #bdbdbd;
+    }
+</style>
+<script>
+
+    $(function(){
+
+        //jeDate("#purchases_date",{
+        //format: "YYYY-MM-DD"
+        //});
+        //jeDate("#purchases_date",{
+        //multiPane:false,
+        //theme:{bgcolor:"#00A1CB",color:"#ffffff", pnColor:"#00CCFF"},
+        //format: "YYYY-MM-DD hh:mm:ss"
+        //});
+    })
+    /*$(function(){
+        $('.custom-date').dateRangePicker($("input[name='start_date']"),$("input[name='end_date']"));
+    })*/
+
+</script>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jquery.min.js"></script>
+<script type="text/javascript" src="{:ADMIN_STYLE_URL}js/jQuery.jsprint.js"></script>
+
+<input type="hidden" id="fba_id" value="{$list.id}"/>
+<div class="canvas_intro">
+<div class="canvas_title"><label>箱标：</label>B{$list.id}</div>
+
+    <table class="fbatoptab">
+        <tbody>
+           <tr>
+
+               <td><label>货件号：</label>{$list.fba_nums}</td>
+               <td><label>联系人：</label>{$list.contact}</td>
+               <td><label>快递方式：</label>{$list.type_of_shipping}</td>
+               <td><label>下单时间：</label>{:date('Y-m-d', $list.create_time)}</td>
+               <td><label>总件数：</label><span id="total_gds">{$total_gds}</span></td>
+           </tr>
+           <tr>
+               <td><label>状态：</label><strong  class="{$plan_status_color[$list.plan_status]}">{$plan_status_name[$list.plan_status]}</strong></td>
+               <td><label>店名：</label>{$list.shop_name}</td>
+               <td><label>物流：</label>{$list.express_way}<input id="WaybillNo_old" class="wno_input" type="hidden" value="{$list.waybill_no}"/></td>
+               <td><label>期望发货时间：</label>{:substr($list.expect_delivery_time, 0, 10)}</td>
+               <td><label>拣货数：</label><span id="picking_num">{$picking_num}</span></td>
+           </tr>
+        </tbody>
+    </table>
+    <div class="btnbox do-clear">
+        <div class="writeNum {if condition='$list.plan_status == 1'}button_hide{/if}" id="wno_div">
+            运单号：<input id="WaybillNo" class="wno_input" type="text" value="{$list.waybill_no}" {if condition="$list.waybill_no != ''"} readonly="readonly"{else}{/if} />
+            <a class="{if condition="$list.plan_status < 3"} ban_point {/if} {if condition="$list.plan_status == 5"} ban_point {/if} button_a2 {if condition="$list.waybill_no == ''"} button_hide{else}{/if}" href="javaScript:editWaybillNo();" id="edit_wno" style="color: #fff;" >编辑运单号</a>
+            <a href="javaScript:saveWaybillNo();" class="{if condition="$list.plan_status < 3"} ban_point {/if} button_a2 {if condition="$list.waybill_no != ''"} button_hide{else}{/if}" id="save_wno" style="color: #fff;">保存运单号</a>
+        </div>
+        <div class="btn_c">
+            <a class="button_a {if condition='$list.plan_status == 1'}button_hide{/if}" href="javaScript:picking_gds({$list.id});" style="color: #fff;">拣货</a>
+            <a class="button_a" href="javaScript:distribution_list({$list.id});" style="color: #fff;">配货单</a>
+            <a class="button_a" href="javaScript:plan_list({$list.id});" style="color: #fff;">打印面单</a>
+            <a class="button_a" href="javaScript:print_fbatap_all({$list.id});" style="color: #fff;">批量打印标签</a>
+        </div>
+    </div>
+    <!--<ul class="do-clear order_top">
+        <li style="text-align:center">货件号：{$list.fba_nums}</li>
+        <li><span>联系人：</span></li>
+        <li><span>店名：</span>{$list.shop_name}</li>
+        <li><span>快递方式：</span>{$list.type_of_shipping}</li>
+        <li><span>物流：</span>{$list.express_way}</li>
+        <li><span>运单号：</span><input type="text" value="{$list.waybill_no}" /></li>
+    </ul>-->
+
+
+    <table class="productli fbali orderli">
+
+        <thead>
+
+        <tr>
+            <th width="10" class="center">#</th>
+            <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+            <th class="center">图片</th>
+            <th class="center">订单号</th>
+            <th class="center">SKU</th>
+            <th class="center">数量</th>
+            <th class="center" >规格</th>
+            <th class="center" >FNSKU</th>
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        {volist name='list.fbaOrders' id='value' key='k'}
+
+        <tr class="fba_list">
+        <td class="center">{$k}</td>
+        <td class="center">
+            <input name="select" type="checkbox" value="{$value.id}" data-odrid="" />
+        </td>
+        <td class="center" width="130">
+            <img src='http://kjds-img.img-cn-shanghai.aliyuncs.com/{:explode(',',$value.img)[0]}@0e_0o_1l_500h_500w.src' />
+        </td>
+        <td class="center">{$value.order_no}</td>
+        <td class="center operation">{$value.sku}{if condition="$value.picking_num == $value.number"}<span style="color: #01b468;">(拣货已满)</span>{/if}<br/>
+        {if condition="$value.stock_count > 0"}（{$value.stock_count}件库存）<a href="javaScript:check_stock('{$value.sku}','{$value.size}', '{$value.img}')" class="check_stock">查看库存</a>{/if}
+        {if condition="$value.sku != ''"}<a href="{:url('/admin/Fba/print_sku_id_size')}?sku={$value.sku}&&size={$value.size}"  class="">打印SKU</a>{/if}
+        </td>
+        <td class="center">{$value.picking_num}/{$value.number}</td>
+        <td class="center operation">{$value.name}({$value.size})</td>
+        <td class="center operation">{$value.fnsku}<br/>
+            {if condition="$value.fnsku != ''"} <a href="javaScript:print_tap('{$value.id}', '{$value.number}');" class="button_a">打印标签</a>{/if}
+        </td>
+        </tr>
+
+        {/volist}
+        </tbody>
+    </table>
+
+</div>
+
+
+
+<div class="msg_box do-clear">
+    <div class="msg">
+        <div class="msgr">
+            <span id="note">{$list.note}</span>
+        </div>
+        <div class="msgw">
+            <textarea id="wmsg" rows="17" cols="32" placeholder="输入留言" ></textarea>
+        </div>
+        <div><a class="button_a button_a2" href="javaScript:saveMsg();" style="color: #fff;">提交留言</a></div>
+    </div>
+    <div class="box canvas_intro {if condition='$list.plan_status == 1'} button_hide{/if}">
+        <table class="productli fbali" id="box_table">
+
+            <thead>
+            <tr>
+                <th class="center">箱号</th>
+                <th class="center">规格(长*宽*高)</th>
+                <th class="center">库位</th>
+                <th class="center">重量(KG)</th>
+                <th class="center" >价格(￥)</th>
+                <th class="center" >装箱数量({$fCP}件)</th>
+                <th class="center" >操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {volist name='list.fbaBoxLabel' id='box_v' key='box_k'}
+            {php} $have_code_pick = 0; {/php}<!--表示箱子里面是否有内容，0无，1有-->
+            <tr class="fba_list" id="fbaboxlabel_{$box_v.id}">
+
+                <td class="center" width="">
+                    {$box_v.case_no}
+                </td>
+                <td class="center" id="case_lwh_{$box_v.id}">{$box_v.case_length}*{$box_v.case_width}*{$box_v.case_height}</td>
+                <td class="center box_tr" id="edit_case_lwh_{$box_v.id}">
+                    长:<input name="case_length_{$box_v.id}" id="edit_case_length_{$box_v.id}" type="text" size="5" value="{$box_v.case_length}"><br/>
+                    宽:<input name="case_width_{$box_v.id}" id="edit_case_width_{$box_v.id}" type="text" size="5" value="{$box_v.case_width}"><br/>
+                    高:<input name="case_height_{$box_v.id}" id="edit_case_height_{$box_v.id}" type="text" size="5" value="{$box_v.case_height}">
+                </td>
+                <td class="center">{$box_v.case_location}</td>
+                <td class="center" id="case_w_{$box_v.id}">{$box_v.case_weight}</td>
+                <td class="center box_tr" id="edit_case_w_{$box_v.id}"><input value="{$box_v.case_weight}" type="text" size="5" name="edit_case_weight_{$box_v.id}" id="edit_case_weight_{$box_v.id}"></td>
+                <td class="center" id="case_p_{$box_v.id}">{$box_v.price}</td>
+                <td class="center box_tr" id="edit_case_p_{$box_v.id}"><input value="{$box_v.price}" type="text" size="5" name="edit_case_price_{$box_v.id}" id="edit_case_price_{$box_v.id}"></td>
+                <td>
+                {volist name='list.fbaCodePick' id='cp_v' key='cp_k'}
+                    {if condition="$cp_v.fba_box_id == $box_v.id"}
+                    {php} $have_code_pick = 1; {/php}
+                    {$cp_v.sku}({$cp_v.num}件)
+                    <br/>
+                    {/if}
+                {/volist}
+                </td>
+                <td class="center operation">
+                    <ul class="do-clear operation">
+                        {if condition="$list.plan_status >= 3"}
+                        {else}
+                        <li><a href="javaScript:delBoxTrs({$box_v.id});">删除</a></li>
+                        {/if}
+                        <li id="edit_box_{$box_v.id}"><a href="javaScript:editBoxTrs({$box_v.id});">编辑</a></li>
+                        <li id="edit_save_{$box_v.id}" style="display: none;"><a href="javaScript:saveditBoxTrs({$box_v.id});">保存</a></li>
+                        {if condition="$list.plan_status >= 2 && $list.plan_status <= 4"}<li id="copy_box_{$box_v.id}"><a href="javaScript:copy_box({$list.id}, {$box_v.id}, {$have_code_pick});">复制</a></li>{/if}
+                        <li id="check_box_{$box_v.id}"><a href="javaScript:get_box_list({$list.id}, {$box_v.id});">查看</a></li>
+                        <!--<li><a href="javaScript:">打印</a></li>
+                        <li><a href="javaScript:">下载</a></li>-->
+                    </ul>
+                </td>
+            </tr>
+
+            {/volist}
+
+            </tbody>
+
+        </table>
+
+        <div class="overbtn">
+        {if condition="$list.plan_status >= 4 && $list.plan_status < 5"}<a class="button_a button_a3" href="javaScript:successPlan({$list.id});" style="color: #fff;">完成发货</a>{/if}
+        {if condition="$list.plan_status == 2"}<a class="button_a button_a3" href="javaScript:confirm_closure({$list.id});" style="color: #fff;">确认封箱</a>{/if}
+        <a class="button_a button_a3" href="javaScript:get_box_list({$list.id});" style="color: #fff;">箱子列表</a>
+        <a class='button_a button_a3 {if condition="$shipment == 0"}ban_point{/if}' href="javaScript:download_box_label();" style="color: #fff;">下载货件标签</a>
+        <!--<a class="button_a3" href="javaScript:" style="color: #fff;">批量打印箱子信息</a><-->
+        <a class="button_a button_a3" id="save_box" href="javaScript:saveBoxTr()" style="color: #fff;display: none;">保存箱子信息</a>
+        {if condition="$list.plan_status == 2"}<a class="button_a button_a3" id="add_box" href="javaScript:addBoxTr();" style="color: #fff;">新增箱子</a>{/if}
+        {if condition="$list.plan_status >= 4 && $list.plan_status < 6"}<a class="button_a button_a3" id="down_fba_msg" href="javaScript:down_fba_msg();" style="color: #fff;">下载物流信息</a>{/if}
+        {if condition="$list.plan_status == 4"}<a class="button_a button_a3" href="javaScript:back_status({$list.id}, {$list.agent_id}, {$list.plan_status}, 3);" style="color: #fff;">退回已封箱</a>{/if}
+        {if condition="$list.plan_status == 3"}<a class="button_a button_a3" href="javaScript:back_status({$list.id}, {$list.agent_id}, {$list.plan_status}, 2);" style="color: #fff;">退回待装箱</a>{/if}
+        </div>
+    </div>
+</div>
+
+<div class="diburoot ">
+    <ul class="tab_btn tab_btn_fl fl">
+        <!--<li><a href="javaScript:audit.approvedall('{:url('/admin/audit/approved')}')">批量通过</a></li>
+        <li><a class="close" href="javaScript:audit.deleteall('{:url('/admin/audit/delete')}')">批量不通过</a></li>-->
+    </ul>
+</div>
+
+<!--<div id="print_tap_all" style="display: none;">
+    {volist name='list.fbaOrders' id='all_v' key='all_k'}
+    {if condition="$all_v.fnsku != ''"}
+        {for start='0' end="$all_v.number"}
+        <img src=":url('/admin/fba/get_barcode','id='.$all_v.id)" /><br/>
+        <div style="page-break-after:always;"></div>
+        {/for}
+    {/if}
+    {/volist}
+</div>-->
+<script type="text/javascript">
+    /*laydate.render({
+        elem: '#inptime'
+        ,type: 'datetime'
+        ,range: '~'
+        ,format: 'yyyy-MM-dd HH:mm:ss'
+        ,theme: '#70afc4'
+    });*/
+    //$("html, body").scrollTop(0).animate({scrollTop: $("#scroll").offset().top});
+    $(document).ready(function(){
+        $("#f23f").click(function(){
+            $("#WaybillNo").remove('removeAttr');
+        });
+        $("#s23").click(function(){
+
+            //$("#WaybillNo").remove('removeAttr');
+        });
+
+    });
+
+    //oninput = "value=value.replace(/[^\d]/g,'')"限制输入数字
+    //复制箱子
+    function copy_box(fba_id, box_id, have_pick) {
+        if (have_pick == 1) {
+            fba_get_box_content.openWindow("{:url('/admin/Fba/getBoxContent')}", fba_id, box_id);
+        } else {
+            var nums = prompt('请输入复制数量', 1);//复制数量
+
+            if (nums) {
+                fba_get_box_content.save_data("{:url('/admin/Fba/copy_save')}", fba_id, box_id, nums);
+            }
+            return;
+        }
+    }
+
+    //完成发货
+    function successPlan(id) {
+        $.post("{:url('/admin/Fba/successPlan')}", {id:id}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+
+    //返回状态
+    function back_status(id, agent_id, old_status, update_status) {
+        if (!confirm('确认退回？')) {
+            //$("#WaybillNo").val('');
+            return;
+        }
+        $.post("{:url('/admin/Fba/backStatus')}", {id:id, agent_id:agent_id, old_status:old_status, update_status:update_status}, function(res) {
+            if(res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+
+    //打印print_sku_id_size
+    function print_sku_id_size(sku, size) {
+        window.location.href = "{:url('/admin/Fba/print_sku_id_size')}" + '?sku=' + sku + '&size=' + size;
+    }
+
+    //下载物流信息
+    function down_fba_msg() {
+        var fba_id = $("#fba_id").val();
+        window.location.href = "{:url('/admin/Fba/exportsFBA')}" + '?id=' + fba_id;
+    }
+
+    //下载箱标
+    function download_box_label() {
+        var fba_id = $("#fba_id").val();
+        window.location.href = "{:url('/admin/Fba/download_label')}" + '?fba_id=' + fba_id;
+        //$.get("{:url('/admin/Fba/download_label')}", {fba_id:fba_id});
+    }
+
+    //picking_gds拣货
+    function picking_gds(id) {
+        $("#swfbox").show();
+
+        $("#swfbox").html("");
+        $.post("{:url('/admin/Fba/picking_gds')}", {fba_id:id}, function(data){
+            $("#swfbox").html(data);
+            document.getElementById('input_unique_id').focus();
+        });
+    }
+
+    //确认封箱
+    function confirm_closure(id) {
+        var alert_msg = '请确认是否已经全部装箱';
+        var total_gds = $("#total_gds").text();
+        var picking_num = $("#picking_num").text();
+
+        if (picking_num < total_gds) {
+            alert_msg = '物品未配齐，请确认是否装箱';
+        }
+
+        if (confirm(alert_msg)) {
+            $.post("{:url('/admin/Fba/confirm_closure')}", {id:id}, function(res) {
+                if (res['code'] == 1000) {
+                    window.location.reload();
+                } else {
+                    alert(res['msg']);
+                    return;
+                }
+            });
+        } else {
+            return;
+        }
+    }
+
+    //编辑箱子
+    function editBoxTrs(id) {
+        $("#edit_case_lwh_" + id).show();
+        $("#case_w_" + id).hide();
+        $("#case_p_" + id).hide();
+        $("#case_lwh_" + id).hide();
+        $("#edit_case_w_" + id).show();
+        $("#edit_case_p_" + id).show();
+        $("#edit_save_" + id).show();
+        $("#edit_box_" + id).hide();
+
+
+    }
+
+    //保存编辑信息
+    function saveditBoxTrs(id) {
+        var len = $("#edit_case_length_" + id).val();
+        var wid = $("#edit_case_width_" + id).val();
+        var hei = $("#edit_case_height_" + id).val();
+        var wei = $("#edit_case_weight_" + id).val();
+        var pri = $("#edit_case_price_" + id).val();
+        if (len == '' || wid == '' || hei == '' || wei == '') {
+            alert('数据不可为空！');
+            return;
+        }
+        $.post("{:url('/admin/Fba/editBox')}", {id:id, length:len, width:wid, height:hei, weight:wei, price:pri}, function(res) {
+            if(res['code'] == 1000) {
+                document.getElementById('case_lwh_' + id).innerHTML = len + '*' + wid + '*' + hei;
+
+                document.getElementById("case_w_" + id).innerHTML = wei;
+                document.getElementById("case_p_" + id).innerHTML = pri;
+
+                $("#edit_case_lwh_" + id).hide();
+                $("#case_w_" + id).show();
+                $("#case_p_" + id).show();
+                $("#case_lwh_" + id).show();
+                $("#edit_case_w_" + id).hide();
+                $("#edit_case_p_" + id).hide();
+                $("#edit_save_" + id).hide();
+                $("#edit_box_" + id).show();
+                return;
+            }
+        });
+    }
+
+    //箱子列表
+    function get_box_list(id, box_id = '') {
+        window.location.href = "{:url('/admin/Fba/box_lists')}" + '?fba_id=' + id + '&box_id=' + box_id;
+    }
+
+    //全选
+    $("#select").change(function(){
+
+        $("input[name=select").prop('checked',$("#select").prop("checked"));
+        var eids = [];
+        $('input:checkbox[name=select]:checked').each(function(k){
+
+            if($(this).val()!='') eids.push($(this).val());
+        });
+    });
+    //打印标签
+    function print_tap(id, number) {
+        $("#swfbox").show();
+
+        $("#swfbox").html("");
+        $.post("{:url('/admin/fba/print_tap')}", {id:id,number:number}, function(data){
+            $("#swfbox").html(data);
+        });
+    }
+    //删除箱子
+    function delBoxTrs(id) {
+        if(!confirm('确认删除？')) {
+            return;
+        }
+        $.post("{:url('/admin/Fba/delBox')}", {id:id}, function(res) {
+            if (res['code'] == 1000) {
+                alert(res['msg']);
+                $("#fbaboxlabel_" + id).remove();
+                return;
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+    //保存数据
+    function saveBoxTr() {
+        var case_no = $('#case_no').val().replace(/^\s*|\s*$/g,"");
+        var case_length = $('#case_length').val().replace(/^\s*|\s*$/g,"");
+        var case_width = $('#case_width').val().replace(/^\s*|\s*$/g,"");
+        var case_height = $('#case_height').val().replace(/^\s*|\s*$/g,"");
+        var case_location = $('#case_location').val().replace(/^\s*|\s*$/g,"");
+        var case_location_id = $('#case_location_id').val().replace(/^\s*|\s*$/g,"");
+        var case_weight = $('#case_weight').val().replace(/^\s*|\s*$/g,"");
+        var price = $('#price').val().replace(/^\s*|\s*$/g,"");
+        var fba_id = $("#fba_id").val();
+        if (case_no == '') {
+            alert("箱号不能为空");
+            return;
+        }
+
+
+
+        if (case_location == '' || case_location_id == '') {
+            alert("仓库号不能为空");
+            return;
+        }
+        //var case_no_last = case_no.charAt(case_no.length - 1);
+        //var regPos = /^\d+$/; // 非负整数
+        //if (!regPos.test(case_no_last)) {
+            //alert("箱号请以数字结尾");
+            //return;
+        //}
+
+        $.post("{:url('/admin/Fba/saveBox')}", {case_location:case_location, case_location_id:case_location_id, fba_id:fba_id, case_length:case_length, case_width:case_width, case_height:case_height, case_no:case_no, case_weight:case_weight, price:price}, function(res) {
+            if (res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+
+    }
+    //添加tr行
+    function addBoxTr() {
+        var location = '';
+
+        var htmltr = '<tr class="newtr">' +
+            '<td class="center"><input id="case_no" name="case_no" type="text" size="5"></td>' +
+            '<td class="center">长:<input name="case_length" id="case_length" type="text" size="5"><br/>' +
+            '宽:<input name="case_width" id="case_width" type="text" size="5"><br/>' +
+            '高:<input name="case_height" id="case_height" type="text" size="5"></td>' +
+            '<td class="center operation"> ' +
+            '<input type="hidden" size="5" name="case_location_id" id="case_location_id">' +
+            '<input type="text" size="5" name="case_location" id="case_location" readonly><br><br>' +
+            '<ul class="do-clear operation"><li><a class="btnDelete" href="javaScript:;" onclick="getWare();" >选择仓库</a></li></ul>' +
+            '</td>' +
+            '<td class="center"><input type="text" size="5" name="case_weight" id="case_weight"></td>' +
+            '<td class="center"><input type="text" size="5" name="price" id="price"></td>' +
+            '<td></td>' +
+            '<td class="center operation"><ul class="do-clear operation">' +
+            '<li><a class="btnDelete" href="javaScript:;" onclick="delBoxTr(this);" >删除</a></li>' +
+            '</ul></td></tr>';
+        //$("#box_table tbody").prepend('<tr><td></td><td></td><td></td></tr>');//加到头部
+        $("#box_table tbody").append(htmltr);//加到尾部
+        $("#save_box").show();
+        $("#add_box").hide();
+        return;
+    }
+    //删除tr行
+    function delBoxTr(boxtr) {
+        $(boxtr).closest('tr').remove();
+        $("#save_box").hide();
+        $("#add_box").show();
+        return;
+    }
+    //查看订单详情
+    function checkFba (id) {
+        $.StandardPost("{:url('/admin/Fba/fba_details')}", {id:id});
+    }
+
+
+    function keys_press(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            search();
+        }
+    }
+
+    function getPlanStatus(url, status) {
+        var value=$('#search').val();
+        var start_time = $("#start_date").val();
+        var end_time = $("#end_date").val();
+        var sdate = $("#date").val();
+        var payment_status = $("#payment_status").val();
+        $.StandardPost(url, {search:value,start_time:start_time,end_time:end_time,sdate:sdate,plan_status:status,payment_status:payment_status});
+
+        //window.location.href = url + "?search=" + value + "&start_time=" + start_date + "&end_time=" + end_date + "&sdate=" + sdate + "&plan_status=" + status + "&payment_status=" + payment_status;
+    }
+
+    function search() {
+        var value=$('#search').val();
+        var start_time = $("#start_date").val();
+        var end_time = $("#end_date").val();
+        var sdate = $("#date").val();
+        var plan_status = $("#plan_status").val();
+        var payment_status = $("#payment_status").val();
+        $.StandardPost("{:url('/admin/fba/lists')}", {search:value,start_time:start_time,end_time:end_time,sdate:sdate,plan_status:plan_status,payment_status:payment_status});
+        //window.location.href = "{:url('/admin/fba/lists')}" + "?search=" + value + "&start_time=" + start_date + "&end_time=" + end_date + "&sdate=" + sdate + "&plan_status=" + plan_status + "&payment_status=" + payment_status;
+    }
+
+    //提交留言
+    function saveMsg() {
+        var fba_id = $("#fba_id").val();
+        var wmsg = $("#wmsg").val().replace(/^\s*|\s*$/g,"");
+        if (wmsg == '') {
+            alert('留言不能为空！');
+            return;
+        }
+        $.post("{:url('/admin/fba/saveMsg')}", {wmsg:wmsg, fba_id:fba_id}, function(res) {
+            if (res['code'] == 1000) {
+                alert(res['msg']);
+                $("#wmsg").val('');
+                $("#note").html(res['data']);
+                return;
+            } else {
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+    //保存运单号
+    function saveWaybillNo() {
+        var fba_id = $("#fba_id").val();
+        var wno = $("#WaybillNo").val().replace(/^\s*|\s*$/g,"");
+        var wno_old = $("#WaybillNo_old").val().replace(/^\s*|\s*$/g,"");
+        if (wno == '') {
+            alert('运单号不能为空！');
+            return;
+        }
+        if (wno == wno_old) {
+            alert('与原运单号一致！');
+            $("#save_wno").hide();
+            $("#WaybillNo").attr('readonly', 'readonly');
+            $("#edit_wno").show();
+            return;
+        }
+        if (!confirm('确认已经装箱完毕？')) {
+            $("#WaybillNo").val('');
+            return;
+        }
+        $.post("{:url('/admin/fba/saveWno')}", {wno:wno, fba_id:fba_id}, function(res) {
+            //保存运单号就更改状态可以发货
+            if (res['code'] == 1000) {
+                alert(res['msg']);
+                window.location.reload();
+                //$("#WaybillNo").attr('readonly', 'readonly');
+                //$("#WaybillNo_old").val(wno);
+                //$("#save_wno").hide();
+                //$("#edit_wno").show();
+                return;
+            } else {
+                $("#WaybillNo").val('');
+                alert(res['msg']);
+                return;
+            }
+        });
+    }
+    //editWaybillNo
+    function editWaybillNo() {
+        $("#WaybillNo").removeAttr('readonly');
+        $("#save_wno").show();
+        $("#edit_wno").hide();
+    }
+
+    function getdata() {
+        var inptime = $("#inptime").val();
+        var search = $("#search").val();
+        $.post("{:url('/admin/fba/lists')}", {select_time:inptime,search:search}, function(data) {
+            return;
+        });
+        //alert(test);
+    }
+
+    //查看库存
+    function check_stock(sku, size, img){
+        $("#swfbox").show();
+
+        $("#swfbox").html("");
+        $.post("{:url('/admin/fba/check_stock')}", {sku:sku, size:size, img:img}, function(data){
+            $("#swfbox").html(data);
+        })
+
+    }
+
+    //获取仓库
+    function getWare(){
+        $("#swfbox").show();
+
+        $("#swfbox").html("");
+        $.post("{:url('/admin/fba/get_fba_warehouse')}", {}, function(data){
+            $("#swfbox").html(data);
+        })
+
+    }
+
+    function loadURL(obj){
+        $.post(ordermaterial.windowurl,obj,function(data){
+            $("#swfbox").html(data);
+        })
+    }
+    //选择仓库
+    function select_ware() {
+        var ware = $('input:radio:checked').val();
+        if (ware == undefined) {
+            alert('请选择仓库号！');
+            return;
+        }
+        var ware_arr = ware.split('_');
+        $("#case_location").val(ware_arr[1]);
+        $("#case_location_id").val(ware_arr[0]);
+        $("#swfbox").hide();
+    }
+
+    //配货单
+    function distribution_list(fba_id){
+        $("#swfbox").show();
+
+        $("#swfbox").html("");
+        $.post("{:url('/admin/fba/distribution_list')}", {fba_id:fba_id}, function(res){
+            $("#swfbox").html(res);
+        })
+    }
+
+    //打印面单
+    function plan_list(fba_id){
+        $("#swfbox").show();
+
+        $("#swfbox").html("");
+        $.post("{:url('/admin/fba/plan_list')}", {fba_id:fba_id}, function(res){
+            console.log(res);
+            $("#swfbox").html(res);
+        })
+    }
+
+    //配货单生成pdf
+    function print_ckbox_pdf(id) {
+        window.location.href = "{:url('admin/fba/print_ckbox')}" + '?fba_id=' + id;
+    }
+
+    //计划面单打印生成pdf
+    function print_some_pdf(id) {
+        window.location.href = "{:url('admin/fba/print_list')}" + '?fba_id=' + id;
+    }
+
+    //打印
+    function print_some(cl) {
+        //var hhtml = $("#" + cl).html();
+        //console.log(hhtml);
+        //window.location.href = "{:url('admin/fba/print_list')}" + '?hhtml=';
+        //$("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+        //return;
+        $("#" + cl).print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet: null,
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 90000000,
+            title: null,
+            doctype: '<!doctype html>'
+        });
+    }
+
+
+    function print_fbatap(id) {
+
+        var print_num = $("#print_num").val();
+        if (print_num == '' || print_num == 0) {
+            alert('打印数量不能为空或0！');
+            return;
+        }
+        window.location.href = "{:url('admin/fba/png2pdf')}" + '?id=' + id + '&print_num=' + print_num;
+    }
+    //打印
+    function print_fbataps(cl) {
+        var print_tap = document.getElementById(cl).innerHTML;
+        var real_print_html = document.getElementById('real_print_tap');
+        var print_num = $("#print_num").val();
+        var real_print = '';
+        if (print_num == '' || print_num == 0) {
+            alert('打印数量不能为空或0！');
+            return;
+        }
+        real_print_html.innerHTML = '';
+        for(var i = 0; i < print_num; i++) {
+            real_print += print_tap + '<div style="page-break-after:always;"></div>';
+        }
+        real_print_html.innerHTML = real_print;
+
+        //<div style="page-break-after:always;"></div>占一页
+        //document.getElementById('search_order').focus();定位光标
+        //$("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+        $("#real_print_tap").show();
+        $("#" + 'real_print_tap').print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet: null,
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 90000000,
+            title: null,
+            doctype: '<!doctype html>'
+        });
+        $("#real_print_tap").hide();
+    }
+    //批量打印
+    function print_fbatap_all(id) {
+        window.location.href = "{:url('admin/fba/png2pdf_all')}" + '?id=' + id;
+    }
+    function print_fbatap_alls() {
+
+        //<div style="page-break-after:always;"></div>占一页
+        //document.getElementById('search_order').focus();定位光标
+        //$("input[name=printqrcode]").prop('checked', 1);//,$("#select").prop("checked")
+        //$("div.printdiv").removeClass('no-print');//,$("#select").prop("checked")
+        $("#print_tap_all").show();
+        $("#print_tap_all").print({
+            globalStyles: true,
+            mediaPrint: false,
+            stylesheet: null,
+            noPrintSelector: ".no-print",
+            iframe: true,
+            append: null,
+            prepend: null,
+            manuallyCopyFormValues: true,
+            deferred: $.Deferred(),
+            timeout: 90000000,
+            title: null,
+            doctype: '<!doctype html>'
+        });
+        $("#print_tap_all").hide();
+    }
+
+</script>

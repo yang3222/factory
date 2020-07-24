@@ -1,0 +1,1 @@
+<div class="menumap">    <a href="{:url('/user/index')}" class="home">首页</a>    {if condition="isset($menu[$currentMenu.menu])"}<a href="javaScript:;">{$menu[$currentMenu.menu]['title']}</a>{/if}    {if condition="isset($menu[$currentMenu.menu]['nav'][$currentMenu.nav])"}<span>{$menu[$currentMenu.menu]['nav'][$currentMenu.nav]['title']}</span>{/if}</div>

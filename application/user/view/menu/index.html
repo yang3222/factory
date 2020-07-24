@@ -1,0 +1,60 @@
+<script>
+    $(function(){
+        select.select();
+    })
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/user/menu/add')}">添加</a></li>
+        <li><a href="javaScript:select.deleteall('{:url('/user/menu/delete')}')">删除</a></li>
+    </ul>
+    {$pageDiv}
+</div>
+<div class="canvas_intro">
+    <table class="productli">
+        <thead>
+            <tr>
+                <th width="10" class="center">#</th>
+                <th width="10" class="center"><input name="" type="checkbox" value="" id="select" /></th>
+                <th width="150">分类名称</th>
+                <th>产品</th>
+                <th width="50" class="center">排序</th>
+                <th width="150" class="center">状态</th>
+                <th width="150" class="center">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='data' id='value' key='k'}
+            <tr>
+                <td class="center">{$k}</td>
+                <td class="center"><input name="select" type="checkbox" value="{$value.id}" /></td>
+                <td>{$value.name}</td>
+                <td>
+                    {assign name="products" value=":GetMenuProduct($value.product)"}
+                    <ul class="imgul do-clear">
+                    {volist name='products' id='product'}
+                    <li>
+                    {if condition="strstr($product.smallimg,'http')"}<img src='{$product.smallimg}@0e_0o_1l_500h_500w.src' />{else}<img src='{:PRODUCT_IMG}{$product.smallimg}' />{/if}
+                    <h4>{$product.name}</h4>
+                    </li>
+                    {/volist}
+                    </ul>
+                </td>
+                <td class="center">{$value.sort}</td>
+                <td class="center radio">{if condition="$value.display=='1'"}<span>开</span>{else}<span class="close">关</span>{/if}</td>
+                <td class="center operation">
+                    <a href="{:url('/user/menu/edit','id='.$value.id)}">编辑</a>
+                    <a href="javaScript:select.delete('{:url('/user/menu/delete')}',['{$value.id}'])">删除</a>
+                </td>
+            </tr>
+            {/volist}
+        </tbody>
+    </table>
+</div>
+<div class="canvas_title do-clear">
+    <ul class="tab_btn tab_btn_fl fl">
+        <li><a href="{:url('/user/menu/add')}">添加</a></li>
+        <li><a href="javaScript:select.deleteall('{:url('/user/menu/delete')}')">删除</a></li>
+    </ul>
+    {$pageDiv}
+</div>

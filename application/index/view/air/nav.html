@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navs>
+  <nav value="">全部</nav>
+  {volist name="data" id="value"}
+  <nav value="{:GetMenuProductIds($value.product)}">{$value.name}</nav>
+  {/volist}
+</navs>

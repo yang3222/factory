@@ -1,0 +1,75 @@
+<div class="canvas_title do-clear">
+</div>
+
+<div class="canvas_intro">
+<input type="hidden" id="lgscode_id" value="{$lgscode_id}" />
+    <ul class="add_from">
+
+        <li>
+            <label class="label">快递名称<i>*</i>：</label>
+
+            <input name="lgstcode_name" type="text" value="{$lgscode.lgstcode_name}" id="lgstcode_name" />
+
+        </li>
+        <li>
+            <label class="label">快递code<i>*</i>：</label>
+
+            <input name="lgstcode" type="text" value="{$lgscode.lgstcode}" id="lgstcode" />
+
+        </li>
+        <li>
+            <label class="label">开启自动设置工厂：</label>
+            <input type="radio" name="status"  id="statusyes" value="1" {if condition="$lgscode.status == 1"}checked{/if} /><label for="statusyes">是</label>
+            <input type="radio" name="status"  id="statusno" value="0" {if condition="$lgscode.status == 0"}checked{/if} /><label for="statusno">否</label>
+        </li>
+
+        <li>
+
+            <a href="javaScript:uplgstcode.save()">保存</a>
+
+        </li>
+
+    </ul>
+
+</div>
+<script>
+    var uplgstcode = {
+        lgstcode_name:'',
+        lgstcode:'',
+        status:0,
+
+        getdata:function() {
+            uplgstcode.lgstcode = $('#lgstcode').val().replace(/^\s*|\s*$/g,"");//去除空格
+            uplgstcode.lgstcode_name = $('#lgstcode_name').val().replace(/^\s*|\s*$/g,"");
+            uplgstcode.status = $("input[type='radio']:checked").val();
+        },
+
+
+        save:function() {
+            uplgstcode.getdata();
+            if (uplgstcode.lgstcode == '') {
+                alert('请输入快递名称');
+                return;
+            }
+            if (uplgstcode.lgstcode_name == '') {
+                alert('请输入快递code');
+                return;
+            }
+            var lgscode_id = $('#lgscode_id').val();
+            if (lgscode_id == '') {
+                alert('编辑出错，请重试');
+                window.location = "{:url('/admin/expsetting/index')}";
+            }
+            $.post("{:url('/admin/expsetting/edit_exp')}", {lgstcode:uplgstcode.lgstcode, lgstcode_name:uplgstcode.lgstcode_name, status:uplgstcode.status, id:lgscode_id}, function(res) {
+                if (res['code'] == 1000) {
+                    alert(res['msg']);
+                    window.location = "{:url('/admin/expsetting/index')}";
+                } else {
+                    alert(res['msg']);
+                    return;
+                }
+            });
+
+        },
+    }
+</script>

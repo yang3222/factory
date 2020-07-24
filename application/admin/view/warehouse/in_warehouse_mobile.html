@@ -1,0 +1,53 @@
+
+<style>
+    .pro_order {
+        background-color: #60c2f4;
+        display: flex;
+        border-radius: 10px;
+        line-height: 0.94rem;
+        font-size: 0.36rem;
+        padding: 0;
+        color: #000000;
+        margin: 2px;
+        text-align: center;
+    }
+    .add_from{
+        padding:1rem;
+    }
+</style>
+
+<header class="header-cls">
+    <a href="javaScript:history.go(-1);" style="color: #fff;"><span class="iconfont iconleft left-cls"></span></a>
+    <div class="header-title" id="header-title">{$menu[$currentMenu.menu]['nav'][$currentMenu.nav]['title']}</div>
+<!--    <span class="iconfont icondelete right-cls"></span>-->
+<!--    <span class="right-cls completeBtn disNone">完成</span>-->
+</header>
+
+<div class="content-cls">
+    <div class="input-box">
+
+        <ul class="add_from">
+
+            <li>
+                <label class="label">仓位：<i></i></label>
+                <input name="wt_name" type="text" value="" id="wt_name"  autofocus="autofocus" onkeydown="keyspress()" />
+                <input name="wt_id" type="hidden" value="" id="wt_id" />
+            </li>
+            <li>
+                <a id='btnconfig' class="pro_order" href="javaScript:outInWarehouse.configWarehouse()"><p style="margin: auto">确认仓位</p></a>
+<!--                <a id='btnsave' class="pro_order" style='display: none;' href="javaScript:outInWarehouse.searchArrAjax(['{:url('/admin/epwarehouse/inWarehouse')}','sku','wt_id','count','wt_name'],'epincallback')"><p style="margin: auto">保存</p></a>-->
+            </li>
+        </ul>
+        <!-- <span class="pro_status_name" id="pro_status_name">生产状态：{if condition="empty('')"}{else}{/if}</span>-->
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    function keyspress(frm,event) {
+        var events = window.event ? window.event : event;
+        if (events.keyCode == 13) {
+            outInWarehouse.configWarehouse();
+            // pro_status.search();
+        }
+    }
+</script>

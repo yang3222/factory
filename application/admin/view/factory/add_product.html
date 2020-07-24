@@ -1,0 +1,40 @@
+<script>
+    $(function(){
+        factory.getCheck();
+    })
+</script>
+<div class="canvas_title do-clear">
+    <ul class="tab_nav fl">
+        <li><a href="{:url('/admin/factory/edit','id='.$id)}">工厂信息</a></li>
+        <li {if condition='$type==1'} class="current"{/if}><a href="{:url('/admin/factory/product',['id'=>$id,'type'=>'1'])}">印花产品</a></li>
+        <li {if condition='$type==2'} class="current"{/if}><a href="{:url('/admin/factory/product',['id'=>$id,'type'=>'2'])}">加工产品</a></li>
+    </ul>
+</div>
+<div class="canvas_intro">
+    <ul class="add_from">
+       <li>
+         <label class="label">工厂名称：</label>
+         <input type="text" value="{$factoryName}" readonly="readonly"/>
+      </li>
+       <li class="productimg">
+           <ul class="product select do-clear">
+               {volist name="data" id="value" key="k"}
+               <li>
+                   {assign name="checked" value=""}
+                   {volist name='value.productfactroy' id='factory'}
+                       {if condition="$factory.pivot.working_type==$type&&$factory.pivot.factory_id==$id"}{assign name="checked" value="checked"}{/if}
+                   {/volist}
+                   <input name="product" id="product{$value.id}" type="checkbox" {$checked} value="{$value.id}">
+                   <label for="product{$value.id}">
+                       {if condition="strstr($value.smallimg,'http')"}<img src='{$value.smallimg}@0e_0o_1l_500h_500w.src' />{else}<img src='{:PRODUCT_IMG}{$value.smallimg}' />{/if}
+                       {$value.name}
+                   </label>
+               </li>
+               {/volist}
+           </ul>
+        </li>
+       <li>
+           <a href="javaScript:factory.save('{:url('/admin/factory/postProduct',['factory_id'=>$id,'type'=>$type])}')">提交</a>
+       </li>
+    </ul>
+</div>
